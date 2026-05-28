@@ -59,7 +59,8 @@ export default function ProductDetailPage() {
   const addToCartMutation = useMutation({
     mutationFn: async () => {
       if (!product) return;
-      await addItem(product.id, undefined, quantity);
+      const selectedVariant = product.variants?.find((v) => v.size === selectedSize);
+      await addItem(product.id, selectedVariant?.id || undefined, quantity);
     },
     onSuccess: () => {
       toast.success('Added to cart');
