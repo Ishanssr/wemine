@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { HeroSection } from '@/components/layout/HeroSection';
+import { Logo } from '@/components/ui/Logo';
 
 export default function HomePage() {
   return (
@@ -102,8 +103,8 @@ function AboutSection() {
             className="relative"
           >
             <div className="aspect-square rounded-3xl bg-gradient-to-br from-glacier-200 to-glacier-100 overflow-hidden glass-surface">
-              <div className="w-full h-full flex items-center justify-center">
-                <MountainIcon className="w-48 h-48 text-glacier-300/40" />
+              <div className="w-full h-full flex items-center justify-center p-8">
+                <Logo className="w-full h-full max-w-[200px] max-h-[200px] transition-transform duration-500 hover:scale-105" />
               </div>
             </div>
           </motion.div>
@@ -162,10 +163,4 @@ function FeaturesSection() {
   );
 }
 
-function MountainIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" className={className}>
-      <path d="M3 20L10 8L14 14L17 10L21 20H3Z" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+// MountainIcon deleted in favor of custom brand Logo component

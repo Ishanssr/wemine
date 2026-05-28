@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { ShoppingCart, User, Menu, X, Search, Mountain, Heart } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, Heart } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 import { useAuthStore } from '@/store/auth-store';
 import { useCartStore } from '@/store/cart-store';
 import { NAV_LINKS } from '@/lib/constants';
@@ -29,7 +30,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <Mountain className="w-7 h-7 text-glacier-600 group-hover:scale-110 transition-transform duration-300" />
+            <Logo className="w-7 h-7 group-hover:scale-110 transition-transform duration-300" />
             <span className="font-heading font-semibold text-xl tracking-tight">
               WEMINE
             </span>

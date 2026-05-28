@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mountain } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/store/auth-store';
 
@@ -40,7 +40,7 @@ export default function SignupPage() {
       >
         <div className="glass-darker rounded-3xl p-8 md:p-10">
           <Link href="/" className="flex items-center justify-center gap-2.5 mb-8">
-            <Mountain className="w-6 h-6 text-glacier-600" />
+            <Logo className="w-6 h-6" />
             <span className="font-heading font-semibold text-xl">WEMINE</span>
           </Link>
 
