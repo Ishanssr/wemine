@@ -59,8 +59,21 @@ export default function ProductDetailPage() {
   const addToCartMutation = useMutation({
     mutationFn: async () => {
       if (!product) return;
-      const selectedVariant = product.variants?.find((v) => v.size === selectedSize);
-      await addItem(product.id, selectedVariant?.id || undefined, quantity);
+      
+      if (product.variants && product.variants.length > 0) {
+        if (!selectedSize) {
+          toast.error('Please select a size');
+          throw new Error('Size not selected');
+        }
+        const selectedVariant = product.variants.find((v) => v.size === selectedSize);
+        if (!selectedVariant) {
+          toast.error('Selected size variant not found');
+          throw new Error('Variant not found');
+        }
+        await addItem(product.id, selectedVariant.id, quantity);
+      } else {
+        await addItem(product.id, undefined, quantity);
+      }
     },
     onSuccess: () => {
       toast.success('Added to cart');

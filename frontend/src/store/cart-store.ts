@@ -41,47 +41,53 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   fetchCart: async () => {
     set({ isLoading: true });
-    try {
-      const { data } = await api.get('/cart');
-      const cart = data.data || data;
-      const items = cart.items || [];
-      set({
-        items,
-        itemCount: items.reduce((sum: number, i: CartItem) => sum + i.quantity, 0),
-        isLoading: false,
-      });
-      saveLocalCart(items);
-    } catch {
-      const items = loadLocalCart();
-      set({ items, itemCount: items.reduce((sum: number, i: CartItem) => sum + i.quantity, 0), isLoading: false });
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    if (token) {
+      try {
+        const { data } = await api.get('/cart');
+        const cart = data.data || data;
+        const items = cart.items || [];
+        set({
+          items,
+          itemCount: items.reduce((sum: number, i: CartItem) => sum + i.quantity, 0),
+          isLoading: false,
+        });
+        saveLocalCart(items);
+        return;
+      } catch {}
     }
+    const items = loadLocalCart();
+    set({ items, itemCount: items.reduce((sum: number, i: CartItem) => sum + i.quantity, 0), isLoading: false });
   },
 
   addItem: async (productId, variantId, quantity = 1) => {
-    try {
-      const { data } = await api.post('/cart/items', { productId, variantId, quantity });
-      await get().fetchCart();
-    } catch {
-      const items = [...get().items];
-      const existing = items.find(
-        (i) => i.product.id === productId && (variantId ? i.variant?.id === variantId : !i.variant),
-      );
-      if (existing) {
-        existing.quantity += quantity;
-      } else {
-        items.unshift({
-          id: `local_${Date.now()}`,
-          quantity,
-          savedForLater: false,
-          product: { id: productId } as any,
-          variant: variantId ? { id: variantId } as any : null,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        } as CartItem);
-      }
-      saveLocalCart(items);
-      set({ items, itemCount: items.reduce((sum: number, i: CartItem) => sum + i.quantity, 0) });
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    if (token) {
+      try {
+        const { data } = await api.post('/cart/items', { productId, variantId, quantity });
+        await get().fetchCart();
+        return;
+      } catch {}
     }
+    const items = [...get().items];
+    const existing = items.find(
+      (i) => i.product.id === productId && (variantId ? i.variant?.id === variantId : !i.variant),
+    );
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      items.unshift({
+        id: `local_${Date.now()}`,
+        quantity,
+        savedForLater: false,
+        product: { id: productId } as any,
+        variant: variantId ? { id: variantId } as any : null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      } as CartItem);
+    }
+    saveLocalCart(items);
+    set({ items, itemCount: items.reduce((sum: number, i: CartItem) => sum + i.quantity, 0) });
   },
 
   updateQuantity: async (itemId, quantity) => {
