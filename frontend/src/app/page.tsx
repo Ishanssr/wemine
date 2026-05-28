@@ -21,14 +21,14 @@ export default function HomePage() {
             className="flex items-end justify-between mb-12"
           >
             <div>
-              <p className="font-heading text-[11px] font-medium text-gray-400 tracking-[0.25em] uppercase mb-3">
-                The Collection
+              <p className="font-heading text-xs font-medium text-glacier-600 tracking-[0.2em] uppercase mb-3">
+                Our Collection
               </p>
-              <h2 className="font-heading text-3xl md:text-4xl font-semibold text-gray-900 tracking-tight">
-                Essential Tees
+              <h2 className="font-heading text-3xl md:text-4xl font-semibold text-gray-900">
+                Premium Mountain Wear
               </h2>
-              <p className="font-body text-sm text-gray-400 mt-3 max-w-lg leading-relaxed">
-                Premium cotton t-shirts, designed in the mountains.
+              <p className="font-body text-gray-500 mt-3 max-w-lg">
+                Each piece crafted with care for the modern explorer
               </p>
             </div>
             <Link
