@@ -1,0 +1,258 @@
+import { PrismaClient, Role } from '@prisma/client';
+import * as argon2 from 'argon2';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  console.log('Seeding database...');
+
+  const adminPassword = await argon2.hash('admin123');
+
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@wemine.com' },
+    update: {},
+    create: {
+      email: 'admin@wemine.com',
+      passwordHash: adminPassword,
+      firstName: 'Admin',
+      lastName: 'Wemine',
+      role: Role.ADMIN,
+      isEmailVerified: true,
+    },
+  });
+
+  const user = await prisma.user.upsert({
+    where: { email: 'user@wemine.com' },
+    update: {},
+    create: {
+      email: 'user@wemine.com',
+      passwordHash: adminPassword,
+      firstName: 'Test',
+      lastName: 'User',
+      role: Role.USER,
+      isEmailVerified: true,
+    },
+  });
+
+  const categories = await Promise.all([
+    prisma.category.upsert({
+      where: { slug: 't-shirts' },
+      update: {},
+      create: { name: 'T-Shirts', slug: 't-shirts', description: 'Premium mountain-inspired t-shirts' },
+    }),
+    prisma.category.upsert({
+      where: { slug: 'hoodies' },
+      update: {},
+      create: { name: 'Hoodies', slug: 'hoodies', description: 'Warm and stylish hoodies' },
+    }),
+    prisma.category.upsert({
+      where: { slug: 'accessories' },
+      update: {},
+      create: { name: 'Accessories', slug: 'accessories', description: 'Complete your look' },
+    }),
+    prisma.category.upsert({
+      where: { slug: 'new-arrivals' },
+      update: {},
+      create: { name: 'New Arrivals', slug: 'new-arrivals', description: 'Fresh from the peak' },
+    }),
+  ]);
+
+  const products = [
+    {
+      name: 'Slate Frost T-Shirt',
+      slug: 'slate-frost-t-shirt',
+      description: 'Premium minimalist t-shirt featuring a subtle mountain graphic, inspired by frosted alpine slate. Crafted from 100% organic cotton with a relaxed fit.',
+      shortDesc: 'Minimalist mountain tee in slate grey',
+      basePrice: 4999,
+      comparePrice: 5999,
+      sku: 'WM-TS-001',
+      tags: ['t-shirt', 'slate', 'minimal', 'mountain'],
+      isFeatured: true,
+      totalStock: 150,
+      imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80',
+    },
+    {
+      name: 'Alpine Cabin T-Shirt',
+      slug: 'alpine-cabin-t-shirt',
+      description: 'High-quality deep forest green t-shirt, crafted for the cozy mountain lifestyle. Features a subtle cabin graphic on the chest.',
+      shortDesc: 'Forest green with cabin graphic',
+      basePrice: 4999,
+      sku: 'WM-TS-002',
+      tags: ['t-shirt', 'forest', 'cabin', 'green'],
+      isFeatured: true,
+      totalStock: 120,
+      imageUrl: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600&q=80',
+    },
+    {
+      name: 'Glacier White T-Shirt',
+      slug: 'glacier-white-t-shirt',
+      description: 'Crisp white premium t-shirt, essential minimal wear for any outdoor journey. Clean design with a subtle peak embroidery.',
+      shortDesc: 'Essential white tee with peak detail',
+      basePrice: 4999,
+      comparePrice: 5499,
+      sku: 'WM-TS-003',
+      tags: ['t-shirt', 'white', 'essential', 'glacier'],
+      isFeatured: true,
+      totalStock: 200,
+      imageUrl: 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600&q=80',
+    },
+    {
+      name: 'Peak Seeker Black T-Shirt',
+      slug: 'peak-seeker-black-t-shirt',
+      description: 'Bold black t-shirt with minimalist peak design for the adventurous soul. Premium heavyweight cotton with a structured fit.',
+      shortDesc: 'Bold black with peak design',
+      basePrice: 5499,
+      sku: 'WM-TS-004',
+      tags: ['t-shirt', 'black', 'bold', 'peak'],
+      totalStock: 180,
+      imageUrl: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80',
+    },
+    {
+      name: 'Summit Grey T-Shirt',
+      slug: 'summit-grey-t-shirt',
+      description: 'Versatile grey tee with subtle mountain silhouette, perfect for any occasion. Comfortable and breathable for everyday wear.',
+      shortDesc: 'Versatile grey with mountain silhouette',
+      basePrice: 4499,
+      sku: 'WM-TS-005',
+      tags: ['t-shirt', 'grey', 'summit', 'versatile'],
+      totalStock: 160,
+      imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80',
+    },
+    {
+      name: 'Forest Trail Olive T-Shirt',
+      slug: 'forest-trail-olive-t-shirt',
+      description: 'Earthy olive green tee inspired by mountain trails and forest paths. Features a trail map graphic on the back.',
+      shortDesc: 'Earthy olive with trail graphic',
+      basePrice: 4999,
+      sku: 'WM-TS-006',
+      tags: ['t-shirt', 'olive', 'trail', 'forest'],
+      totalStock: 90,
+      imageUrl: 'https://images.unsplash.com/photo-1608236415053-f7f5d5b76af6?w=600&q=80',
+    },
+    {
+      name: 'Alpine Navy T-Shirt',
+      slug: 'alpine-navy-t-shirt',
+      description: 'Classic navy blue with clean mountain graphics, timeless and elegant. A wardrobe essential for the modern explorer.',
+      shortDesc: 'Classic navy with mountain graphics',
+      basePrice: 4999,
+      sku: 'WM-TS-007',
+      tags: ['t-shirt', 'navy', 'classic', 'alpine'],
+      totalStock: 140,
+      imageUrl: 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&q=80',
+    },
+    {
+      name: 'Misty Morning Cream T-Shirt',
+      slug: 'misty-morning-cream-t-shirt',
+      description: 'Soft cream colored tee capturing the essence of misty mountain mornings. Luxuriously soft fabric with a relaxed drape.',
+      shortDesc: 'Soft cream capturing misty mornings',
+      basePrice: 5499,
+      sku: 'WM-TS-008',
+      tags: ['t-shirt', 'cream', 'misty', 'soft'],
+      isFeatured: true,
+      totalStock: 75,
+      imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80',
+    },
+    {
+      name: 'Trailblazer Hoodie',
+      slug: 'trailblazer-hoodie',
+      description: 'Premium heavyweight hoodie with embroidered mountain logo. French terry cotton with a brushed interior for ultimate warmth.',
+      shortDesc: 'Premium heavyweight hoodie',
+      basePrice: 8999,
+      comparePrice: 9999,
+      sku: 'WM-HD-001',
+      tags: ['hoodie', 'premium', 'heavyweight', 'logo'],
+      isFeatured: true,
+      totalStock: 60,
+    },
+  ];
+
+  for (const productData of products) {
+    const { imageUrl, ...data } = productData;
+    const product = await prisma.product.upsert({
+      where: { slug: data.slug },
+      update: {},
+      create: {
+        ...data,
+        categories: { create: [{ categoryId: categories[0].id }] },
+        images: imageUrl ? { create: [{ url: imageUrl, isPrimary: true, sortOrder: 0 }] } : undefined,
+        variants: {
+          create: ['S', 'M', 'L', 'XL'].map((size, idx) => ({
+            name: size,
+            size,
+            sku: `${data.sku}-${size}`,
+            stock: Math.floor(Math.random() * 50) + 10,
+            sortOrder: idx,
+          })),
+        },
+      },
+    });
+    console.log(`Created product: ${product.name}`);
+  }
+
+  const coupon = await prisma.coupon.upsert({
+    where: { code: 'WELCOME10' },
+    update: {},
+    create: {
+      code: 'WELCOME10',
+      description: '10% off your first order',
+      discountType: 'PERCENTAGE',
+      discountValue: 10,
+      maxDiscount: 1000,
+      minOrderValue: 999,
+      usageLimit: 1000,
+      isActive: true,
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  const coupon2 = await prisma.coupon.upsert({
+    where: { code: 'FREESHIP' },
+    update: {},
+    create: {
+      code: 'FREESHIP',
+      description: 'Free shipping on orders above ₹999',
+      discountType: 'PERCENTAGE',
+      discountValue: 100,
+      maxDiscount: 100,
+      minOrderValue: 999,
+      usageLimit: 500,
+      isActive: true,
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  const banners = await Promise.all([
+    prisma.banner.create({
+      data: {
+        title: 'New Alpine Collection',
+        subtitle: 'Inspired by the peaks. Crafted for the journey.',
+        imageUrl: '',
+        linkUrl: '/products',
+        linkText: 'Explore Collection',
+        sortOrder: 0,
+        isActive: true,
+      },
+    }),
+    prisma.banner.create({
+      data: {
+        title: 'Premium Mountain Wear',
+        subtitle: 'Minimal design. Maximum comfort.',
+        imageUrl: '',
+        linkUrl: '/products',
+        linkText: 'Shop Now',
+        sortOrder: 1,
+        isActive: true,
+      },
+    }),
+  ]);
+
+  console.log('Seed complete!');
+  console.log('Admin: admin@wemine.com / admin123');
+  console.log('User: user@wemine.com / admin123');
+}
+
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());
