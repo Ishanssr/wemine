@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Star } from 'lucide-react';
+
 import { formatINR } from '@/lib/api';
 import type { Product } from '@/types';
 
@@ -50,7 +50,6 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <h3 className="font-heading font-medium text-sm text-gray-900 mb-1 line-clamp-1">
               {product.name}
             </h3>
-            <div className="flex items-center justify-between">
               <div className="flex items-baseline gap-1.5">
                 <span className="font-heading font-semibold text-base text-gray-900">
                   {formatINR(price)}
@@ -61,13 +60,6 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   </span>
                 )}
               </div>
-              {product.avgRating > 0 && (
-                <div className="flex items-center gap-1">
-                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                  <span className="font-body text-xs text-gray-400">{product.avgRating.toFixed(1)}</span>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </Link>
