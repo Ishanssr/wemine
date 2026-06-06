@@ -11,8 +11,12 @@ export function ProductGrid() {
     queryKey: ['products', 'featured'],
     queryFn: async () => {
       try {
-        const res = await api.get('/products', { params: { featured: true, limit: 8 } });
-        return (res.data.data || res.data).products || [];
+        const res = await api.get('/products', { params: { featured: true, limit: 12 } });
+        const apiProducts = (res.data.data || res.data).products || [];
+        const mockFeatured = MOCK_PRODUCTS.filter((p) => p.isFeatured);
+        const apiSlugs = new Set(apiProducts.map((p: Product) => p.slug));
+        const extras = mockFeatured.filter((p) => !apiSlugs.has(p.slug));
+        return [...apiProducts, ...extras];
       } catch {
         return MOCK_PRODUCTS.filter((p) => p.isFeatured);
       }

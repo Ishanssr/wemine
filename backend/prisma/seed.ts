@@ -57,6 +57,11 @@ async function main() {
     }),
   ]);
 
+  const categoryMap: Record<string, string> = {};
+  for (const cat of categories) {
+    categoryMap[cat.slug] = cat.id;
+  }
+
   const products = [
     {
       name: 'Slate Frost T-Shirt',
@@ -70,6 +75,7 @@ async function main() {
       isFeatured: true,
       totalStock: 150,
       imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80',
+      categorySlug: 't-shirts',
     },
     {
       name: 'Alpine Cabin T-Shirt',
@@ -82,6 +88,7 @@ async function main() {
       isFeatured: true,
       totalStock: 120,
       imageUrl: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600&q=80',
+      categorySlug: 't-shirts',
     },
     {
       name: 'Glacier White T-Shirt',
@@ -95,6 +102,7 @@ async function main() {
       isFeatured: true,
       totalStock: 200,
       imageUrl: 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600&q=80',
+      categorySlug: 't-shirts',
     },
     {
       name: 'Peak Seeker Black T-Shirt',
@@ -106,6 +114,7 @@ async function main() {
       tags: ['t-shirt', 'black', 'bold', 'peak'],
       totalStock: 180,
       imageUrl: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80',
+      categorySlug: 't-shirts',
     },
     {
       name: 'Summit Grey T-Shirt',
@@ -117,6 +126,7 @@ async function main() {
       tags: ['t-shirt', 'grey', 'summit', 'versatile'],
       totalStock: 160,
       imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80',
+      categorySlug: 't-shirts',
     },
     {
       name: 'Forest Trail Olive T-Shirt',
@@ -128,6 +138,7 @@ async function main() {
       tags: ['t-shirt', 'olive', 'trail', 'forest'],
       totalStock: 90,
       imageUrl: 'https://images.unsplash.com/photo-1608236415053-f7f5d5b76af6?w=600&q=80',
+      categorySlug: 't-shirts',
     },
     {
       name: 'Alpine Navy T-Shirt',
@@ -139,6 +150,7 @@ async function main() {
       tags: ['t-shirt', 'navy', 'classic', 'alpine'],
       totalStock: 140,
       imageUrl: 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&q=80',
+      categorySlug: 't-shirts',
     },
     {
       name: 'Misty Morning Cream T-Shirt',
@@ -151,6 +163,7 @@ async function main() {
       isFeatured: true,
       totalStock: 75,
       imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80',
+      categorySlug: 't-shirts',
     },
     {
       name: 'Trailblazer Hoodie',
@@ -163,20 +176,79 @@ async function main() {
       tags: ['hoodie', 'premium', 'heavyweight', 'logo'],
       isFeatured: true,
       totalStock: 60,
+      imageUrl: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&q=80',
+      categorySlug: 'hoodies',
+    },
+    {
+      name: 'Summit Cap',
+      slug: 'summit-cap',
+      description: 'Clean structured cap with embroidered peak logo. Adjustable strap and premium cotton twill construction.',
+      shortDesc: 'Structured cap with peak logo',
+      basePrice: 299,
+      sku: 'WM-AC-001',
+      tags: ['cap', 'accessory', 'structured', 'peak'],
+      isFeatured: true,
+      totalStock: 120,
+      imageUrl: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=80',
+      categorySlug: 'accessories',
+      sizes: ['OS'],
+    },
+    {
+      name: 'Canvas Trail Tote',
+      slug: 'canvas-trail-tote',
+      description: 'Heavyweight canvas tote with mountain motif print. Reinforced stitching and spacious interior for everyday carry.',
+      shortDesc: 'Heavyweight canvas tote',
+      basePrice: 399,
+      comparePrice: 449,
+      sku: 'WM-AC-002',
+      tags: ['tote', 'canvas', 'accessory', 'mountain'],
+      isFeatured: true,
+      totalStock: 80,
+      imageUrl: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&q=80',
+      categorySlug: 'accessories',
+      sizes: ['OS'],
+    },
+    {
+      name: 'Midnight Black Hoodie',
+      slug: 'midnight-black-hoodie',
+      description: 'Sleek black pullover hoodie with tonal mountain embroidery. Ultra-soft fleece interior for maximum comfort.',
+      shortDesc: 'Sleek black pullover hoodie',
+      basePrice: 649,
+      sku: 'WM-HD-002',
+      tags: ['hoodie', 'black', 'fleece', 'tonal'],
+      isFeatured: true,
+      totalStock: 45,
+      imageUrl: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80',
+      categorySlug: 'hoodies',
+    },
+    {
+      name: 'Ridge Runner Heather Tee',
+      slug: 'ridge-runner-heather-tee',
+      description: 'Soft heather grey tee with a bold mountain ridge graphic across the chest. Pre-shrunk cotton for lasting fit.',
+      shortDesc: 'Heather grey with ridge graphic',
+      basePrice: 449,
+      sku: 'WM-TS-009',
+      tags: ['t-shirt', 'heather', 'ridge', 'graphic'],
+      isFeatured: true,
+      totalStock: 100,
+      imageUrl: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600&q=80',
+      categorySlug: 't-shirts',
     },
   ];
 
   for (const productData of products) {
-    const { imageUrl, ...data } = productData;
+    const { imageUrl, categorySlug, sizes, ...data } = productData;
+    const categoryId = categoryMap[categorySlug] || categories[0].id;
+    const defaultSizes = sizes || ['S', 'M', 'L', 'XL'];
     const product = await prisma.product.upsert({
       where: { slug: data.slug },
       update: {},
       create: {
         ...data,
-        categories: { create: [{ categoryId: categories[0].id }] },
+        categories: { create: [{ categoryId }] },
         images: imageUrl ? { create: [{ url: imageUrl, isPrimary: true, sortOrder: 0 }] } : undefined,
         variants: {
-          create: ['S', 'M', 'L', 'XL'].map((size, idx) => ({
+          create: defaultSizes.map((size, idx) => ({
             name: size,
             size,
             sku: `${data.sku}-${size}`,
