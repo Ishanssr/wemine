@@ -18,12 +18,12 @@ export class UploadController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './uploads',
-        filename: (_req, file, cb) => {
+        filename: (_req: any, file: any, cb: any) => {
           const name = uuidv4() + extname(file.originalname);
           cb(null, name);
         },
       }),
-      fileFilter: (_req, file, cb) => {
+      fileFilter: (_req: any, file: any, cb: any) => {
         if (!file.mimetype.match(/^image\/(jpeg|png|webp|avif)$/)) {
           cb(new BadRequestException('Only image files are allowed'), false);
           return;
@@ -43,7 +43,7 @@ export class UploadController {
     FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: './uploads',
-        filename: (_req, file, cb) => {
+        filename: (_req: any, file: any, cb: any) => {
           const name = uuidv4() + extname(file.originalname);
           cb(null, name);
         },
