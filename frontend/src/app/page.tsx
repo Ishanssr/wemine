@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { HeroSection } from '@/components/layout/HeroSection';
-import { Logo } from '@/components/ui/Logo';
 
 export default function HomePage() {
   return (
@@ -59,11 +58,6 @@ export default function HomePage() {
       <AboutSection />
 
       <FeaturesSection />
-
-      <section className="relative h-[50vh] md:h-[70vh] overflow-hidden">
-        <img src="/hero2.png" alt="" className="w-full h-full object-cover object-center" />
-        <div className="absolute inset-0 bg-gradient-to-r from-cream-50/30 via-transparent to-transparent" />
-      </section>
     </>
   );
 }
@@ -107,10 +101,8 @@ function AboutSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            <div className="aspect-square rounded-3xl bg-gradient-to-br from-glacier-200 to-glacier-100 overflow-hidden glass-surface">
-              <div className="w-full h-full flex items-center justify-center p-8">
-                <Logo className="w-full h-full max-w-[200px] max-h-[200px] transition-transform duration-500 hover:scale-105" />
-              </div>
+            <div className="aspect-[4/3] rounded-3xl overflow-hidden">
+              <img src="/hero2.png" alt="" className="w-full h-full object-cover object-center" />
             </div>
           </motion.div>
         </div>
@@ -167,5 +159,3 @@ function FeaturesSection() {
     </section>
   );
 }
-
-// MountainIcon deleted in favor of custom brand Logo component
