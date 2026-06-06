@@ -13,12 +13,12 @@ const manrope = {
 };
 
 export const metadata: Metadata = {
-  title: 'WEMINE | Premium Mountain Wear',
-  description: 'Premium mountain-inspired apparel. Minimal design, maximum comfort. Founded by Bhavit.',
-  keywords: ['t-shirts', 'mountain wear', 'premium apparel', 'minimalist fashion'],
+  title: 'WEMINE | Premium Minimal Wear',
+  description: 'Premium minimal apparel. Threads with character.',
+  keywords: ['t-shirts', 'minimal wear', 'premium apparel', 'minimalist fashion'],
   openGraph: {
-    title: 'WEMINE | Premium Mountain Wear',
-    description: 'Premium mountain-inspired apparel. Minimal design, maximum comfort.',
+    title: 'WEMINE | Premium Minimal Wear',
+    description: 'Premium minimal apparel. Threads with character.',
     siteName: 'WEMINE',
     type: 'website',
   },

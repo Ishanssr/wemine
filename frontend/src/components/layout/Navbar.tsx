@@ -27,14 +27,14 @@ export function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'nav-glass shadow-sm' : 'bg-transparent'
+        isScrolled ? 'nav-glass' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group">
-            <Logo className="w-9 h-9 group-hover:scale-110 transition-transform duration-300" />
-            <span className="font-heading font-semibold text-2xl tracking-tight">
+            <Logo className="w-8 h-8" />
+            <span className="font-heading font-medium text-lg tracking-[0.15em]">
               WEMINE
             </span>
           </Link>
@@ -44,36 +44,35 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-body text-sm font-medium text-gray-900 hover:text-gray-900 transition-colors duration-200 relative group"
+                className="font-heading text-[11px] font-medium text-gray-900 tracking-[0.1em] uppercase hover:text-gray-500 transition-colors duration-200"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-glacier-500 transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Link
               href="/search"
-              className="w-12 h-12 flex items-center justify-center rounded-xl hover:bg-white/50 transition-all duration-200"
+              className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all duration-200"
             >
-              <Search className="w-6 h-6 text-gray-600" />
+              <Search className="w-5 h-5 text-gray-900" />
             </Link>
 
             <Link
               href={isAuthenticated ? '/account/wishlist' : '/auth/login'}
-              className="hidden md:flex w-12 h-12 items-center justify-center rounded-xl hover:bg-white/50 transition-all duration-200"
+              className="hidden md:flex w-10 h-10 items-center justify-center hover:bg-black/5 transition-all duration-200"
             >
-              <Heart className="w-6 h-6 text-gray-600" />
+              <Heart className="w-5 h-5 text-gray-900" />
             </Link>
 
             <Link
               href="/cart"
-              className="relative w-12 h-12 flex items-center justify-center rounded-xl hover:bg-white/50 transition-all duration-200"
+              className="relative w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all duration-200"
             >
-              <ShoppingCart className="w-6 h-6 text-gray-600" />
+              <ShoppingCart className="w-5 h-5 text-gray-900" />
               {mounted && itemCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-5 h-5 flex items-center justify-center bg-black text-white text-[10px] font-bold rounded-full">
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center bg-black text-white text-[9px] font-medium rounded-full">
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>
               )}
@@ -84,30 +83,26 @@ export function Navbar() {
                 {user?.role === 'ADMIN' && (
                   <Link
                     href="/admin"
-                    className="hidden md:flex px-3 py-1.5 text-xs font-heading font-semibold text-glacier-700 bg-glacier-100 rounded-lg hover:bg-glacier-200 transition-all"
+                    className="hidden md:flex px-2.5 py-1 text-[9px] font-heading font-medium tracking-[0.05em] uppercase text-gray-500 border border-gray-200 hover:border-gray-900 hover:text-gray-900 transition-all"
                   >
                     Admin
                   </Link>
                 )}
                 <Link
                   href="/account/profile"
-                  className="w-12 h-12 flex items-center justify-center rounded-xl hover:bg-white/50 transition-all duration-200"
+                  className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all duration-200"
                 >
                   {user?.avatarUrl ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt=""
-                      className="w-9 h-9 rounded-full object-cover"
-                    />
+                    <img src={user.avatarUrl} alt="" className="w-7 h-7 rounded-full object-cover" />
                   ) : (
-                    <User className="w-6 h-6 text-gray-600" />
+                    <User className="w-5 h-5 text-gray-900" />
                   )}
                 </Link>
               </>
             ) : (
               <Link
                 href="/auth/login"
-                className="hidden md:inline-flex items-center px-6 py-3 bg-black text-white text-base font-heading font-semibold rounded-xl hover:bg-gray-800 transition-all duration-300 hover:scale-[1.02]"
+                className="hidden md:inline-flex items-center px-5 py-2 bg-black text-white text-[11px] font-heading font-medium tracking-[0.05em] uppercase hover:bg-gray-800 transition-all duration-300"
               >
                 Sign In
               </Link>
@@ -115,9 +110,9 @@ export function Navbar() {
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden w-12 h-12 flex items-center justify-center rounded-xl hover:bg-white/50 transition-all"
+              className="md:hidden w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all"
             >
-              {isOpen ? <X className="w-6 h-6 text-gray-600" /> : <Menu className="w-6 h-6 text-gray-600" />}
+              {isOpen ? <X className="w-5 h-5 text-gray-900" /> : <Menu className="w-5 h-5 text-gray-900" />}
             </button>
           </div>
         </div>
@@ -128,13 +123,13 @@ export function Navbar() {
           isOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="glass-darker px-6 py-4 space-y-1">
+        <div className="bg-cream-50 border-t border-black/5 px-6 py-4 space-y-1">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-white/30 rounded-xl transition-all"
+              className="block px-4 py-3 text-[11px] font-heading font-medium tracking-[0.1em] uppercase text-gray-700 hover:text-gray-900 transition-all"
             >
               {link.label}
             </Link>
@@ -143,7 +138,7 @@ export function Navbar() {
             <Link
               href="/auth/login"
               onClick={() => setIsOpen(false)}
-              className="block px-4 py-3 text-sm font-semibold text-white bg-black rounded-xl text-center mt-2"
+              className="block px-4 py-3 text-[11px] font-heading font-medium tracking-[0.05em] uppercase text-white bg-black text-center mt-2"
             >
               Sign In
             </Link>
