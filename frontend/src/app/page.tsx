@@ -25,7 +25,7 @@ export default function HomePage() {
                 Our Collection
               </p>
               <h2 className="font-heading text-3xl md:text-4xl font-semibold text-gray-900">
-                Premium Mountain Wear
+                Premium Minimal Wear
               </h2>
               <p className="font-body text-gray-500 mt-3 max-w-lg">
                 Each piece crafted with care for the modern explorer
