@@ -59,6 +59,11 @@ export default function HomePage() {
       <AboutSection />
 
       <FeaturesSection />
+
+      <section className="relative h-[50vh] md:h-[70vh] overflow-hidden">
+        <img src="/hero2.png" alt="" className="w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-cream-50/30 via-transparent to-transparent" />
+      </section>
     </>
   );
 }
