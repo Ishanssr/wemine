@@ -11,31 +11,28 @@ export default function HomePage() {
     <>
       <HeroSection />
 
-      <section id="products" className="section-padding py-24">
+      <section id="products" className="section-padding py-16 md:py-24">
         <div className="max-content">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex items-end justify-between mb-12"
+            className="flex items-end justify-between mb-10 md:mb-14"
           >
             <div>
-              <p className="font-heading text-xs font-medium text-glacier-600 tracking-[0.2em] uppercase mb-3">
+              <h2 className="font-heading text-2xl md:text-3xl font-medium text-gray-900">
                 Our Collection
-              </p>
-              <h2 className="font-heading text-3xl md:text-4xl font-semibold text-gray-900">
-                Premium Minimal Wear
               </h2>
-              <p className="font-body text-gray-500 mt-3 max-w-lg">
-                Each piece crafted with care for the modern explorer
+              <p className="font-body text-sm text-gray-400 mt-1.5">
+                Premium Minimal Wear
               </p>
             </div>
             <Link
               href="/products"
-              className="hidden md:inline-flex items-center gap-2 font-heading text-sm font-semibold text-gray-900 hover:text-glacier-600 transition-colors group"
+              className="hidden md:inline-flex items-center gap-1 font-body text-sm text-gray-400 hover:text-gray-900 transition-colors"
             >
               View All
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </motion.div>
 
