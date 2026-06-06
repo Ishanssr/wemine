@@ -30,12 +30,6 @@ export class AuthController {
   }
 
   @Public()
-  @Post('setup-admin')
-  async setupAdmin() {
-    return this.auth.setupAdmin();
-  }
-
-  @Public()
   @Post('login')
   @HttpCode(200)
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: any) {
