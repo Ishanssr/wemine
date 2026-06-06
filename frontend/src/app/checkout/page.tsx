@@ -4,8 +4,8 @@ export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { CreditCard, Shield, Truck, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CreditCard, Shield, Truck, Lock, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api, formatINR } from '@/lib/api';
 import { useCartStore } from '@/store/cart-store';
@@ -20,6 +20,8 @@ export default function CheckoutPage() {
   const [selectedAddress, setSelectedAddress] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('stripe');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvv: '', name: '' });
+  const [upiId, setUpiId] = useState('');
   const [form, setForm] = useState({
     firstName: '', lastName: '', line1: '', city: '', state: '', zipCode: '', phone: '',
   });
@@ -74,7 +76,7 @@ export default function CheckoutPage() {
 
   if (isLoading) {
     return <div className="pt-28 pb-24 max-w-4xl mx-auto px-6 md:px-12">
-      <div className="space-y-4">{[1, 2, 3].map((i) => <div key={i} className="h-20 rounded-2xl bg-white/30 animate-pulse" />)}</div>
+      <div className="space-y-4">{[1, 2, 3].map((i) => <div key={i} className="h-20 bg-white/30 animate-pulse" />)}</div>
     </div>;
   }
 
@@ -90,69 +92,230 @@ export default function CheckoutPage() {
             Checkout
           </p>
           <h1 className="font-heading text-3xl md:text-4xl font-semibold text-gray-900">
-            Review your items and proceed to checkout
+            Complete your order
           </h1>
+        </div>
+
+        {/* Steps indicator */}
+        <div className="flex items-center gap-2 mb-8 font-heading text-xs tracking-[0.1em] uppercase">
+          {[
+            { num: 1, label: 'Shipping' },
+            { num: 2, label: 'Payment' },
+            { num: 3, label: 'Review' },
+          ].map((s, i) => (
+            <div key={s.num} className="flex items-center gap-2">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-medium transition-all duration-300 ${
+                step >= s.num ? 'bg-black text-white' : 'bg-black/5 text-gray-400'
+              }`}>{s.num}</div>
+              <span className={step >= s.num ? 'text-gray-900' : 'text-gray-400'}>{s.label}</span>
+              {i < 2 && <ChevronDown className="w-3 h-3 -rotate-90 text-gray-300 mx-1" />}
+            </div>
+          ))}
         </div>
 
         <div className="grid md:grid-cols-5 gap-8">
           <div className="md:col-span-3 space-y-6">
-            <div className="glass-surface rounded-2xl p-6">
-              <h3 className="font-heading font-semibold text-base text-gray-900 mb-4">
-                Shipping Address
-              </h3>
-              {addresses.length > 0 ? (
-                <div className="space-y-3">
-                  {addresses.map((addr) => (
-                    <label key={addr.id} className={`block glass-surface rounded-xl p-4 cursor-pointer transition-all ${
-                      selectedAddress === addr.id ? 'ring-2 ring-glacier-400' : ''
-                    }`}>
-                      <input type="radio" name="address" value={addr.id} checked={selectedAddress === addr.id}
-                        onChange={(e) => setSelectedAddress(e.target.value)} className="sr-only" />
-                      <p className="font-heading font-medium text-sm text-gray-900">{addr.firstName} {addr.lastName}</p>
-                      <p className="font-body text-xs text-gray-500 mt-1">{addr.line1}, {addr.city}, {addr.state} {addr.zipCode}</p>
-                      {addr.phone && <p className="font-body text-xs text-gray-400 mt-1">{addr.phone}</p>}
-                    </label>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-3">
-                  <input className="input-field col-span-2" placeholder="Full Name" />
-                  <input className="input-field col-span-2" placeholder="Address Line 1" />
-                  <input className="input-field" placeholder="City" />
-                  <input className="input-field" placeholder="State" />
-                  <input className="input-field" placeholder="ZIP Code" />
-                  <input className="input-field" placeholder="Phone" />
-                </div>
+            {/* Step 1: Shipping Address */}
+            <AnimatePresence mode="wait">
+              {step === 1 && (
+                <motion.div key="shipping" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
+                  <div className="border border-black/10 p-6">
+                    <h3 className="font-heading font-semibold text-sm tracking-[0.1em] uppercase text-gray-900 mb-4">
+                      Shipping Address
+                    </h3>
+                    {addresses.length > 0 ? (
+                      <div className="space-y-2">
+                        {addresses.map((addr) => (
+                          <label key={addr.id} className={`block border p-4 cursor-pointer transition-all ${
+                            selectedAddress === addr.id ? 'border-black bg-black/5' : 'border-black/10 hover:border-black/30'
+                          }`}>
+                            <input type="radio" name="address" value={addr.id} checked={selectedAddress === addr.id}
+                              onChange={(e) => setSelectedAddress(e.target.value)} className="sr-only" />
+                            <p className="font-heading font-medium text-sm text-gray-900">{addr.firstName} {addr.lastName}</p>
+                            <p className="font-body text-xs text-gray-500 mt-1">{addr.line1}, {addr.city}, {addr.state} {addr.zipCode}</p>
+                            {addr.phone && <p className="font-body text-xs text-gray-400 mt-1">{addr.phone}</p>}
+                          </label>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-3">
+                        <input className="input-field col-span-2" placeholder="Full Name" />
+                        <input className="input-field col-span-2" placeholder="Address Line 1" />
+                        <input className="input-field" placeholder="City" />
+                        <input className="input-field" placeholder="State" />
+                        <input className="input-field" placeholder="ZIP Code" />
+                        <input className="input-field" placeholder="Phone" />
+                      </div>
+                    )}
+                    <button
+                      onClick={() => setStep(2)}
+                      disabled={!selectedAddress}
+                      className="btn-primary mt-4 w-full"
+                    >
+                      Continue to Payment
+                    </button>
+                  </div>
+                </motion.div>
               )}
-            </div>
 
-            <div className="glass-surface rounded-2xl p-6">
-              <h3 className="font-heading font-semibold text-base text-gray-900 mb-4">Payment Method</h3>
-              <div className="space-y-3">
-                {[
-                  { id: 'stripe', label: 'Credit/Debit Card', icon: CreditCard },
-                  { id: 'razorpay', label: 'UPI / Net Banking', icon: Shield },
-                ].map(({ id, label, icon: Icon }) => (
-                  <label key={id} className={`flex items-center gap-3 glass-surface rounded-xl p-4 cursor-pointer transition-all ${
-                    paymentMethod === id ? 'ring-2 ring-glacier-400' : ''
-                  }`}>
-                    <input type="radio" name="payment" value={id} checked={paymentMethod === id}
-                      onChange={(e) => setPaymentMethod(e.target.value)} className="sr-only" />
-                    <Icon className="w-5 h-5 text-glacier-600" />
-                    <span className="font-body text-sm text-gray-900">{label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+              {/* Step 2: Payment */}
+              {step === 2 && (
+                <motion.div key="payment" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
+                  <div className="border border-black/10 p-6">
+                    <h3 className="font-heading font-semibold text-sm tracking-[0.1em] uppercase text-gray-900 mb-4">
+                      Payment Method
+                    </h3>
+                    <div className="space-y-2 mb-6">
+                      {[
+                        { id: 'stripe', label: 'Credit / Debit Card', icon: CreditCard, desc: 'Visa, Mastercard, RuPay' },
+                        { id: 'razorpay', label: 'UPI / Net Banking / Wallet', icon: Shield, desc: 'Google Pay, PhonePe, Paytm' },
+                      ].map(({ id, label, icon: Icon, desc }) => (
+                        <label key={id} className={`flex items-center gap-3 border p-4 cursor-pointer transition-all ${
+                          paymentMethod === id ? 'border-black bg-black/5' : 'border-black/10 hover:border-black/30'
+                        }`}>
+                          <input type="radio" name="payment" value={id} checked={paymentMethod === id}
+                            onChange={(e) => setPaymentMethod(e.target.value)} className="sr-only" />
+                          <Icon className="w-5 h-5 text-gray-600 flex-shrink-0" />
+                          <div>
+                            <span className="font-heading text-sm text-gray-900">{label}</span>
+                            <p className="font-body text-[11px] text-gray-400">{desc}</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+
+                    <AnimatePresence mode="wait">
+                      {paymentMethod === 'stripe' && (
+                        <motion.div key="stripe-form" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                          <div className="border border-black/10 p-4 space-y-3 bg-black/[0.02]">
+                            <h4 className="font-heading text-xs tracking-[0.1em] uppercase text-gray-500 mb-3">Card Details</h4>
+                            <input
+                              placeholder="Cardholder Name"
+                              value={cardDetails.name}
+                              onChange={(e) => setCardDetails({ ...cardDetails, name: e.target.value })}
+                              className="input-field"
+                            />
+                            <input
+                              placeholder="Card Number"
+                              value={cardDetails.number}
+                              onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim() })}
+                              className="input-field"
+                              maxLength={19}
+                            />
+                            <div className="grid grid-cols-2 gap-3">
+                              <input
+                                placeholder="MM / YY"
+                                value={cardDetails.expiry}
+                                onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value.replace(/[^\d/]/g, '').slice(0, 5) })}
+                                className="input-field"
+                                maxLength={5}
+                              />
+                              <input
+                                placeholder="CVV"
+                                type="password"
+                                value={cardDetails.cvv}
+                                onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value.replace(/\D/g, '').slice(0, 4) })}
+                                className="input-field"
+                                maxLength={4}
+                              />
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {paymentMethod === 'razorpay' && (
+                        <motion.div key="razorpay-form" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                          <div className="border border-black/10 p-4 space-y-3 bg-black/[0.02]">
+                            <h4 className="font-heading text-xs tracking-[0.1em] uppercase text-gray-500 mb-3">UPI Details</h4>
+                            <input
+                              placeholder="UPI ID (e.g. name@upi)"
+                              value={upiId}
+                              onChange={(e) => setUpiId(e.target.value)}
+                              className="input-field"
+                            />
+                            <p className="font-body text-[11px] text-gray-400">
+                              Or pay with Net Banking / Wallet via Razorpay checkout
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <div className="flex gap-3 mt-4">
+                      <button onClick={() => setStep(1)} className="btn-secondary flex-1">
+                        Back
+                      </button>
+                      <button onClick={() => setStep(3)} className="btn-primary flex-1">
+                        Review Order
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Step 3: Review */}
+              {step === 3 && (
+                <motion.div key="review" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
+                  <div className="border border-black/10 p-6">
+                    <h3 className="font-heading font-semibold text-sm tracking-[0.1em] uppercase text-gray-900 mb-4">
+                      Review & Confirm
+                    </h3>
+
+                    <div className="space-y-3 mb-4">
+                      <div className="flex justify-between items-center">
+                        <span className="font-heading text-xs tracking-[0.05em] uppercase text-gray-500">Shipping</span>
+                        <button onClick={() => setStep(1)} className="font-body text-[11px] text-gray-900 underline">Edit</button>
+                      </div>
+                      <div className="border border-black/10 p-3 bg-black/[0.02]">
+                        <p className="font-body text-sm text-gray-900">Shipping address selected</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 mb-4">
+                      <div className="flex justify-between items-center">
+                        <span className="font-heading text-xs tracking-[0.05em] uppercase text-gray-500">Payment</span>
+                        <button onClick={() => setStep(2)} className="font-body text-[11px] text-gray-900 underline">Edit</button>
+                      </div>
+                      <div className="border border-black/10 p-3 bg-black/[0.02]">
+                        <p className="font-body text-sm text-gray-900">
+                          {paymentMethod === 'stripe' ? 'Credit / Debit Card' : 'UPI / Net Banking'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 mt-4">
+                      <button onClick={() => setStep(2)} className="btn-secondary flex-1">
+                        Back
+                      </button>
+                      <button
+                        onClick={handlePlaceOrder}
+                        disabled={isProcessing}
+                        className="btn-primary flex-1"
+                      >
+                        {isProcessing ? 'Processing...' : (
+                          <span className="flex items-center gap-2">
+                            <Lock className="w-4 h-4" />
+                            Pay {formatINR(grandTotal)}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
+          {/* Order Summary - always visible */}
           <div className="md:col-span-2">
-            <div className="glass-darker rounded-2xl p-6 sticky top-28">
-              <h3 className="font-heading font-semibold text-base text-gray-900 mb-4">Items</h3>
+            <div className="border border-black/10 p-6 sticky top-28">
+              <h3 className="font-heading font-semibold text-sm tracking-[0.1em] uppercase text-gray-900 mb-4">
+                Order Summary
+              </h3>
               <div className="space-y-3 mb-6">
                 {activeItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-glacier-100/50 flex-shrink-0">
+                    <div className="w-12 h-12 overflow-hidden bg-black/5 flex-shrink-0">
                       {item.product.images?.[0] && (
                         <img src={item.product.images[0].url} alt="" className="w-full h-full object-cover" />
                       )}
@@ -168,7 +331,7 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              <div className="space-y-2 mb-4 pb-4 border-b border-white/40">
+              <div className="space-y-2 mb-4 pb-4 border-b border-black/10">
                 <div className="flex justify-between font-body text-sm"><span className="text-gray-500">Subtotal</span><span>{formatINR(total)}</span></div>
                 <div className="flex justify-between font-body text-sm"><span className="text-gray-500">Shipping</span><span>{total >= 999 ? 'Free' : '₹99'}</span></div>
                 <div className="flex justify-between font-body text-sm"><span className="text-gray-500">Tax</span><span>{formatINR(total * 0.18)}</span></div>
@@ -178,26 +341,6 @@ export default function CheckoutPage() {
                 <span>{formatINR(grandTotal)}</span>
               </div>
 
-              <button
-                onClick={handlePlaceOrder}
-                disabled={isProcessing || !selectedAddress}
-                className="btn-primary w-full text-base py-4 mb-3"
-              >
-                {isProcessing ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Processing Payment
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <Lock className="w-4 h-4" />
-                    Place Order
-                  </span>
-                )}
-              </button>
               <p className="font-body text-[11px] text-gray-400 text-center flex items-center justify-center gap-1">
                 <Shield className="w-3 h-3" />
                 Secured with 256-bit encryption
