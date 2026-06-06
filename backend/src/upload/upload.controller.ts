@@ -18,14 +18,14 @@ export class UploadController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './uploads',
-        filename: (_req: any, file: any, cb: any) => {
+        filename: (_req: any, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
           const name = uuidv4() + extname(file.originalname);
           cb(null, name);
         },
       }),
-      fileFilter: (_req: any, file: any, cb: any) => {
+      fileFilter: (_req: any, file: Express.Multer.File, cb: (error: Error | null, accept: boolean) => void) => {
         if (!file.mimetype.match(/^image\/(jpeg|png|webp|avif)$/)) {
-          cb(new BadRequestException('Only image files are allowed'), false);
+          cb(new BadRequestException('Only image files are allowed') as unknown as Error, false);
           return;
         }
         cb(null, true);
@@ -43,7 +43,7 @@ export class UploadController {
     FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: './uploads',
-        filename: (_req: any, file: any, cb: any) => {
+        filename: (_req: any, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
           const name = uuidv4() + extname(file.originalname);
           cb(null, name);
         },

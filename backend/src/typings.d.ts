@@ -1,10 +1,2 @@
 declare module 'passport-github2';
 declare module 'passport-google-oauth20';
-declare module 'compression';
-declare module 'multer';
-declare module 'cookie-parser';
-declare module 'uuid';
-declare module 'qrcode';
-declare module 'passport-jwt';
-declare module 'nodemailer';
-declare module 'express';
