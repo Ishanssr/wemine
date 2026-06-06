@@ -5,6 +5,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        cream: {
+          50: '#fefcf5',
+          100: '#fdf6e8',
+          200: '#f5e6cc',
+          300: '#ebd4b0',
+          400: '#d4b88c',
+          500: '#c4a47a',
+        },
         glacier: {
           50: '#f4f9f9',
           100: '#e2edee',

@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (isLoading || !user || user.role !== 'ADMIN') return null;
 
   return (
-    <div className="min-h-screen bg-glacier-50">
+    <div className="min-h-screen bg-cream-50">
       <div className="flex">
         <aside className="hidden md:flex w-64 min-h-screen flex-col glass-darker border-r border-white/40 p-4 fixed left-0 top-0">
           <Link href="/admin" className="flex items-center gap-2.5 mb-8 px-3 pt-2">

@@ -65,7 +65,7 @@ export default function HomePage() {
 
 function AboutSection() {
   return (
-    <section id="about" className="section-padding py-24 bg-white/30">
+    <section id="about" className="section-padding py-24 bg-cream-100/50">
       <div className="max-content">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div

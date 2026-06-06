@@ -6,7 +6,7 @@ import { FOOTER_LINKS } from '@/lib/constants';
 
 export function Footer() {
   return (
-    <footer className="bg-white/40 backdrop-blur-sm border-t border-white/50">
+    <footer className="bg-cream-100/50 backdrop-blur-sm border-t border-cream-200/50">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           <div className="col-span-2 md:col-span-1">
