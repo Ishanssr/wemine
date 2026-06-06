@@ -1,51 +1,71 @@
 'use client';
 
 import { create } from 'zustand';
-import { MOCK_PRODUCTS } from '@/lib/mock-data';
+import { api } from '@/lib/api';
 import type { CartItem, Product, ProductVariant } from '@/types';
 
 const CART_KEY = 'wemine_cart';
 
-function normalizeCartItem(item: CartItem): CartItem | null {
-  const product = item.product?.basePrice
-    ? item.product
-    : MOCK_PRODUCTS.find((mockProduct) => mockProduct.id === item.product?.id);
-
-  if (!product) return null;
-
-  const variant = item.variant?.size
-    ? item.variant
-    : product.variants?.find((productVariant) => productVariant.id === item.variant?.id) || null;
-
-  return {
-    ...item,
-    product: product as Product,
-    variant: variant as ProductVariant | null,
-    quantity: Math.max(1, Number(item.quantity) || 1),
-  };
-}
-
-function loadCart(): CartItem[] {
+function loadLocalCart(): CartItem[] {
   if (typeof window === 'undefined') return [];
   try {
-    const items = JSON.parse(localStorage.getItem(CART_KEY) || '[]') as CartItem[];
-    const normalizedItems = items
-      .map(normalizeCartItem)
-      .filter((item): item is CartItem => Boolean(item));
-
-    if (JSON.stringify(normalizedItems) !== JSON.stringify(items)) {
-      saveCart(normalizedItems);
-    }
-
-    return normalizedItems;
+    return JSON.parse(localStorage.getItem(CART_KEY) || '[]');
   } catch {
     return [];
   }
 }
 
-function saveCart(items: CartItem[]) {
+function saveLocalCart(items: CartItem[]) {
   if (typeof window === 'undefined') return;
   localStorage.setItem(CART_KEY, JSON.stringify(items));
+}
+
+function clearLocalCart() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(CART_KEY);
+}
+
+function hasToken(): boolean {
+  if (typeof window === 'undefined') return false;
+  return !!localStorage.getItem('accessToken');
+}
+
+function toCartItem(raw: any): CartItem {
+  return {
+    id: raw.id,
+    product: {
+      id: raw.product?.id ?? '',
+      name: raw.product?.name ?? '',
+      slug: raw.product?.slug ?? '',
+      description: raw.product?.description ?? '',
+      basePrice: raw.product?.basePrice ?? raw.product?.price ?? 0,
+      comparePrice: raw.product?.comparePrice,
+      sku: raw.product?.sku ?? '',
+      isActive: raw.product?.isActive ?? true,
+      isFeatured: raw.product?.isFeatured ?? false,
+      tags: raw.product?.tags ?? [],
+      totalStock: raw.product?.totalStock ?? 0,
+      avgRating: raw.product?.avgRating ?? 0,
+      reviewCount: raw.product?.reviewCount ?? 0,
+      images: raw.product?.images ?? [],
+      variants: raw.product?.variants ?? [],
+      categories: raw.product?.categories ?? [],
+      reviews: raw.product?.reviews ?? [],
+      relatedProducts: raw.product?.relatedProducts,
+    },
+    variant: raw.variant ? {
+      id: raw.variant.id,
+      name: raw.variant.name ?? '',
+      size: raw.variant.size,
+      color: raw.variant.color,
+      colorHex: raw.variant.colorHex,
+      price: raw.variant.price,
+      stock: raw.variant.stock ?? 0,
+      isActive: raw.variant.isActive ?? true,
+    } : null,
+    quantity: raw.quantity ?? 1,
+    savedForLater: raw.savedForLater ?? false,
+  };
 }
 
 interface CartState {
@@ -67,13 +87,60 @@ export const useCartStore = create<CartState>((set, get) => ({
   itemCount: 0,
 
   fetchCart: async () => {
-    const items = loadCart();
-    set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0), isLoading: false });
+    set({ isLoading: true });
+
+    if (!hasToken()) {
+      const items = loadLocalCart();
+      set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0), isLoading: false });
+      return;
+    }
+
+    try {
+      const localItems = loadLocalCart();
+
+      if (localItems.length > 0) {
+        await Promise.all(
+          localItems.map((item) =>
+            api.post('/cart/items', {
+              productId: item.product.id,
+              variantId: item.variant?.id ?? undefined,
+              quantity: item.quantity,
+            }),
+          ),
+        );
+        clearLocalCart();
+      }
+
+      const { data: cart } = await api.get('/cart');
+      const items = (cart.items ?? []).map(toCartItem);
+      set({ items, itemCount: items.reduce((s: number, i: CartItem) => s + i.quantity, 0), isLoading: false });
+    } catch {
+      const items = loadLocalCart();
+      set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0), isLoading: false });
+    }
   },
 
   addItem: async (product, variant = null, quantity = 1) => {
     const safeQuantity = Math.max(1, quantity);
     const items = [...get().items];
+
+    if (hasToken()) {
+      const { data } = await api.post('/cart/items', {
+        productId: product.id,
+        variantId: variant?.id ?? undefined,
+        quantity: safeQuantity,
+      });
+      const newItem = toCartItem(data);
+      const existingIdx = items.findIndex((i) => i.product.id === product.id && (variant ? i.variant?.id === variant.id : !i.variant));
+      if (existingIdx >= 0) {
+        items[existingIdx] = newItem;
+      } else {
+        items.unshift(newItem);
+      }
+      set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
+      return;
+    }
+
     const existing = items.find(
       (i) => i.product.id === product.id && (variant ? i.variant?.id === variant.id : !i.variant),
     );
@@ -90,34 +157,56 @@ export const useCartStore = create<CartState>((set, get) => ({
         updatedAt: new Date().toISOString(),
       } as CartItem);
     }
-    saveCart(items);
+    saveLocalCart(items);
     set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
   },
 
   updateQuantity: async (itemId, quantity) => {
+    if (hasToken()) {
+      if (quantity <= 0) {
+        await api.delete(`/cart/items/${itemId}`);
+      } else {
+        await api.patch(`/cart/items/${itemId}`, { quantity });
+      }
+      const items = get().items.map((i) =>
+        i.id === itemId ? { ...i, quantity: Math.max(0, quantity) } : i,
+      ).filter((i) => i.quantity > 0);
+      set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
+      return;
+    }
+
     const items = quantity <= 0
       ? get().items.filter((i) => i.id !== itemId)
       : get().items.map((i) => (i.id === itemId ? { ...i, quantity } : i));
-    saveCart(items);
+    saveLocalCart(items);
     set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
   },
 
   removeItem: async (itemId) => {
+    if (hasToken()) {
+      await api.delete(`/cart/items/${itemId}`);
+    }
     const items = get().items.filter((i) => i.id !== itemId);
-    saveCart(items);
+    if (!hasToken()) saveLocalCart(items);
     set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
   },
 
   toggleSaveForLater: async (itemId) => {
+    if (hasToken()) {
+      await api.patch(`/cart/items/${itemId}/save`);
+    }
     const items = get().items.map((i) =>
       i.id === itemId ? { ...i, savedForLater: !i.savedForLater } : i,
     );
-    saveCart(items);
+    if (!hasToken()) saveLocalCart(items);
     set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
   },
 
   clearCart: async () => {
-    saveCart([]);
+    if (hasToken()) {
+      await api.delete('/cart');
+    }
+    saveLocalCart([]);
     set({ items: [], itemCount: 0 });
   },
 

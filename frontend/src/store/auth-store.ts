@@ -39,6 +39,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       await api.post('/auth/logout');
     } catch {}
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('wemine_cart');
     set({ user: null, isAuthenticated: false, isLoading: false });
   },
 

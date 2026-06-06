@@ -2,6 +2,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
 import { api, formatINR } from '@/lib/api';
 
 export default function AdminProductsPage() {
@@ -15,7 +17,16 @@ export default function AdminProductsPage() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <h1 className="font-heading text-2xl font-semibold text-gray-900 mb-6">Products</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-heading text-2xl font-semibold text-gray-900">Products</h1>
+        <Link
+          href="/admin/products/new"
+          className="flex items-center gap-2 px-4 py-2.5 bg-black text-white text-sm font-heading font-semibold rounded-xl hover:bg-gray-800 transition-all"
+        >
+          <Plus className="w-4 h-4" />
+          Add Product
+        </Link>
+      </div>
       {isLoading ? (
         <div className="space-y-3">{[1, 2, 3, 4, 5].map((i) => <div key={i} className="h-16 rounded-xl bg-white/30 animate-pulse" />)}</div>
       ) : (

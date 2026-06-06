@@ -6,12 +6,13 @@ import { ArrowRight } from 'lucide-react';
 
 export function HeroSection() {
   return (
-    <section className="hero-gradient relative min-h-[90vh] flex items-center overflow-hidden">
-      <div className="absolute inset-0 bg-grid opacity-50" />
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-glacier-200/30 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-glacier-100/40 rounded-full blur-3xl" />
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <div className="absolute inset-0">
+        <img src="/hero-bg.png" alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent" />
+      </div>
 
-      <div className="relative max-w-7xl mx-auto px-6 md:px-12 py-32 md:py-40">
+      <div className="relative max-w-7xl ml-0 mr-auto px-6 md:px-12 py-32 md:py-40">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -22,9 +23,9 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="font-heading text-sm font-medium text-glacier-600 tracking-widest uppercase mb-6"
+            className="font-heading text-base md:text-lg font-medium text-gray-900 tracking-widest uppercase mb-6"
           >
-            Premium Mountain Wear
+            Premium T-shirts
           </motion.p>
 
           <motion.h1
@@ -33,19 +34,19 @@ export function HeroSection() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="font-heading text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-gray-900 leading-[1.05] mb-6 text-balance"
           >
-            Wear the
+            Threads With
             <br />
-            <span className="text-gradient">Mountains</span>
+            <span className="text-gradient">Character.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="font-body text-lg text-gray-500 leading-relaxed mb-10 max-w-lg"
+            className="font-body text-lg md:text-xl font-semibold text-gray-900 leading-relaxed mb-10 max-w-lg"
           >
-            Premium t-shirts inspired by alpine peaks and glacial valleys.
-            Minimal design, maximum comfort.
+            Premium t-shirts that speak for themselves.
+            Made to be worn, made to last.
           </motion.p>
 
           <motion.div
@@ -56,14 +57,14 @@ export function HeroSection() {
           >
             <Link
               href="/products"
-              className="btn-primary group text-base px-10 py-4"
+              className="btn-primary group text-lg px-10 py-4"
             >
               Explore Collection
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="/#about"
-              className="btn-secondary text-base px-10 py-4"
+              className="btn-secondary text-lg px-10 py-4"
             >
               Our Story
             </Link>

@@ -24,6 +24,10 @@ export default function CheckoutPage() {
     firstName: '', lastName: '', line1: '', city: '', state: '', zipCode: '', phone: '',
   });
 
+  const activeItems = items.filter((i) => !i.savedForLater);
+  const total = getTotal();
+  const grandTotal = total + (total >= 999 ? 0 : 99) + total * 0.18;
+
   useEffect(() => {
     if (!isAuthenticated) { router.push('/auth/login'); return; }
     fetchCart();
@@ -35,9 +39,11 @@ export default function CheckoutPage() {
     });
   }, [isAuthenticated, fetchCart, router]);
 
-  const activeItems = items.filter((i) => !i.savedForLater);
-  const total = getTotal();
-  const grandTotal = total + (total >= 999 ? 0 : 99) + total * 0.18;
+  useEffect(() => {
+    if (!isLoading && activeItems.length === 0) {
+      router.replace('/cart');
+    }
+  }, [isLoading, activeItems.length, router]);
 
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
@@ -73,7 +79,6 @@ export default function CheckoutPage() {
   }
 
   if (activeItems.length === 0) {
-    router.push('/cart');
     return null;
   }
 
