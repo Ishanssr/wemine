@@ -70,9 +70,9 @@ export default function ProductDetailPage() {
           toast.error('Selected size variant not found');
           throw new Error('Variant not found');
         }
-        await addItem(product.id, selectedVariant.id, quantity);
+        await addItem(product, selectedVariant, quantity);
       } else {
-        await addItem(product.id, undefined, quantity);
+        await addItem(product, null, quantity);
       }
     },
     onSuccess: () => {
@@ -306,5 +306,4 @@ export default function ProductDetailPage() {
     </div>
   );
 }
-
 

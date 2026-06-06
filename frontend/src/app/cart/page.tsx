@@ -110,6 +110,7 @@ export default function CartPage() {
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           className="p-2 hover:bg-white/30 transition-all rounded-l-xl"
+                          aria-label={`Decrease ${item.product.name} quantity`}
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
@@ -119,6 +120,7 @@ export default function CartPage() {
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           className="p-2 hover:bg-white/30 transition-all rounded-r-xl"
+                          aria-label={`Increase ${item.product.name} quantity`}
                         >
                           <Plus className="w-3.5 h-3.5" />
                         </button>
@@ -135,6 +137,7 @@ export default function CartPage() {
                         <button
                           onClick={() => removeItem(item.id)}
                           className="p-2 rounded-xl hover:bg-red-50 transition-all"
+                          aria-label={`Remove ${item.product.name} from cart`}
                         >
                           <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
                         </button>

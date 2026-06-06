@@ -11,7 +11,7 @@ export class OrdersService {
       where: { userId },
       include: {
         items: {
-          include: { product: true, variant: true },
+          include: { product: { include: { images: true } }, variant: true },
           where: { savedForLater: false },
         },
       },

@@ -69,7 +69,7 @@ export interface Review {
 export interface CartItem {
   id: string;
   product: Product;
-  variant?: ProductVariant;
+  variant?: ProductVariant | null;
   quantity: number;
   savedForLater: boolean;
 }

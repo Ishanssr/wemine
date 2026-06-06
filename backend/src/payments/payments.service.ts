@@ -111,7 +111,7 @@ export class PaymentsService {
       throw new BadRequestException('Invalid payment signature');
     }
 
-    await this.prisma.order.update({
+    await this.prisma.order.updateMany({
       where: { razorpayOrderId: razorpay_order_id },
       data: {
         paymentStatus: 'SUCCESSFUL',

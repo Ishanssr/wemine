@@ -11,8 +11,11 @@ import { NAV_LINKS } from '@/lib/constants';
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { user, isAuthenticated } = useAuthStore();
   const { itemCount, fetchCart } = useCartStore();
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20);
@@ -69,7 +72,7 @@ export function Navbar() {
               className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/50 transition-all duration-200"
             >
               <ShoppingCart className="w-5 h-5 text-gray-600" />
-              {itemCount > 0 && (
+              {mounted && itemCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 w-5 h-5 flex items-center justify-center bg-black text-white text-[10px] font-bold rounded-full">
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>

@@ -9,8 +9,7 @@ export function Logo({ className, ...props }: LogoProps) {
     <img
       src="/logo-icon.svg"
       alt="Wemine Logo"
-      className={className}
-      style={{ display: 'inline-block', height: '100%', width: '100%', objectFit: 'contain' }}
+      className={`inline-block object-contain ${className || ''}`}
       {...props}
     />
   );

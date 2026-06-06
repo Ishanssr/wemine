@@ -5,21 +5,21 @@ import { Public } from '../common/decorators/public.decorator';
 
 @Controller('search')
 export class SearchController {
-  constructor(private search: SearchService) {}
+  constructor(private searchService: SearchService) {}
 
   @Public()
   @Get()
   async search(@Query() query: any, @CurrentUser('id') userId?: string) {
-    return this.search.search(query.q, { ...query, userId });
+    return this.searchService.search(query.q, { ...query, userId });
   }
 
   @Get('recent')
   async getRecent(@CurrentUser('id') userId: string) {
-    return this.search.getRecentSearches(userId);
+    return this.searchService.getRecentSearches(userId);
   }
 
   @Delete('history')
   async clearHistory(@CurrentUser('id') userId: string) {
-    return this.search.clearSearchHistory(userId);
+    return this.searchService.clearSearchHistory(userId);
   }
 }
