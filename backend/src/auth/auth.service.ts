@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 import { SignupDto } from './dto/signup.dto';
+import { Role } from '@prisma/client';
 import { LoginDto } from './dto/login.dto';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
@@ -47,6 +48,24 @@ export class AuthService {
 
     await this.sendEmailVerificationOtp(user.email);
 
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
+    return { user: this.sanitizeUser(user), ...tokens };
+  }
+
+  async setupAdmin() {
+    const passwordHash = await argon2.hash('admin123');
+    const user = await this.prisma.user.upsert({
+      where: { email: 'admin@wemine.com' },
+      update: { role: Role.ADMIN, passwordHash, isEmailVerified: true },
+      create: {
+        email: 'admin@wemine.com',
+        passwordHash,
+        firstName: 'Admin',
+        lastName: 'Wemine',
+        role: Role.ADMIN,
+        isEmailVerified: true,
+      },
+    });
     const tokens = await this.generateTokens(user.id, user.email, user.role);
     return { user: this.sanitizeUser(user), ...tokens };
   }
