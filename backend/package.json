@@ -68,7 +68,7 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.4.0",
+    "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.1.0",
     "@nestjs/testing": "^10.4.0",
     "@types/compression": "^1.7.5",
