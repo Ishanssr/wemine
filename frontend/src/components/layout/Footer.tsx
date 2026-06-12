@@ -17,6 +17,10 @@ export function Footer() {
             <p className="font-body text-xs text-gray-400 leading-relaxed max-w-xs">
               Premium minimal apparel. Threads with character.
             </p>
+            <div className="mt-4 space-y-1.5">
+              <p className="font-body text-[11px] text-gray-400">+91 9828847782</p>
+              <p className="font-body text-[11px] text-gray-400">15h4nj4n81r@gmail.com</p>
+            </div>
           </div>
 
           <div>

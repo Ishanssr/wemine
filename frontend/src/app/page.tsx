@@ -58,8 +58,31 @@ export default function HomePage() {
 
 function AboutSection() {
   return (
-    <section id="about" className="section-padding py-20 md:py-28 bg-black/5">
-      <div className="max-content">
+    <section id="about" className="section-padding py-20 md:py-28 bg-black/5 relative overflow-hidden">
+      {/* Animated mountain silhouette */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+        <svg className="w-full h-full" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+          <motion.path
+            d="M0,600 L200,350 L400,500 L600,200 L800,450 L1000,150 L1200,400 L1440,250 L1440,800 L0,800 Z"
+            fill="currentColor"
+            initial={{ d: "M0,600 L200,500 L400,550 L600,450 L800,500 L1000,400 L1200,500 L1440,450 L1440,800 L0,800 Z" }}
+            whileInView={{ d: "M0,600 L200,350 L400,500 L600,200 L800,450 L1000,150 L1200,400 L1440,250 L1440,800 L0,800 Z" }}
+            viewport={{ once: true }}
+            transition={{ duration: 2, ease: "easeInOut" }}
+          />
+          <motion.path
+            d="M0,700 L300,500 L500,650 L700,400 L900,600 L1100,350 L1300,550 L1440,450 L1440,800 L0,800 Z"
+            fill="currentColor"
+            opacity="0.6"
+            initial={{ d: "M0,700 L300,600 L500,680 L700,550 L900,650 L1100,500 L1300,600 L1440,550 L1440,800 L0,800 Z" }}
+            whileInView={{ d: "M0,700 L300,500 L500,650 L700,400 L900,600 L1100,350 L1300,550 L1440,450 L1440,800 L0,800 Z" }}
+            viewport={{ once: true }}
+            transition={{ duration: 2.5, ease: "easeInOut" }}
+          />
+        </svg>
+      </div>
+
+      <div className="max-content relative">
         <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -71,19 +94,35 @@ function AboutSection() {
               About Wemine
             </p>
             <h2 className="font-heading text-2xl md:text-3xl font-medium text-gray-900 mb-6 tracking-tight">
-              Born from the Peaks
+              Born from the Mountains
             </h2>
-            <p className="font-body text-sm text-gray-500 leading-relaxed mb-4">
-              Every t-shirt is thoughtfully designed to capture the essence of alpine
-              tranquility and adventure.
-            </p>
-            <p className="font-body text-sm text-gray-500 leading-relaxed mb-8">
-              Founded by Bhavit, Wemine is a celebration of mountain culture and
-              minimalist design.
-            </p>
-            <Link href="/products" className="btn-primary">
-              Explore Collection
-            </Link>
+            <div className="space-y-4 font-body text-sm text-gray-500 leading-relaxed">
+              <p>
+                Wemine was born on a cold morning above the treeline, watching the sun
+                paint the peaks in gold. That moment of stillness and raw beauty became
+                our north star — every piece we make carries a piece of that quiet
+                grandeur.
+              </p>
+              <p>
+                We work with premium cottons sourced from the fields of central India,
+                spun and woven into garments that feel like they belong on your body.
+                No logos, no noise — just clean lines, thoughtful fits, and fabric that
+                only gets better with time.
+              </p>
+              <p>
+                Founded in Jaipur by Bhavit, Wemine is a tribute to the mountain
+                spirit — the pull of the trail, the calm at the summit, and the
+                quiet confidence of wearing something real.
+              </p>
+            </div>
+            <div className="mt-8 flex gap-3">
+              <Link href="/products" className="btn-primary">
+                Explore Collection
+              </Link>
+              <Link href="/contact" className="btn-secondary">
+                Get in Touch
+              </Link>
+            </div>
           </motion.div>
 
           <motion.div
@@ -91,9 +130,42 @@ function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
+            className="relative"
           >
-            <div className="aspect-[4/3] overflow-hidden">
-              <img src="/hero2.png" alt="" className="w-full h-full object-cover object-center" />
+            {/* Cotton/mountain imagery */}
+            <div className="aspect-[4/5] overflow-hidden relative">
+              <img
+                src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
+                alt="Mountain peak at sunrise"
+                className="w-full h-full object-cover object-center"
+              />
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: 0.5 }}
+              />
+              {/* Floating cotton particles */}
+              {[...Array(8)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1.5 h-1.5 bg-white/30 rounded-full"
+                  style={{
+                    left: `${15 + i * 10}%`,
+                    top: `${10 + (i % 5) * 15}%`,
+                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: [0, 0.6, 0], y: [20, -20, -60] }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 3 + i * 0.5,
+                    delay: i * 0.3,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                  }}
+                />
+              ))}
             </div>
           </motion.div>
         </div>
