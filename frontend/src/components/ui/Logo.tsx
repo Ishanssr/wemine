@@ -7,7 +7,7 @@ interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 export function Logo({ className, ...props }: LogoProps) {
   return (
     <img
-      src="/logo-icon.svg"
+      src="/logo.png"
       alt="Wemine Logo"
       className={`inline-block object-contain ${className || ''}`}
       {...props}

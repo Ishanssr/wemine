@@ -158,7 +158,7 @@ export class AdminService {
       { name: 'Hoodies', slug: 'hoodies', desc: 'Warm premium hoodies' },
       { name: 'Accessories', slug: 'accessories', desc: 'Minimal accessories' },
     ];
-    const cats = {};
+    const cats: Record<string, any> = {};
     for (const c of catData) {
       cats[c.slug] = await this.prisma.category.upsert({
         where: { slug: c.slug },
