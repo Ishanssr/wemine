@@ -38,6 +38,7 @@ export default function CheckoutPage() {
       setAddresses(addrs);
       const defaultAddr = addrs.find((a: any) => a.isDefault);
       if (defaultAddr) setSelectedAddress(defaultAddr.id);
+      else if (addrs.length > 0) setSelectedAddress(addrs[0].id);
     });
   }, [isAuthenticated, fetchCart, router]);
 

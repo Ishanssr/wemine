@@ -39,4 +39,9 @@ export class AdminController {
   ) {
     return this.admin.handleRefund(id, action, body.adminNotes);
   }
+
+  @Post('seed')
+  async seed() {
+    return this.admin.runSeed();
+  }
 }
