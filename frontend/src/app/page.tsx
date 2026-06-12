@@ -104,15 +104,15 @@ function AboutSection() {
                 grandeur.
               </p>
               <p>
-                We work with premium cottons sourced from the fields of central India,
-                spun and woven into garments that feel like they belong on your body.
-                No logos, no noise — just clean lines, thoughtful fits, and fabric that
-                only gets better with time.
+              We work with pure cottons sourced from the valleys of Himachal,
+              spun and woven into garments that feel like they belong on your body.
+              No logos, no noise — just clean lines, thoughtful fits, and fabric that
+              only gets better with time.
               </p>
               <p>
-                Founded in Jaipur by Bhavit, Wemine is a tribute to the mountain
-                spirit — the pull of the trail, the calm at the summit, and the
-                quiet confidence of wearing something real.
+              Born from the trails of Himachal, Wemine is a tribute to the mountain
+              spirit — the pull of the trail, the calm at the summit, and the
+              quiet confidence of wearing something real.
               </p>
             </div>
             <div className="mt-8 flex gap-3">

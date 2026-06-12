@@ -1,7 +1,7 @@
 export const CONTACT = {
   phone: '+91 9828847782',
   email: '15h4nj4n81r@gmail.com',
-  address: 'Jaipur, Rajasthan, India',
+  address: 'Himachal Pradesh, India',
 };
 
 export const NAV_LINKS = [

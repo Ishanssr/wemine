@@ -105,7 +105,7 @@ export default function ContactPage() {
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
                 <div>
-                  <p className="font-body text-sm text-gray-900">Jaipur, Rajasthan</p>
+                  <p className="font-body text-sm text-gray-900">Himachal Pradesh</p>
                   <p className="font-body text-[11px] text-gray-400">India</p>
                 </div>
               </div>
