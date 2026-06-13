@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
-import { Star, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function DesignDetailPage() {
@@ -17,6 +17,7 @@ export default function DesignDetailPage() {
   const [score, setScore] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState('');
+  const [viewIdx, setViewIdx] = useState(0);
 
   const { data: design, isLoading } = useQuery({
     queryKey: ['design', id],
@@ -33,6 +34,7 @@ export default function DesignDetailPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['design', id] });
       toast.success('Rating submitted!');
+      setScore(0);
       setComment('');
     },
     onError: (err: any) => {
@@ -58,6 +60,12 @@ export default function DesignDetailPage() {
     );
   }
 
+  const views = [
+    { url: design.imageUrl, label: 'Front' },
+    { url: design.imageBack, label: 'Back' },
+    { url: design.imageModel, label: 'On Model' },
+  ].filter((v) => v.url);
+
   const avg =
     design.ratings?.length
       ? (design.ratings.reduce((s: number, r: any) => s + r.score, 0) / design.ratings.length).toFixed(1)
@@ -67,15 +75,53 @@ export default function DesignDetailPage() {
     <div className="pt-28 pb-24">
       <div className="max-w-4xl mx-auto px-6 md:px-12">
         <button onClick={() => router.push('/designs')} className="flex items-center gap-1.5 font-body text-xs text-gray-400 hover:text-gray-900 transition-colors mb-8">
-          <ArrowLeft className="w-3.5 h-3.5" /> Back
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Designs
         </button>
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
           <div className="grid md:grid-cols-5 gap-10">
             <div className="md:col-span-3">
-              <div className="aspect-[4/5] overflow-hidden bg-black/5">
-                <img src={design.imageUrl} alt={design.title} className="w-full h-full object-cover" />
+              {/* Image viewer with navigation */}
+              <div className="aspect-[4/5] overflow-hidden bg-black/5 relative group">
+                <img
+                  src={views[viewIdx]?.url}
+                  alt={`${design.title} - ${views[viewIdx]?.label}`}
+                  className="w-full h-full object-cover"
+                />
+                {views.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setViewIdx((viewIdx - 1 + views.length) % views.length)}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setViewIdx((viewIdx + 1) % views.length)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
               </div>
+
+              {/* Thumbnail selector */}
+              {views.length > 1 && (
+                <div className="flex gap-2 mt-3">
+                  {views.map((v, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setViewIdx(i)}
+                      className={`w-16 h-20 overflow-hidden border-2 transition-all ${
+                        i === viewIdx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={v.url} alt={v.label} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="md:col-span-2">
@@ -138,6 +184,12 @@ export default function DesignDetailPage() {
                     </>
                   )}
                 </div>
+              )}
+
+              {!isAuthenticated && (
+                <p className="font-body text-xs text-gray-400 mb-6">
+                  <a href="/auth/login" className="underline">Sign in</a> to rate this design
+                </p>
               )}
 
               {/* Detailed ratings */}

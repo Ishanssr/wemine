@@ -666,7 +666,9 @@ model Design {
   id          String   @id @default(cuid())
   title       String
   description String?
-  imageUrl    String
+  imageUrl    String   @default("")
+  imageBack   String   @default("")
+  imageModel  String   @default("")
   category    String?
   isActive    Boolean  @default(true)
   createdById String

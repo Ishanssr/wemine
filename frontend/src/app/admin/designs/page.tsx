@@ -1,16 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
-import { Plus, Trash2, Star } from 'lucide-react';
+import { Plus, Trash2, Star, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function AdminDesignsPage() {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ title: '', description: '', imageUrl: '', category: '' });
+  const [form, setForm] = useState({ title: '', description: '', category: '' });
+  const [images, setImages] = useState<{ file: File; preview: string; label: string; key: string }[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-designs'],
@@ -20,17 +23,56 @@ export default function AdminDesignsPage() {
     },
   });
 
+  const handleImageSelect = (key: string, label: string) => {
+    const input = fileInputRefs.current[key];
+    if (input) input.click();
+  };
+
+  const onFileChange = (key: string, label: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImages((prev) => {
+      const filtered = prev.filter((i) => i.key !== key);
+      return [...filtered, { file, preview: URL.createObjectURL(file), label, key }];
+    });
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const fd = new FormData();
+    fd.append('file', file);
+    const { data } = await api.post('/upload/image', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data.url;
+  };
+
   const createMutation = useMutation({
     mutationFn: async () => {
-      await api.post('/designs', form);
+      setUploading(true);
+      const urls: Record<string, string> = { imageUrl: '', imageBack: '', imageModel: '' };
+      for (const img of images) {
+        const url = await uploadImage(img.file);
+        urls[img.key] = url;
+      }
+      await api.post('/designs', {
+        title: form.title,
+        description: form.description,
+        category: form.category,
+        ...urls,
+      });
+      setUploading(false);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-designs'] });
       toast.success('Design uploaded!');
       setShowForm(false);
-      setForm({ title: '', description: '', imageUrl: '', category: '' });
+      setForm({ title: '', description: '', category: '' });
+      setImages([]);
     },
-    onError: (err: any) => toast.error(err?.response?.data?.message || 'Failed to create design'),
+    onError: (err: any) => {
+      setUploading(false);
+      toast.error(err?.response?.data?.message || 'Failed to create design');
+    },
   });
 
   const deleteMutation = useMutation({
@@ -42,6 +84,12 @@ export default function AdminDesignsPage() {
       toast.success('Design deleted');
     },
   });
+
+  const imageFields = [
+    { key: 'imageUrl', label: 'Front View' },
+    { key: 'imageBack', label: 'Back View' },
+    { key: 'imageModel', label: 'On Model' },
+  ];
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -63,15 +111,54 @@ export default function AdminDesignsPage() {
               onChange={(e) => setForm({ ...form, title: e.target.value })} />
             <input className="input-field" placeholder="Description (optional)" value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            <input className="input-field" placeholder="Image URL" value={form.imageUrl}
-              onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
             <input className="input-field" placeholder="Category (e.g. T-Shirt, Hoodie)" value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })} />
+
+            {/* 3 image uploads */}
+            <div>
+              <p className="font-heading text-xs tracking-[0.05em] uppercase text-gray-500 mb-3">Design Images</p>
+              <div className="grid grid-cols-3 gap-3">
+                {imageFields.map(({ key, label }) => {
+                  const img = images.find((i) => i.key === key);
+                  return (
+                    <div key={key}>
+                      <input
+                        ref={(el) => { fileInputRefs.current[key] = el; }}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => onFileChange(key, label, e)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleImageSelect(key, label)}
+                        className={`aspect-[3/4] w-full border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all overflow-hidden ${
+                          img ? 'border-black/20' : 'border-black/10 hover:border-black/30'
+                        }`}
+                      >
+                        {img ? (
+                          <img src={img.preview} alt={label} className="w-full h-full object-cover" />
+                        ) : (
+                          <>
+                            <Upload className="w-5 h-5 text-gray-300" />
+                            <span className="font-body text-[10px] text-gray-400">{label}</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="flex gap-3">
-              <button onClick={() => setShowForm(false)} className="btn-secondary text-sm">Cancel</button>
-              <button onClick={() => createMutation.mutate()} disabled={!form.title || !form.imageUrl || createMutation.isPending}
-                className="btn-primary text-sm">
-                {createMutation.isPending ? 'Uploading...' : 'Upload Design'}
+              <button onClick={() => { setShowForm(false); setImages([]); }} className="btn-secondary text-sm">Cancel</button>
+              <button
+                onClick={() => createMutation.mutate()}
+                disabled={!form.title || images.length === 0 || uploading || createMutation.isPending}
+                className="btn-primary text-sm"
+              >
+                {uploading ? 'Uploading images...' : createMutation.isPending ? 'Creating...' : 'Upload Design'}
               </button>
             </div>
           </div>

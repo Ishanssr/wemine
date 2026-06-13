@@ -54,7 +54,9 @@ export class DesignsService {
       data: {
         title: body.title,
         description: body.description,
-        imageUrl: body.imageUrl,
+        imageUrl: body.imageUrl || '',
+        imageBack: body.imageBack || '',
+        imageModel: body.imageModel || '',
         category: body.category,
         createdById: userId,
       },
