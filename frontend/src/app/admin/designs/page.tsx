@@ -18,7 +18,7 @@ export default function AdminDesignsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin-designs'],
     queryFn: async () => {
-      const res = await api.get('/designs?limit=50');
+      const res = await api.get('/designs');
       return (res.data.designs || []);
     },
   });
