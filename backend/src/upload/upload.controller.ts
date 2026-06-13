@@ -10,9 +10,16 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('upload')
 export class UploadController {
+  constructor(private config: ConfigService) {}
+
+  private getBaseUrl() {
+    return this.config.get('BASE_URL') || 'https://wemine-api.onrender.com';
+  }
+
   @Post('image')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -35,7 +42,8 @@ export class UploadController {
   )
   async uploadImage(@UploadedFile() file: any) {
     if (!file) throw new BadRequestException('No file provided');
-    return { url: `/uploads/${file.filename}`, filename: file.filename };
+    const base = this.getBaseUrl();
+    return { url: `${base}/uploads/${file.filename}`, filename: file.filename };
   }
 
   @Post('images')
@@ -53,6 +61,7 @@ export class UploadController {
   )
   async uploadImages(@UploadedFiles() files: any[]) {
     if (!files?.length) throw new BadRequestException('No files provided');
-    return files.map((f) => ({ url: `/uploads/${f.filename}`, filename: f.filename }));
+    const base = this.getBaseUrl();
+    return files.map((f) => ({ url: `${base}/uploads/${f.filename}`, filename: f.filename }));
   }
 }
