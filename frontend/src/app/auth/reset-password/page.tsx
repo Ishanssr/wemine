@@ -48,7 +48,7 @@ function ResetPasswordContent() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md mx-auto px-6">
         <div className="glass-darker rounded-3xl p-8 md:p-10">
-          <Link href="/" className="flex items-center justify-center gap-2.5 mb-8">
+          <Link href="/" className="flex items-center justify-center gap-1.5 mb-8">
             <Logo className="w-6 h-6" />
             <span className="font-heading font-semibold text-xl">WEMINE</span>
           </Link>

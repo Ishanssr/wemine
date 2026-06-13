@@ -91,14 +91,14 @@ function AboutSection() {
             transition={{ duration: 0.5 }}
           >
             <p className="font-heading text-[10px] font-medium text-gray-400 tracking-[0.15em] uppercase mb-4">
-              About Wemine
+              About WEMINE
             </p>
             <h2 className="font-heading text-2xl md:text-3xl font-medium text-gray-900 mb-6 tracking-tight">
               Born from the Mountains
             </h2>
             <div className="space-y-4 font-body text-sm text-gray-500 leading-relaxed">
               <p>
-                Wemine was born on a cold morning above the treeline, watching the sun
+                WEMINE was born on a cold morning above the treeline, watching the sun
                 paint the peaks in gold. That moment of stillness and raw beauty became
                 our north star — every piece we make carries a piece of that quiet
                 grandeur.
@@ -110,7 +110,7 @@ function AboutSection() {
               only gets better with time.
               </p>
               <p>
-              Born from the trails of Himachal, Wemine is a tribute to the mountain
+              Born from the trails of Himachal, WEMINE is a tribute to the mountain
               spirit — the pull of the trail, the calm at the summit, and the
               quiet confidence of wearing something real.
               </p>
@@ -133,9 +133,9 @@ function AboutSection() {
             className="relative"
           >
             {/* Cotton/mountain imagery */}
-            <div className="aspect-[4/5] overflow-hidden relative">
+            <div className="aspect-[4/3] overflow-hidden relative">
               <img
-                src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
+                src="/hero2.png"
                 alt="Mountain peak at sunrise"
                 className="w-full h-full object-cover object-center"
               />
@@ -192,7 +192,7 @@ function FeaturesSection() {
           className="text-center mb-16"
         >
           <p className="font-heading text-[10px] font-medium text-gray-400 tracking-[0.15em] uppercase mb-3">
-            Why Wemine
+            Why WEMINE
           </p>
           <h2 className="font-heading text-2xl md:text-3xl font-medium text-gray-900 tracking-tight">
             Crafted for the Journey

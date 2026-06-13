@@ -8,7 +8,7 @@ export function Logo({ className, ...props }: LogoProps) {
   return (
     <img
       src="/logo.png"
-      alt="Wemine Logo"
+      alt="WEMINE Logo"
       className={`inline-block object-contain ${className || ''}`}
       {...props}
     />

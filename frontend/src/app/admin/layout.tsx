@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <path d="M3 20L10 8L14 14L17 10L21 20H3Z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <span className="font-heading font-semibold text-base">Wemine Admin</span>
+            <span className="font-heading font-semibold text-base">WEMINE Admin</span>
           </Link>
 
           <nav className="flex-1 space-y-1">

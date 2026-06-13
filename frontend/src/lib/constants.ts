@@ -6,6 +6,7 @@ export const CONTACT = {
 
 export const NAV_LINKS = [
   { label: 'Shop', href: '/products' },
+  { label: 'Designs', href: '/designs' },
   { label: 'New Arrivals', href: '/products?sort=newest' },
   { label: 'About', href: '/#about' },
 ];

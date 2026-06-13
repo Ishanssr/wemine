@@ -1,0 +1,80 @@
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { PrismaService } from 'nestjs-prisma';
+
+@Injectable()
+export class DesignsService {
+  constructor(private prisma: PrismaService) {}
+
+  async findAll(query: any) {
+    const { page = 1, limit = 20, category } = query;
+    const where: any = { isActive: true };
+    if (category) where.category = category;
+
+    const [designs, total] = await Promise.all([
+      this.prisma.design.findMany({
+        where,
+        include: {
+          _count: { select: { ratings: true } },
+          ratings: { select: { score: true } },
+          createdBy: { select: { firstName: true, lastName: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.design.count({ where }),
+    ]);
+
+    const items = designs.map((d) => {
+      const avg = d.ratings.reduce((s, r) => s + r.score, 0) / (d.ratings.length || 1);
+      const { ratings, ...rest } = d;
+      return { ...rest, avgRating: d.ratings.length ? Math.round(avg * 10) / 10 : null, ratingCount: d._count.ratings };
+    });
+
+    return { designs: items, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+  }
+
+  async findOne(id: string) {
+    const design = await this.prisma.design.findUnique({
+      where: { id },
+      include: {
+        ratings: {
+          include: { user: { select: { firstName: true, lastName: true } } },
+          orderBy: { createdAt: 'desc' },
+        },
+        createdBy: { select: { firstName: true, lastName: true } },
+      },
+    });
+    if (!design) throw new NotFoundException('Design not found');
+    return design;
+  }
+
+  async create(body: any, userId: string) {
+    return this.prisma.design.create({
+      data: {
+        title: body.title,
+        description: body.description,
+        imageUrl: body.imageUrl,
+        category: body.category,
+        createdById: userId,
+      },
+    });
+  }
+
+  async remove(id: string) {
+    await this.prisma.design.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async rate(designId: string, userId: string, score: number, comment?: string) {
+    if (score < 0 || score > 10) throw new BadRequestException('Score must be between 0 and 10');
+    const design = await this.prisma.design.findUnique({ where: { id: designId } });
+    if (!design) throw new NotFoundException('Design not found');
+
+    return this.prisma.designRating.upsert({
+      where: { designId_userId: { designId, userId } },
+      update: { score, comment },
+      create: { designId, userId, score, comment },
+    });
+  }
+}

@@ -32,8 +32,8 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center gap-3 group">
-            <Logo className="w-8 h-8" />
+          <Link href="/" className="flex items-center gap-1.5 group">
+            <Logo className="w-10 h-10" />
             <span className="font-heading font-medium text-lg tracking-[0.15em]">
               WEMINE
             </span>

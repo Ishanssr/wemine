@@ -79,6 +79,8 @@ model User {
   refundRequests    RefundRequest[]
   vendorProfile     Vendor?
   blogPosts         BlogPost[]
+  designs           Design[]
+  designRatings     DesignRating[]
 
   @@map("users")
 }
@@ -658,4 +660,37 @@ model AuditLog {
   @@index([entity, entityId])
   @@index([action])
   @@map("audit_logs")
+}
+
+model Design {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String
+  category    String?
+  isActive    Boolean  @default(true)
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ratings DesignRating[]
+
+  @@index([createdById])
+  @@map("designs")
+}
+
+model DesignRating {
+  id        String   @id @default(cuid())
+  score     Int
+  comment   String?
+  designId  String
+  design    Design   @relation(fields: [designId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([designId, userId])
+  @@index([designId])
+  @@map("design_ratings")
 }

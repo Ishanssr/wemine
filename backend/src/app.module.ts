@@ -22,6 +22,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { AdminModule } from './admin/admin.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { BlogModule } from './blog/blog.module';
+import { DesignsModule } from './designs/designs.module';
 import { ChatModule } from './chat/chat.module';
 
 @Module({
@@ -71,6 +72,7 @@ import { ChatModule } from './chat/chat.module';
     LoyaltyModule,
     BlogModule,
     ChatModule,
+    DesignsModule,
   ],
   providers: [
     {
