@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
-  LayoutDashboard, Package, Users, ShoppingCart, Tag, Image, FileText, LogOut,
+  LayoutDashboard, Package, Users, ShoppingCart, Tag, Image, FileText, LogOut, Palette,
 } from 'lucide-react';
 import { api, formatINR } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
@@ -19,6 +19,7 @@ const sidebarLinks = [
   { label: 'Coupons', href: '/admin/coupons', icon: Tag },
   { label: 'Banners', href: '/admin/banners', icon: Image },
   { label: 'Blog', href: '/admin/blog', icon: FileText },
+  { label: 'Designs', href: '/admin/designs', icon: Palette },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
