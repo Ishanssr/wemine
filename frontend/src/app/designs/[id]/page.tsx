@@ -8,6 +8,7 @@ import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { optimizeImage } from '@/lib/images';
 
 export default function DesignDetailPage() {
   const { id } = useParams();
@@ -84,7 +85,7 @@ export default function DesignDetailPage() {
               {/* Image viewer with navigation */}
               <div className="aspect-[4/5] overflow-hidden bg-black/5 relative group">
                 <img
-                  src={views[viewIdx]?.url}
+                  src={optimizeImage(views[viewIdx]?.url, 800)}
                   alt={`${design.title} - ${views[viewIdx]?.label}`}
                   className="w-full h-full object-cover"
                 />
@@ -117,7 +118,7 @@ export default function DesignDetailPage() {
                         i === viewIdx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img src={v.url} alt={v.label} className="w-full h-full object-cover" />
+                      <img src={optimizeImage(v.url, 100)} alt={v.label} loading="lazy" className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
