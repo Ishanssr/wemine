@@ -127,6 +127,12 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req: any, @Res() res: any) {
     const result = await this.auth.handleOAuthLogin('google', req.user);
+    res.cookie('refreshToken', result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}`);
   }
 
@@ -140,6 +146,12 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req: any, @Res() res: any) {
     const result = await this.auth.handleOAuthLogin('github', req.user);
+    res.cookie('refreshToken', result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}`);
   }
 }
