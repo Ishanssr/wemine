@@ -83,7 +83,13 @@ export class AuthService {
       const valid = await argon2.verify(user.refreshTokenHash, refreshToken);
       if (!valid) throw new UnauthorizedException('Token revoked');
 
-      return this.generateTokens(user.id, user.email, user.role);
+      const payload = { sub: user.id, email: user.email, role: user.role };
+      const accessToken = this.jwt.sign(payload, {
+        secret: this.config.get('JWT_ACCESS_SECRET') || this.config.get('JWT_SECRET'),
+        expiresIn: this.config.get('JWT_ACCESS_EXPIRY') || '1h',
+      });
+
+      return { accessToken, refreshToken };
     } catch {
       throw new UnauthorizedException('Invalid or expired refresh token');
     }
