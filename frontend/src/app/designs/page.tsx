@@ -48,7 +48,7 @@ export default function DesignsPage() {
               <motion.div
                 key={design.id}
                 initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1, y: 0, transitionEnd: { transform: 'none', WebkitTransform: 'none' } }}
                 transition={{ delay: i * 0.05 }}
               >
                 <Link href={`/designs/${design.id}`} className="group block">

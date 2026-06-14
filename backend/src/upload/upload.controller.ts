@@ -37,12 +37,7 @@ export class UploadController {
         return;
       }
       const uploadStream = this.cloudinary.uploader.upload_stream(
-        {
-          folder,
-          resource_type: 'image',
-          quality: 'auto:best',
-          fetch_format: 'auto',
-        },
+        { folder, resource_type: 'image' },
         (err: any, result: any) => {
           if (err) reject(err);
           else resolve(result.secure_url);
