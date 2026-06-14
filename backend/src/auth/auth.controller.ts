@@ -37,8 +37,8 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'none',
+      maxAge: 365 * 24 * 60 * 60 * 1000,
     });
     return result;
   }
@@ -53,7 +53,8 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(200)
-  async logout(@CurrentUser('id') userId: string) {
+  async logout(@CurrentUser('id') userId: string, @Res({ passthrough: true }) res: any) {
+    res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'none' });
     return this.auth.logout(userId);
   }
 
@@ -130,10 +131,10 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'none',
+      maxAge: 365 * 24 * 60 * 60 * 1000,
     });
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}`);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}&refreshToken=${result.refreshToken}`);
   }
 
   @Public()
@@ -149,9 +150,9 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'none',
+      maxAge: 365 * 24 * 60 * 60 * 1000,
     });
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}`);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}&refreshToken=${result.refreshToken}`);
   }
 }

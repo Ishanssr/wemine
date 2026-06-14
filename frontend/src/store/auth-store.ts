@@ -25,12 +25,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
     localStorage.setItem('accessToken', data.accessToken);
+    if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
     set({ user: data.user, isAuthenticated: true, isLoading: false });
   },
 
   signup: async (dto) => {
     const { data } = await api.post('/auth/signup', dto);
     localStorage.setItem('accessToken', data.accessToken);
+    if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
     set({ user: data.user, isAuthenticated: true, isLoading: false });
   },
 
@@ -39,6 +41,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       await api.post('/auth/logout');
     } catch {}
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('wemine_cart');
     set({ user: null, isAuthenticated: false, isLoading: false });
   },

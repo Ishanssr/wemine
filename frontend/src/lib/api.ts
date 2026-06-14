@@ -23,9 +23,10 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
       try {
+        const refreshToken = localStorage.getItem('refreshToken');
         const { data } = await axios.post(
           `${api.defaults.baseURL}/auth/refresh`,
-          {},
+          refreshToken ? { refreshToken } : {},
           { withCredentials: true },
         );
         localStorage.setItem('accessToken', data.accessToken);
@@ -33,6 +34,7 @@ api.interceptors.response.use(
         return api(original);
       } catch {
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         if (typeof window !== 'undefined') {
           window.location.href = '/auth/login';
         }
