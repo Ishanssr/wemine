@@ -54,7 +54,7 @@ export default function DesignsPage() {
                 <Link href={`/designs/${design.id}`} className="group block">
                   <div className="aspect-[3/4] overflow-hidden bg-black/5 relative">
                     <img
-                      src={optimizeImage(design.imageUrl, 400)}
+                      src={optimizeImage(design.imageUrl, 1000)}
                       alt={design.title}
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"

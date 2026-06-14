@@ -85,7 +85,7 @@ export default function DesignDetailPage() {
               {/* Image viewer with navigation */}
               <div className="aspect-[4/5] overflow-hidden bg-black/5 relative group">
                 <img
-                  src={optimizeImage(views[viewIdx]?.url, 800)}
+                  src={views[viewIdx]?.url}
                   alt={`${design.title} - ${views[viewIdx]?.label}`}
                   className="w-full h-full object-cover"
                 />
@@ -118,7 +118,7 @@ export default function DesignDetailPage() {
                         i === viewIdx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img src={optimizeImage(v.url, 100)} alt={v.label} loading="lazy" className="w-full h-full object-cover" />
+                      <img src={optimizeImage(v.url, 240)} alt={v.label} loading="lazy" className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
