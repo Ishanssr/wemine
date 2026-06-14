@@ -123,6 +123,23 @@ export class AuthController {
   async googleAuth() {}
 
   @Public()
+  @Get('google/debug')
+  async googleDebug() {
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const callbackUrl = process.env.GOOGLE_CALLBACK_URL;
+    const frontendUrl = process.env.FRONTEND_URL;
+    return {
+      hasClientId: !!clientId,
+      clientIdLength: clientId?.length || 0,
+      hasClientSecret: !!clientSecret,
+      clientSecretLength: clientSecret?.length || 0,
+      callbackUrl,
+      frontendUrl,
+    };
+  }
+
+  @Public()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req: any, @Res() res: any) {
