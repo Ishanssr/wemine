@@ -9,14 +9,15 @@ export class CacheService {
   private readonly ttl: number;
 
   constructor(private config: ConfigService) {
-    const rawUrl = this.config.get('REDIS_URL');
     this.ttl = Number(this.config.get('CACHE_TTL')) || 60;
-    if (rawUrl) {
+    const url = this.config.get('UPSTASH_REDIS_REST_URL') || this.config.get('REDIS_URL') || '';
+    const token = this.config.get('UPSTASH_REDIS_REST_TOKEN') || this.config.get('UPSTASH_TOKEN') || '';
+    if (url) {
       try {
-        const parsed = new URL(rawUrl);
-        const token = parsed.username || this.config.get('UPSTASH_TOKEN') || '';
-        const url = `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
-        this.redis = new Redis({ url, token });
+        const parsed = new URL(url);
+        const finalToken = parsed.username || token;
+        const finalUrl = `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
+        this.redis = new Redis({ url: finalUrl, token: finalToken });
       } catch {
         this.logger.warn('Invalid REDIS_URL — running without cache');
       }
