@@ -99,7 +99,7 @@ export class AuthService {
 
     const refreshToken = this.jwt.sign(payload, {
       secret: this.config.get('JWT_REFRESH_SECRET'),
-      expiresIn: this.config.get('JWT_REFRESH_EXPIRY') || '7d',
+      expiresIn: this.config.get('JWT_REFRESH_EXPIRY') || '365d',
     });
 
     const refreshTokenHash = await argon2.hash(refreshToken);
