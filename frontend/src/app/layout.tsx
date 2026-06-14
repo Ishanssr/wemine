@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Providers } from './providers';
+import { Analytics } from '@vercel/analytics/react';
 
 const outfit = {
   variable: '--font-outfit',
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-cream-50 antialiased font-body">
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
