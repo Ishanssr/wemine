@@ -50,7 +50,7 @@ export default function AdminDesignsPage() {
   const createMutation = useMutation({
     mutationFn: async () => {
       setUploading(true);
-      const urls: Record<string, string> = { imageUrl: '', imageBack: '', imageModel: '' };
+      const urls: Record<string, string> = { imageUrl: '', imageBack: '', imageModel: '', imageFemaleFront: '', imageFemaleBack: '' };
       for (const img of images) {
         const url = await uploadImage(img.file);
         urls[img.key] = url;
@@ -87,9 +87,10 @@ export default function AdminDesignsPage() {
   });
 
   const imageFields = [
-    { key: 'imageUrl', label: 'Front View' },
-    { key: 'imageBack', label: 'Back View' },
-    { key: 'imageModel', label: 'On Model' },
+    { key: 'imageUrl', label: 'Male Front' },
+    { key: 'imageBack', label: 'Male Back' },
+    { key: 'imageFemaleFront', label: 'Female Front' },
+    { key: 'imageFemaleBack', label: 'Female Back' },
   ];
 
   return (

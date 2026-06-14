@@ -61,9 +61,10 @@ export default function DesignDetailPage() {
   }
 
   const views = [
-    { url: design.imageUrl, label: 'Front' },
-    { url: design.imageBack, label: 'Back' },
-    { url: design.imageModel, label: 'On Model' },
+    { url: design.imageUrl, label: 'Male Front' },
+    { url: design.imageBack, label: 'Male Back' },
+    { url: design.imageFemaleFront, label: 'Female Front' },
+    { url: design.imageFemaleBack, label: 'Female Back' },
   ].filter((v) => v.url);
 
   const avg =

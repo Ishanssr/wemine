@@ -663,18 +663,20 @@ model AuditLog {
 }
 
 model Design {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  imageUrl    String   @default("")
-  imageBack   String   @default("")
-  imageModel  String   @default("")
-  category    String?
-  isActive    Boolean  @default(true)
-  createdById String
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(cuid())
+  title            String
+  description      String?
+  imageUrl         String   @default("")
+  imageBack        String   @default("")
+  imageModel       String   @default("")
+  imageFemaleFront String   @default("")
+  imageFemaleBack  String   @default("")
+  category         String?
+  isActive         Boolean  @default(true)
+  createdById      String
+  createdBy        User     @relation(fields: [createdById], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   ratings DesignRating[]
 
