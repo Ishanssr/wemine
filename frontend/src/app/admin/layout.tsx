@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
-  LayoutDashboard, Package, Users, ShoppingCart, Tag, Image, FileText, LogOut, Palette,
+  LayoutDashboard, Package, Users, ShoppingCart, Tag, Image, FileText, LogOut, Palette, ArrowLeft,
 } from 'lucide-react';
 import { api, formatINR } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
@@ -38,13 +38,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-cream-50">
       <div className="flex">
         <aside className="hidden md:flex w-64 min-h-screen flex-col glass-darker border-r border-white/40 p-4 fixed left-0 top-0">
-          <Link href="/admin" className="flex items-center gap-2.5 mb-8 px-3">
+          <Link href="/admin" className="flex items-center gap-2.5 mb-6 px-3">
             <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-4 h-4">
                 <path d="M3 20L10 8L14 14L17 10L21 20H3Z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
             <span className="font-heading font-semibold text-base">WEMINE Admin</span>
+          </Link>
+
+          <Link href="/" className="flex items-center gap-3 px-4 py-2.5 mb-4 rounded-xl font-body text-xs text-gray-400 hover:text-gray-900 hover:bg-white/40 transition-all">
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to Site
           </Link>
 
           <nav className="flex-1 space-y-1">
@@ -77,7 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </aside>
 
-        <main className="flex-1 md:ml-64 pt-24 pb-16 px-6 md:px-10">
+        <main className="flex-1 md:ml-64 pb-16 px-6 md:px-10">
           {children}
         </main>
       </div>
