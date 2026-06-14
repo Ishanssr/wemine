@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
+import { Redis } from '@upstash/redis';
 
 @Injectable()
 export class CacheService {
@@ -9,19 +9,17 @@ export class CacheService {
   private readonly ttl: number;
 
   constructor(private config: ConfigService) {
-    const url = this.config.get('REDIS_URL');
+    const rawUrl = this.config.get('REDIS_URL');
     this.ttl = Number(this.config.get('CACHE_TTL')) || 60;
-    if (url) {
-      this.redis = new Redis(url, {
-        maxRetriesPerRequest: 3,
-        retryStrategy: (times) => (times > 3 ? null : Math.min(times * 200, 2000)),
-        lazyConnect: true,
-      });
-      this.redis.on('error', (err) => this.logger.warn('Redis error:', err.message));
-      this.redis.connect().catch(() => {
-        this.redis = null;
-        this.logger.warn('Redis unavailable — running without cache');
-      });
+    if (rawUrl) {
+      try {
+        const parsed = new URL(rawUrl);
+        const token = parsed.username || this.config.get('UPSTASH_TOKEN') || '';
+        const url = `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
+        this.redis = new Redis({ url, token });
+      } catch {
+        this.logger.warn('Invalid REDIS_URL — running without cache');
+      }
     } else {
       this.logger.log('No REDIS_URL — running without cache');
     }
@@ -31,7 +29,7 @@ export class CacheService {
     if (!this.redis) return null;
     try {
       const val = await this.redis.get(key);
-      return val ? JSON.parse(val) : null;
+      return val as T | null;
     } catch {
       return null;
     }
@@ -40,11 +38,11 @@ export class CacheService {
   async set(key: string, value: any, ttl?: number): Promise<void> {
     if (!this.redis) return;
     try {
-      const str = JSON.stringify(value);
-      if (ttl || this.ttl) {
-        await this.redis.setex(key, ttl || this.ttl, str);
+      const seconds = ttl || this.ttl;
+      if (seconds) {
+        await this.redis.setex(key, seconds, value);
       } else {
-        await this.redis.set(key, str);
+        await this.redis.set(key, value);
       }
     } catch {}
   }
@@ -55,11 +53,5 @@ export class CacheService {
       const keys = await this.redis.keys(pattern);
       if (keys.length) await this.redis.del(...keys);
     } catch {}
-  }
-
-  async onModuleDestroy() {
-    if (this.redis) {
-      await this.redis.quit();
-    }
   }
 }
