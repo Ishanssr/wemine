@@ -163,11 +163,14 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   updateQuantity: async (itemId, quantity) => {
     if (hasToken()) {
-      if (quantity <= 0) {
-        await api.delete(`/cart/items/${itemId}`);
-      } else {
-        await api.patch(`/cart/items/${itemId}`, { quantity });
-      }
+      try {
+        if (quantity <= 0) {
+          await api.delete(`/cart/items/${itemId}`);
+        } else {
+          await api.patch(`/cart/items/${itemId}`, { quantity });
+        }
+      } catch {}
+      // Update local state regardless of API result
       const items = get().items.map((i) =>
         i.id === itemId ? { ...i, quantity: Math.max(0, quantity) } : i,
       ).filter((i) => i.quantity > 0);
@@ -184,7 +187,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   removeItem: async (itemId) => {
     if (hasToken()) {
-      await api.delete(`/cart/items/${itemId}`);
+      try { await api.delete(`/cart/items/${itemId}`); } catch {}
     }
     const items = get().items.filter((i) => i.id !== itemId);
     if (!hasToken()) saveLocalCart(items);
