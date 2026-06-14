@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cache: CacheService,
+  ) {}
 
   async findAll(query: any) {
     const page = Number(query.page) || 1;
@@ -19,6 +23,10 @@ export class ProductsService {
       featured,
       vendorId,
     } = query;
+
+    const cacheKey = `products:list:${JSON.stringify({ page, limit, search, category, minPrice, maxPrice, sortBy, sortOrder, tags, featured, vendorId })}`;
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
 
     const where: any = { isActive: true };
 
@@ -54,7 +62,7 @@ export class ProductsService {
       this.prisma.product.count({ where }),
     ]);
 
-    return {
+    const result = {
       products,
       pagination: {
         page,
@@ -63,9 +71,15 @@ export class ProductsService {
         totalPages: Math.ceil(total / limit),
       },
     };
+    await this.cache.set(cacheKey, result);
+    return result;
   }
 
   async findBySlug(slug: string) {
+    const cacheKey = `products:slug:${slug}`;
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
     const product = await this.prisma.product.findUnique({
       where: { slug },
       include: {
@@ -87,6 +101,7 @@ export class ProductsService {
       },
     });
     if (!product) throw new NotFoundException('Product not found');
+    await this.cache.set(cacheKey, product);
     return product;
   }
 
@@ -106,7 +121,7 @@ export class ProductsService {
   async create(data: any) {
     const { categories, images, variants, ...productData } = data;
     const slug = productData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-
+    await this.cache.del('products:*');
     return this.prisma.product.create({
       data: {
         ...productData,
@@ -127,6 +142,7 @@ export class ProductsService {
 
   async update(id: string, data: any) {
     await this.findById(id);
+    await this.cache.del('products:*');
     return this.prisma.product.update({
       where: { id },
       data,
@@ -136,18 +152,27 @@ export class ProductsService {
 
   async delete(id: string) {
     await this.findById(id);
+    await this.cache.del('products:*');
     return this.prisma.product.delete({ where: { id } });
   }
 
   async getFeatured() {
-    return this.prisma.product.findMany({
+    const cacheKey = 'products:featured';
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+    const featured = await this.prisma.product.findMany({
       where: { isActive: true, isFeatured: true },
       include: { images: { take: 1 }, variants: { where: { isActive: true }, take: 1 } },
       take: 20,
     });
+    await this.cache.set(cacheKey, featured);
+    return featured;
   }
 
   async getRelated(productId: string) {
+    const cacheKey = `products:related:${productId}`;
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
     const product = await this.prisma.product.findUnique({
       where: { id: productId },
       include: {
@@ -163,19 +188,22 @@ export class ProductsService {
     });
     if (!product) throw new NotFoundException('Product not found');
 
+    let related: any[];
     if (product.relatedProducts.length > 0) {
-      return product.relatedProducts.map((rp: any) => rp.related);
+      related = product.relatedProducts.map((rp: any) => rp.related);
+    } else {
+      const categoryIds = product.categories.map((c: any) => c.categoryId);
+      related = await this.prisma.product.findMany({
+        where: {
+          isActive: true,
+          id: { not: productId },
+          categories: { some: { categoryId: { in: categoryIds } } },
+        },
+        include: { images: { take: 1 }, variants: { where: { isActive: true }, take: 1 } },
+        take: 8,
+      });
     }
-
-    const categoryIds = product.categories.map((c: any) => c.categoryId);
-    return this.prisma.product.findMany({
-      where: {
-        isActive: true,
-        id: { not: productId },
-        categories: { some: { categoryId: { in: categoryIds } } },
-      },
-      include: { images: { take: 1 }, variants: { where: { isActive: true }, take: 1 } },
-      take: 8,
-    });
+    await this.cache.set(cacheKey, related);
+    return related;
   }
 }

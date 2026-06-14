@@ -254,6 +254,8 @@ model Product {
   @@index([slug])
   @@index([isActive, isFeatured])
   @@index([name], type: BTree)
+  @@index([basePrice])
+  @@index([createdAt])
   @@map("products")
 }
 
@@ -264,6 +266,7 @@ model ProductCategory {
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([productId, categoryId])
+  @@index([categoryId])
   @@map("product_categories")
 }
 
@@ -681,6 +684,7 @@ model Design {
   ratings DesignRating[]
 
   @@index([createdById])
+  @@index([isActive])
   @@map("designs")
 }
 

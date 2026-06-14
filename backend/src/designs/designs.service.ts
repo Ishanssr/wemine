@@ -1,14 +1,22 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class DesignsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cache: CacheService,
+  ) {}
 
   async findAll(query: any) {
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 20;
     const { category } = query;
+    const cacheKey = `designs:list:${JSON.stringify({ page, limit, category })}`;
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
     const where: any = { isActive: true };
     if (category) where.category = category;
 
@@ -33,10 +41,16 @@ export class DesignsService {
       return { ...rest, avgRating: d.ratings.length ? Math.round(avg * 10) / 10 : null, ratingCount: d._count.ratings };
     });
 
-    return { designs: items, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+    const result = { designs: items, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+    await this.cache.set(cacheKey, result);
+    return result;
   }
 
   async findOne(id: string) {
+    const cacheKey = `designs:id:${id}`;
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
     const design = await this.prisma.design.findUnique({
       where: { id },
       include: {
@@ -48,10 +62,12 @@ export class DesignsService {
       },
     });
     if (!design) throw new NotFoundException('Design not found');
+    await this.cache.set(cacheKey, design);
     return design;
   }
 
   async create(body: any, userId: string) {
+    await this.cache.del('designs:*');
     return this.prisma.design.create({
       data: {
         title: body.title,
@@ -68,6 +84,7 @@ export class DesignsService {
   }
 
   async remove(id: string) {
+    await this.cache.del('designs:*');
     await this.prisma.design.delete({ where: { id } });
     return { success: true };
   }
