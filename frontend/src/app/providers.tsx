@@ -19,13 +19,18 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+import { usePathname } from 'next/navigation';
+
 export function Providers({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith('/admin');
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthLoader>
-        <Navbar />
+        {!isAdminRoute && <Navbar />}
         <main className="min-h-screen">{children}</main>
-        <Footer />
+        {!isAdminRoute && <Footer />}
       </AuthLoader>
       <Toaster
         position="bottom-right"
