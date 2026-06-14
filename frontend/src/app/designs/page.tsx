@@ -45,12 +45,7 @@ export default function DesignsPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {data.map((design: any, i: number) => (
-              <motion.div
-                key={design.id}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0, transitionEnd: { transform: 'none', WebkitTransform: 'none' } }}
-                transition={{ delay: i * 0.05 }}
-              >
+              <div key={design.id}>
                 <Link href={`/designs/${design.id}`} className="group block">
                   <div className="aspect-[3/4] overflow-hidden bg-black/5 relative">
                     <img
@@ -74,7 +69,7 @@ export default function DesignsPage() {
                     </p>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
