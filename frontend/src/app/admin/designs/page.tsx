@@ -41,20 +41,19 @@ export default function AdminDesignsPage() {
   const uploadImage = async (file: File): Promise<string> => {
     const fd = new FormData();
     fd.append('file', file);
-    const { data } = await api.post('/upload/image', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await api.post('/upload/image', fd);
     return data.url;
   };
 
   const createMutation = useMutation({
     mutationFn: async () => {
       setUploading(true);
+      // Upload all images in parallel
+      const uploads = await Promise.all(
+        images.map((img) => uploadImage(img.file)),
+      );
       const urls: Record<string, string> = { imageUrl: '', imageBack: '', imageModel: '', imageFemaleFront: '', imageFemaleBack: '' };
-      for (const img of images) {
-        const url = await uploadImage(img.file);
-        urls[img.key] = url;
-      }
+      images.forEach((img, i) => { urls[img.key] = uploads[i]; });
       await api.post('/designs', {
         title: form.title,
         description: form.description,
