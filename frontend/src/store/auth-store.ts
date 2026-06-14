@@ -55,9 +55,16 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       const { data } = await api.get('/auth/profile');
       set({ user: data.data || data, isAuthenticated: true, isLoading: false });
-    } catch {
-      localStorage.removeItem('accessToken');
-      set({ user: null, isAuthenticated: false, isLoading: false });
+    } catch (err: any) {
+      // Only clear auth state if the server explicitly rejected the token (401).
+      // Network errors, timeouts, or 5xx should not log the user out.
+      if (err?.response?.status === 401) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        set({ user: null, isAuthenticated: false, isLoading: false });
+      } else {
+        set({ isLoading: false });
+      }
     }
   },
 }));

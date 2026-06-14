@@ -37,8 +37,9 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      maxAge: 365 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return result;
   }
@@ -46,15 +47,23 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @HttpCode(200)
-  async refresh(@Req() req: any) {
+  async refresh(@Req() req: any, @Res({ passthrough: true }) res: any) {
     const token = req.cookies?.refreshToken || req.body?.refreshToken;
-    return this.auth.refreshToken(token);
+    const result = await this.auth.refreshToken(token);
+    res.cookie('refreshToken', result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return result;
   }
 
   @Post('logout')
   @HttpCode(200)
   async logout(@CurrentUser('id') userId: string, @Res({ passthrough: true }) res: any) {
-    res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'none' });
+    res.clearCookie('refreshToken', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/' });
     return this.auth.logout(userId);
   }
 
@@ -131,8 +140,9 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      maxAge: 365 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}&refreshToken=${result.refreshToken}`);
   }
@@ -150,8 +160,9 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      maxAge: 365 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}&refreshToken=${result.refreshToken}`);
   }

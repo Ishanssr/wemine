@@ -30,6 +30,9 @@ api.interceptors.response.use(
           { withCredentials: true },
         );
         localStorage.setItem('accessToken', data.accessToken);
+        if (data.refreshToken) {
+          localStorage.setItem('refreshToken', data.refreshToken);
+        }
         original.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(original);
       } catch {
