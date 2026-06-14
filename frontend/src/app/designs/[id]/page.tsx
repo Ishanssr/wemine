@@ -8,7 +8,6 @@ import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { optimizeImage } from '@/lib/images';
 
 export default function DesignDetailPage() {
   const { id } = useParams();
@@ -118,7 +117,7 @@ export default function DesignDetailPage() {
                         i === viewIdx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img src={optimizeImage(v.url, 240)} alt={v.label} loading="lazy" className="w-full h-full object-cover" />
+                      <img src={v.url} alt={v.label} loading="lazy" className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>

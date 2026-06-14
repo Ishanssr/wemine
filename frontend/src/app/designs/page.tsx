@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import Link from 'next/link';
 import { Star } from 'lucide-react';
-import { optimizeImage } from '@/lib/images';
 
 export default function DesignsPage() {
   const { data, isLoading } = useQuery({
@@ -54,7 +53,7 @@ export default function DesignsPage() {
                 <Link href={`/designs/${design.id}`} className="group block">
                   <div className="aspect-[3/4] overflow-hidden bg-black/5 relative">
                     <img
-                      src={optimizeImage(design.imageUrl, 1000)}
+                      src={design.imageUrl}
                       alt={design.title}
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
