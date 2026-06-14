@@ -74,8 +74,14 @@
   .badge {
     @apply inline-flex items-center px-3 py-1 text-[10px] font-heading font-medium uppercase tracking-[0.05em] rounded-none;
   }
+}
 
+@layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .image-sharp {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
   }
 }

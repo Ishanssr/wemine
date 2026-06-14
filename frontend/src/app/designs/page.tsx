@@ -56,7 +56,7 @@ export default function DesignsPage() {
                     <img
                       src={design.imageUrl}
                       alt={design.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover image-sharp"
                     />
                     {design.avgRating !== null && (
                       <div className="absolute top-3 right-3 bg-white/90 backdrop-blur px-2.5 py-1 flex items-center gap-1">
