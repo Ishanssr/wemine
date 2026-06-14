@@ -39,7 +39,7 @@ export function Navbar() {
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center lg:gap-6">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -61,7 +61,7 @@ export function Navbar() {
 
             <Link
               href={isAuthenticated ? '/account/wishlist' : '/auth/login'}
-              className="hidden md:flex w-10 h-10 items-center justify-center hover:bg-black/5 transition-all duration-200"
+              className="hidden lg:flex w-10 h-10 items-center justify-center hover:bg-black/5 transition-all duration-200"
             >
               <Heart className="w-5 h-5 text-gray-900" />
             </Link>
@@ -83,7 +83,7 @@ export function Navbar() {
                 {user?.role === 'ADMIN' && (
                   <Link
                     href="/admin"
-                    className="hidden md:flex px-2.5 py-1 text-[9px] font-heading font-medium tracking-[0.05em] uppercase text-gray-500 border border-gray-200 hover:border-gray-900 hover:text-gray-900 transition-all"
+                    className="hidden lg:flex px-2.5 py-1 text-[9px] font-heading font-medium tracking-[0.05em] uppercase text-gray-500 border border-gray-200 hover:border-gray-900 hover:text-gray-900 transition-all"
                   >
                     Admin
                   </Link>
@@ -102,7 +102,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/auth/login"
-                className="hidden md:inline-flex items-center px-5 py-2 bg-black text-white text-[11px] font-heading font-medium tracking-[0.05em] uppercase hover:bg-gray-800 transition-all duration-300"
+                className="hidden lg:inline-flex items-center px-5 py-2 bg-black text-white text-[11px] font-heading font-medium tracking-[0.05em] uppercase hover:bg-gray-800 transition-all duration-300"
               >
                 Sign In
               </Link>
@@ -110,7 +110,7 @@ export function Navbar() {
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all"
+              className="lg:hidden w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all"
             >
               {isOpen ? <X className="w-5 h-5 text-gray-900" /> : <Menu className="w-5 h-5 text-gray-900" />}
             </button>
@@ -119,7 +119,7 @@ export function Navbar() {
       </div>
 
       <div
-        className={`md:hidden transition-all duration-400 overflow-hidden ${
+        className={`lg:hidden transition-all duration-400 overflow-hidden ${
           isOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
