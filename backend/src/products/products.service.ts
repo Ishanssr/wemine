@@ -24,6 +24,10 @@ export class ProductsService {
       vendorId,
     } = query;
 
+    const sortFieldMap: Record<string, string> = { newest: 'createdAt', oldest: 'createdAt', price_asc: 'basePrice', price_desc: 'basePrice', name: 'name', rating: 'avgRating' };
+    const resolvedSortBy = sortFieldMap[sortBy] || sortBy;
+    const resolvedSortOrder = sortBy === 'oldest' || sortBy === 'price_asc' ? 'asc' : sortOrder;
+
     const cacheKey = `products:list:${JSON.stringify({ page, limit, search, category, minPrice, maxPrice, sortBy, sortOrder, tags, featured, vendorId })}`;
     const cached = await this.cache.get(cacheKey);
     if (cached) return cached;
@@ -55,7 +59,7 @@ export class ProductsService {
           categories: { include: { category: true } },
           reviews: { take: 3, orderBy: { createdAt: 'desc' }, include: { user: true } },
         },
-        orderBy: { [sortBy]: sortOrder },
+        orderBy: { [resolvedSortBy]: resolvedSortOrder },
         skip: (page - 1) * limit,
         take: limit,
       }),
