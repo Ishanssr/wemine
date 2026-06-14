@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
+import { optimizeImage } from '@/lib/images';
 import { Plus, Trash2, Star, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -178,7 +179,7 @@ export default function AdminDesignsPage() {
           {data.map((design: any) => (
             <div key={design.id} className="group relative">
               <div className="aspect-[3/4] overflow-hidden bg-black/5">
-                <img src={design.imageUrl} alt={design.title} className="w-full h-full object-cover" />
+                <img src={optimizeImage(design.imageUrl, 400)} alt={design.title} className="w-full h-full object-cover" />
                 {design.avgRating !== null && (
                   <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 flex items-center gap-1">
                     <Star className="w-3 h-3" />

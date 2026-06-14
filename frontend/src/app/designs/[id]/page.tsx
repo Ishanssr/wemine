@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
+import { cloudinaryOriginal, optimizeImage } from '@/lib/images';
 import { useAuthStore } from '@/store/auth-store';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -84,7 +85,7 @@ export default function DesignDetailPage() {
               {/* Image viewer with navigation */}
               <div className="aspect-[4/5] overflow-hidden bg-black/5 relative group">
                 <img
-                  src={views[viewIdx]?.url}
+                  src={cloudinaryOriginal(views[viewIdx]?.url)}
                   alt={`${design.title} - ${views[viewIdx]?.label}`}
                   className="w-full h-full object-cover"
                 />
@@ -117,7 +118,7 @@ export default function DesignDetailPage() {
                         i === viewIdx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img src={v.url} alt={v.label} loading="lazy" className="w-full h-full object-cover" />
+                      <img src={optimizeImage(v.url, 200)} alt={v.label} loading="lazy" className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
