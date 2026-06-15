@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
-import DesignsGate from '@/components/DesignsGate';
 import toast from 'react-hot-toast';
 
 export default function DesignDetailPage() {
@@ -45,23 +44,19 @@ export default function DesignDetailPage() {
 
   if (isLoading) {
     return (
-      <DesignsGate>
-        <div className="pt-28 pb-24 max-w-4xl mx-auto px-6 md:px-12">
-          <div className="aspect-[4/3] bg-black/5 animate-pulse mb-8" />
-          <div className="h-6 w-48 bg-black/5 animate-pulse mb-4" />
-          <div className="h-4 w-96 bg-black/5 animate-pulse" />
-        </div>
-      </DesignsGate>
+      <div className="pt-28 pb-24 max-w-4xl mx-auto px-6 md:px-12">
+        <div className="aspect-[4/3] bg-black/5 animate-pulse mb-8" />
+        <div className="h-6 w-48 bg-black/5 animate-pulse mb-4" />
+        <div className="h-4 w-96 bg-black/5 animate-pulse" />
+      </div>
     );
   }
 
   if (!design) {
     return (
-      <DesignsGate>
-        <div className="pt-28 pb-24 text-center">
-          <p className="font-body text-gray-400">Design not found.</p>
-        </div>
-      </DesignsGate>
+      <div className="pt-28 pb-24 text-center">
+        <p className="font-body text-gray-400">Design not found.</p>
+      </div>
     );
   }
 
@@ -78,7 +73,6 @@ export default function DesignDetailPage() {
       : null;
 
   return (
-    <DesignsGate>
       <div className="pt-28 pb-24">
         <div className="max-w-4xl mx-auto px-6 md:px-12">
           <button onClick={() => router.push('/designs')} className="flex items-center gap-1.5 font-body text-xs text-gray-400 hover:text-gray-900 transition-colors mb-8">
@@ -218,8 +212,7 @@ export default function DesignDetailPage() {
               </div>
             </div>
           </motion.div>
-        </div>
       </div>
-    </DesignsGate>
+    </div>
   );
 }

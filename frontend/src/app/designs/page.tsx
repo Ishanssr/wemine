@@ -8,8 +8,6 @@ import { optimizeImage } from '@/lib/images';
 import Link from 'next/link';
 import { Star } from 'lucide-react';
 
-import DesignsGate from '@/components/DesignsGate';
-
 export default function DesignsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['designs'],
@@ -20,7 +18,6 @@ export default function DesignsPage() {
   });
 
   return (
-    <DesignsGate>
     <div className="pt-28 pb-24">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
@@ -78,6 +75,5 @@ export default function DesignsPage() {
         )}
       </div>
     </div>
-    </DesignsGate>
   );
 }
