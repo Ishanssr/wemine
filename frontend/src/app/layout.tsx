@@ -17,11 +17,19 @@ export const metadata: Metadata = {
   title: 'WEMINE | Premium Minimal Wear',
   description: 'Premium minimal apparel. Threads with character.',
   keywords: ['t-shirts', 'minimal wear', 'premium apparel', 'minimalist fashion'],
+  icons: { icon: '/logo.png', apple: '/logo.png' },
   openGraph: {
     title: 'WEMINE | Premium Minimal Wear',
     description: 'Premium minimal apparel. Threads with character.',
     siteName: 'WEMINE',
     type: 'website',
+    images: [{ url: '/hero-bg.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'WEMINE | Premium Minimal Wear',
+    description: 'Premium minimal apparel. Threads with character.',
+    images: ['/hero-bg.png'],
   },
 };
 
