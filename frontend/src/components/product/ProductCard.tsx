@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { formatINR } from '@/lib/api';
 import type { Product } from '@/types';
@@ -28,10 +29,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       <Link href={`/product/${product.slug}`} className="group block">
         <div className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
           {primaryImage && !imgError ? (
-            <img
+            <Image
               src={primaryImage.url}
               alt={primaryImage.altText || product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               onError={() => setImgError(true)}
             />
           ) : (

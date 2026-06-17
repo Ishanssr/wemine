@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCard, Shield, Truck, Lock, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 import { api, formatINR } from '@/lib/api';
 import { useCartStore } from '@/store/cart-store';
 import { useAuthStore } from '@/store/auth-store';
@@ -366,7 +367,7 @@ export default function CheckoutPage() {
                   <div key={item.id} className="flex items-center gap-3">
                     <div className="w-12 h-12 overflow-hidden bg-black/5 flex-shrink-0">
                       {item.product.images?.[0] && (
-                        <img src={item.product.images[0].url} alt="" className="w-full h-full object-cover" />
+                        <Image src={item.product.images[0].url} alt="" width={48} height={48} className="w-full h-full object-cover" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">

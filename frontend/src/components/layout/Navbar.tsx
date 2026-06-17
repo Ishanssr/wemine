@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { ShoppingCart, User, Menu, X, Search, Heart } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
@@ -93,7 +94,7 @@ export function Navbar() {
                   className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all duration-200"
                 >
                   {user?.avatarUrl ? (
-                    <img src={user.avatarUrl} alt="" className="w-7 h-7 rounded-full object-cover" />
+                    <Image src={user.avatarUrl} alt="" width={28} height={28} className="rounded-full object-cover" />
                   ) : (
                     <User className="w-5 h-5 text-gray-900" />
                   )}

@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { HeroSection } from '@/components/layout/HeroSection';
 
@@ -134,10 +135,11 @@ function AboutSection() {
           >
             {/* Cotton/mountain imagery */}
             <div className="aspect-[4/3] overflow-hidden relative">
-              <img
+              <Image
                 src="/hero2.png"
                 alt="Mountain peak at sunrise"
-                className="w-full h-full object-cover object-center"
+                fill
+                className="object-cover object-center"
               />
               <motion.div
                 className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"

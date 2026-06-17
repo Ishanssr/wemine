@@ -22,8 +22,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        heading: ['Helvetica Neue', 'Inter', 'system-ui', 'sans-serif'],
-        body: ['Helvetica Neue', 'Inter', 'system-ui', 'sans-serif'],
+        heading: ['Outfit', 'Helvetica Neue', 'Inter', 'system-ui', 'sans-serif'],
+        body: ['Manrope', 'Helvetica Neue', 'Inter', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         'btn': '0.05em',

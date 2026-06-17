@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -83,10 +84,12 @@ export default function DesignDetailPage() {
             <div className="grid md:grid-cols-5 gap-10">
               <div className="md:col-span-3">
                 <div className="aspect-[4/5] overflow-hidden bg-black/5 relative group">
-                  <img
+                  <Image
                     src={views[viewIdx]?.url}
                     alt={`${design.title} - ${views[viewIdx]?.label}`}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 60vw"
                   />
                   {views.length > 1 && (
                     <>
@@ -112,11 +115,11 @@ export default function DesignDetailPage() {
                       <button
                         key={i}
                         onClick={() => setViewIdx(i)}
-                        className={`w-16 h-20 overflow-hidden border-2 transition-all ${
-                          i === viewIdx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
-                        }`}
+                        className={`w-16 h-20 relative overflow-hidden border-2 transition-all ${
+                           i === viewIdx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
+                         }`}
                       >
-                        <img src={v.url} alt={v.label} loading="lazy" className="w-full h-full object-cover" />
+                        <Image src={v.url} alt={v.label} fill className="object-cover" sizes="64px" />
                       </button>
                     ))}
                   </div>

@@ -8,6 +8,7 @@ import {
   Minus, Plus, Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 import { api, formatINR } from '@/lib/api';
 import { useCartStore } from '@/store/cart-store';
 import { useAuthStore } from '@/store/auth-store';
@@ -131,12 +132,14 @@ export default function ProductDetailPage() {
             animate={{ opacity: 1, x: 0 }}
             className="space-y-4"
           >
-            <div className="aspect-[4/5] rounded-3xl overflow-hidden bg-glacier-100/30 glass-surface">
+            <div className="aspect-[4/5] relative rounded-3xl overflow-hidden bg-glacier-100/30 glass-surface">
               {primaryImage && !imgError ? (
-                <img
+                <Image
                   src={primaryImage.url}
                   alt={primaryImage.altText || product.name}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover hover:scale-105 transition-transform duration-700"
                   onError={() => setImgError(true)}
                 />
               ) : (
@@ -152,11 +155,11 @@ export default function ProductDetailPage() {
                 {product.images.map((img) => (
                   <button
                     key={img.id}
-                    className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                    className={`flex-shrink-0 relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
                       img.isPrimary ? 'border-glacier-400' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
-                    <img src={img.url} alt="" className="w-full h-full object-cover" />
+                    <Image src={img.url} alt="" fill className="object-cover" sizes="80px" />
                   </button>
                 ))}
               </div>

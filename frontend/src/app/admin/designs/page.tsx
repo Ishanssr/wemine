@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import { optimizeImage } from '@/lib/images';
 import { Plus, Trash2, Star, Upload } from 'lucide-react';
@@ -133,12 +134,12 @@ export default function AdminDesignsPage() {
                       <button
                         type="button"
                         onClick={() => handleImageSelect(key, label)}
-                        className={`aspect-[3/4] w-full border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all overflow-hidden ${
-                          img ? 'border-black/20' : 'border-black/10 hover:border-black/30'
-                        }`}
+                        className={`aspect-[3/4] w-full relative border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all overflow-hidden ${
+                           img ? 'border-black/20' : 'border-black/10 hover:border-black/30'
+                         }`}
                       >
                         {img ? (
-                          <img src={img.preview} alt={label} className="w-full h-full object-cover" />
+                          <Image src={img.preview} alt={label} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
                           <>
                             <Upload className="w-5 h-5 text-gray-300" />
@@ -178,8 +179,8 @@ export default function AdminDesignsPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {data.map((design: any) => (
             <div key={design.id} className="group relative">
-              <div className="aspect-[3/4] overflow-hidden bg-black/5">
-                <img src={design.imageUrl} alt={design.title} className="w-full h-full object-cover image-sharp" />
+              <div className="aspect-[3/4] relative overflow-hidden bg-black/5">
+                <Image src={design.imageUrl} alt={design.title} fill className="object-cover image-sharp" sizes="(max-width: 768px) 50vw, 25vw" />
                 {design.avgRating !== null && (
                   <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 flex items-center gap-1">
                     <Star className="w-3 h-3" />

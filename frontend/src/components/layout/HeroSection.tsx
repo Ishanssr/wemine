@@ -2,12 +2,13 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function HeroSection() {
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden">
       <div className="absolute inset-0">
-        <img src="/hero-bg.png" alt="" className="w-full h-full object-cover object-center" />
+        <Image src="/hero-bg.png" alt="" fill className="object-cover object-center" />
         <div className="absolute inset-0 bg-cream-50/40" />
       </div>
 

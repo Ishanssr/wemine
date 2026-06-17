@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { X, Plus, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 
 interface VariantInput {
@@ -222,7 +223,7 @@ export default function NewProductPage() {
           <div className="flex flex-wrap gap-3">
             {previews.map((src, idx) => (
               <div key={idx} className="relative w-24 h-24 rounded-xl overflow-hidden bg-glacier-100/50 group">
-                <img src={src} alt="" className="w-full h-full object-cover" />
+                <Image src={src} alt="" fill className="object-cover" sizes="96px" />
                 <button type="button" onClick={() => removeFile(idx)}
                   className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >

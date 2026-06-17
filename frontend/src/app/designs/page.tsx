@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import { optimizeImage } from '@/lib/images';
 import Link from 'next/link';
@@ -48,10 +49,12 @@ export default function DesignsPage() {
               <div key={design.id}>
                 <Link href={`/designs/${design.id}`} className="group block">
                   <div className="aspect-[3/4] overflow-hidden bg-black/5 relative">
-                    <img
+                    <Image
                       src={design.imageUrl}
                       alt={design.title}
-                      className="w-full h-full object-cover image-sharp"
+                      fill
+                      className="object-cover image-sharp"
+                      sizes="(max-width: 768px) 50vw, 25vw"
                     />
                     {design.avgRating !== null && (
                       <div className="absolute top-3 right-3 bg-white/90 backdrop-blur px-2.5 py-1 flex items-center gap-1">

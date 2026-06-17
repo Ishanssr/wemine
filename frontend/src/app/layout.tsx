@@ -3,16 +3,6 @@ import type { Metadata } from 'next';
 import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/react';
 
-const outfit = {
-  variable: '--font-outfit',
-  className: 'font-outfit',
-};
-
-const manrope = {
-  variable: '--font-manrope',
-  className: 'font-manrope',
-};
-
 export const metadata: Metadata = {
   title: 'WEMINE | Premium Minimal Wear',
   description: 'Premium minimal apparel. Threads with character.',

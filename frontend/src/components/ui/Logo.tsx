@@ -1,16 +1,13 @@
-import React from 'react';
+import Image from 'next/image';
 
-interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  className?: string;
-}
-
-export function Logo({ className, ...props }: LogoProps) {
+export function Logo({ className }: { className?: string }) {
   return (
-    <img
+    <Image
       src="/logo.png"
-      alt="WEMINE Logo"
+      alt="WEMINE"
+      width={40}
+      height={40}
       className={`inline-block object-contain ${className || ''}`}
-      {...props}
     />
   );
 }

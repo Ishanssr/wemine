@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { api, formatINR } from '@/lib/api';
 
 export default function AdminProductsPage() {
@@ -48,7 +49,7 @@ export default function AdminProductsPage() {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-glacier-100/50 overflow-hidden flex-shrink-0">
-                          {product.images?.[0] && <img src={product.images[0].url} alt="" className="w-full h-full object-cover" />}
+                          {product.images?.[0] && <Image src={product.images[0].url} alt="" width={40} height={40} className="w-full h-full object-cover" />}
                         </div>
                         <span className="font-body text-sm text-gray-900">{product.name}</span>
                       </div>
