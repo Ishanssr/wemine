@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -15,26 +15,34 @@ export function CraftStory() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
-  const handleScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const w = el.clientWidth;
-    const idx = Math.round(el.scrollLeft / w);
-    if (idx !== active) setActive(idx);
-  }, [active]);
-
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    el.addEventListener('scroll', handleScroll, { passive: true });
-    return () => el.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
 
-  const total = slides.length;
+    const onScroll = () => {
+      const cards = el.querySelectorAll<HTMLElement>('[data-index]');
+      const center = el.scrollLeft + el.clientWidth / 2;
+      let closest = 0;
+      let closestDist = Infinity;
+      cards.forEach((card, i) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const dist = Math.abs(center - cardCenter);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = i;
+        }
+      });
+      setActive(closest);
+    };
+
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <section className="section-padding py-20 md:py-28 bg-cream-50/50 overflow-hidden">
-      <div className="max-content mb-12">
+    <section className="py-16 md:py-20 bg-cream-50/50 overflow-hidden">
+      <div className="max-content mb-10">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -52,56 +60,55 @@ export function CraftStory() {
 
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide px-4 md:px-8 pb-4"
+        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide px-6 md:px-16"
         style={{ scrollBehavior: 'smooth' }}
       >
         {slides.map((src, i) => {
           const dist = i - active;
           const abs = Math.abs(dist);
-          const scale = 1 - abs * 0.08;
-          const zIndex = total - abs;
-          const isNextOnRight = dist > 0;
+          const scale = 1 - abs * 0.07;
 
           return (
             <div
               key={src}
-              className="snap-center shrink-0 flex items-center justify-center px-2 md:px-4"
-              style={{ width: '85vw', maxWidth: 720 }}
+              data-index={i}
+              className="snap-center shrink-0 flex items-center justify-center"
+              style={{ width: '80vw', maxWidth: 680 }}
             >
               <motion.div
                 className="w-full rounded-3xl overflow-hidden bg-white shadow-sm border border-black/5"
                 animate={{
-                  scale: Math.max(scale, 0.7),
-                  opacity: 1 - abs * 0.18,
-                  rotateY: dist * -3,
+                  scale: Math.max(scale, 0.72),
+                  opacity: 1 - abs * 0.15,
                 }}
-                style={{ zIndex, perspective: 1200 }}
-                transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+                style={{ perspective: 1200 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
-                <div className="w-full">
-                  <Image
-                    src={src}
-                    alt=""
-                    width={1440}
-                    height={900}
-                    className="w-full h-auto"
-                    priority={i < 2}
-                  />
-                </div>
+                <Image
+                  src={src}
+                  alt=""
+                  width={1440}
+                  height={900}
+                  className="w-full h-auto"
+                  priority={i < 2}
+                />
               </motion.div>
             </div>
           );
         })}
       </div>
 
-      <div className="flex justify-center gap-2 mt-8">
+      <div className="flex justify-center gap-2 mt-6">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => {
               const el = scrollRef.current;
               if (!el) return;
-              el.scrollTo({ left: el.clientWidth * i, behavior: 'smooth' });
+              const card = el.querySelector<HTMLElement>(`[data-index="${i}"]`);
+              if (card) {
+                card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+              }
             }}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
               i === active ? 'bg-gray-800 w-6' : 'bg-gray-300 hover:bg-gray-400'
