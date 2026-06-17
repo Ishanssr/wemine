@@ -1,39 +1,84 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { api } from '@/lib/api';
 import { ProductCard } from '@/components/product/ProductCard';
-import { MOCK_PRODUCTS } from '@/lib/mock-data';
 import type { Product } from '@/types';
+
+function designToProduct(d: any): Product {
+  const id = `design-${d.id}`;
+  return {
+    id,
+    name: d.title,
+    slug: id,
+    description: d.description || '',
+    shortDesc: d.description || '',
+    basePrice: 0,
+    sku: id,
+    isActive: true,
+    isFeatured: false,
+    comingSoon: true,
+    tags: d.category ? [d.category] : [],
+    totalStock: 0,
+    avgRating: d.avgRating || 0,
+    reviewCount: d.ratingCount || 0,
+    images: [{ id: `${id}-img`, url: d.imageUrl, altText: d.title, isPrimary: true, sortOrder: 0 }],
+    variants: [],
+    categories: [],
+    reviews: [],
+  };
+}
 
 function ProductsContent() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
-  const [showFilters, setShowFilters] = useState(false);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['products', { search, sortBy, category: searchParams.get('category') }],
+  const productsQuery = useQuery({
+    queryKey: ['products', { search }],
     queryFn: async () => {
       try {
         const res = await api.get('/products', {
-          params: { search, sortBy, category: searchParams.get('category'), limit: 50 },
+          params: { search, limit: 50 },
         });
-        return (res.data.data || res.data);
+        return ((res.data.data || res.data).products || []) as Product[];
       } catch {
-        return { products: MOCK_PRODUCTS };
+        return [] as Product[];
       }
     },
     retry: 1,
     staleTime: 300000,
   });
 
-  const products: Product[] = data?.products || MOCK_PRODUCTS;
+  const designsQuery = useQuery({
+    queryKey: ['designs'],
+    queryFn: async () => {
+      try {
+        const res = await api.get('/designs');
+        return (res.data.designs || []) as any[];
+      } catch {
+        return [];
+      }
+    },
+    staleTime: 300000,
+  });
+
+  const isLoading = productsQuery.isLoading || designsQuery.isLoading;
+
+  const items = useMemo(() => {
+    const products = (productsQuery.data || []) as Product[];
+    const designs = (designsQuery.data || []).map(designToProduct);
+    return [...products, ...designs];
+  }, [productsQuery.data, designsQuery.data]);
+
+  const filtered = useMemo(() => {
+    if (!search) return items;
+    const q = search.toLowerCase();
+    return items.filter((p) => p.name.toLowerCase().includes(q));
+  }, [items, search]);
 
   return (
     <div className="pt-28 pb-24">
@@ -54,72 +99,14 @@ function ProductsContent() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search products & designs..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="input-field pl-11"
               />
             </div>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="btn-secondary px-4"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-            </button>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="input-field w-auto"
-            >
-              <option value="newest">Newest</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-              <option value="rating">Top Rated</option>
-              <option value="popular">Most Popular</option>
-            </select>
           </div>
         </motion.div>
-
-        {showFilters && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="glass-surface rounded-2xl p-6 mb-8"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-heading font-semibold text-sm">Filters</h3>
-              <button onClick={() => setShowFilters(false)}>
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div>
-                <label className="font-body text-xs font-medium text-gray-600 mb-2 block">
-                  Min Price
-                </label>
-                <input
-                  type="number"
-                  value={priceRange[0]}
-                  onChange={(e) => setPriceRange([+e.target.value, priceRange[1]])}
-                  className="input-field"
-                  placeholder="₹0"
-                />
-              </div>
-              <div>
-                <label className="font-body text-xs font-medium text-gray-600 mb-2 block">
-                  Max Price
-                </label>
-                <input
-                  type="number"
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
-                  className="input-field"
-                  placeholder="₹10,000"
-                />
-              </div>
-            </div>
-          </motion.div>
-        )}
 
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
@@ -127,13 +114,13 @@ function ProductsContent() {
               <div key={i} className="rounded-2xl bg-white/30 animate-pulse aspect-[4/5]" />
             ))}
           </div>
-        ) : products.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="text-center py-20">
-            <p className="font-body text-gray-400">No products found</p>
+            <p className="font-body text-gray-400">Nothing found</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.map((product, i) => (
+            {filtered.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} />
             ))}
           </div>

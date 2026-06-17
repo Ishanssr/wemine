@@ -9,6 +9,7 @@ export interface Product {
   sku: string;
   isActive: boolean;
   isFeatured: boolean;
+  comingSoon?: boolean;
   tags: string[];
   totalStock: number;
   avgRating: number;

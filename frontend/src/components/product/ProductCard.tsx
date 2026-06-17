@@ -19,6 +19,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const price = product.variants?.[0]?.price || product.basePrice;
   const hasDiscount = product.comparePrice && product.comparePrice > price;
 
+  const href = product.comingSoon ? `/designs/${product.id.replace('design-', '')}` : `/product/${product.slug}`;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -26,7 +28,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
     >
-      <Link href={`/product/${product.slug}`} className="group block">
+      <Link href={href} className="group block">
         <div className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
           {primaryImage && !imgError ? (
             <Image
@@ -41,6 +43,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <div className="w-full h-full bg-gray-100" />
           )}
 
+          {product.comingSoon && (
+            <span className="absolute top-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur text-black text-[9px] font-heading font-medium tracking-[0.05em] uppercase">
+              Coming Soon
+            </span>
+          )}
+
           {hasDiscount && (
             <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-heading font-medium tracking-[0.05em] uppercase">
               {Math.round(((product.comparePrice! - price) / product.comparePrice!) * 100)}% OFF
@@ -52,16 +60,20 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           <h3 className="font-heading text-[11px] font-medium text-gray-900 tracking-[0.05em] uppercase line-clamp-1">
             {product.name}
           </h3>
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-body text-xs text-gray-500">
-              {formatINR(price)}
-            </span>
-            {hasDiscount && (
-              <span className="font-body text-[10px] text-gray-300 line-through">
-                {formatINR(product.comparePrice!)}
+          {product.comingSoon ? (
+            <p className="font-body text-[11px] text-gray-400">Price TBD</p>
+          ) : (
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-body text-xs text-gray-500">
+                {formatINR(price)}
               </span>
-            )}
-          </div>
+              {hasDiscount && (
+                <span className="font-body text-[10px] text-gray-300 line-through">
+                  {formatINR(product.comparePrice!)}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </Link>
     </motion.div>
