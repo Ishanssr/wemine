@@ -8,7 +8,12 @@ export class EmailService {
   private resend: Resend;
 
   constructor(private config: ConfigService) {
-    this.resend = new Resend(this.config.get('RESEND_API_KEY'));
+    const apiKey = this.config.get('RESEND_API_KEY');
+    if (apiKey) {
+      this.resend = new Resend(apiKey);
+    } else {
+      this.logger.warn('RESEND_API_KEY not set — emails will be logged instead of sent');
+    }
   }
 
   async sendOtpEmail(email: string, otp: string) {
@@ -73,6 +78,10 @@ export class EmailService {
   }
 
   private async sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+    if (!this.resend) {
+      this.logger.log(`[Email skipped] To: ${to} | Subject: ${subject}`);
+      return;
+    }
     try {
       const from = this.config.get('EMAIL_FROM') || 'Wemine <noreply@wemine.in>';
       await this.resend.emails.send({ from, to, subject, html });
