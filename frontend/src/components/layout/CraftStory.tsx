@@ -32,9 +32,10 @@ const slides = [
 ];
 
 function Slide({ slide, progress, index }: { slide: typeof slides[0]; progress: any; index: number }) {
-  const y = useTransform(progress, [0, 1], ['100%', '0%']);
-  const scale = useTransform(progress, [0, 0.5, 1], [0.92, 0.96, 1]);
-  const opacity = useTransform(progress, [0, 0.3, 1], [0, 0.7, 1]);
+  const isFirst = index === 0;
+  const y = useTransform(progress, [0, 1], isFirst ? ['0%', '0%'] : ['100%', '0%']);
+  const scale = useTransform(progress, [0, 0.5, 1], isFirst ? [1, 1, 1] : [0.92, 0.96, 1]);
+  const opacity = useTransform(progress, [0, 0.3, 1], isFirst ? [1, 1, 1] : [0, 0.7, 1]);
 
   return (
     <motion.div
