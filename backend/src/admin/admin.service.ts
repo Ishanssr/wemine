@@ -168,41 +168,58 @@ export class AdminService {
     }
 
     const products = [
-      { name: 'Slate Frost T-Shirt', slug: 'slate-frost', price: 499, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600' },
-      { name: 'Alpine Cabin T-Shirt', slug: 'alpine-cabin', price: 499, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600' },
-      { name: 'Glacier White T-Shirt', slug: 'glacier-white', price: 499, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600' },
-      { name: 'Peak Seeker Black T-Shirt', slug: 'peak-seeker-black', price: 549, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=600' },
-      { name: 'Summit Grey T-Shirt', slug: 'summit-grey', price: 499, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600' },
-      { name: 'Forest Trail Olive T-Shirt', slug: 'forest-trail-olive', price: 529, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600' },
-      { name: 'Alpine Navy T-Shirt', slug: 'alpine-navy', price: 499, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600' },
-      { name: 'Misty Morning Cream T-Shirt', slug: 'misty-morning-cream', price: 479, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc942d?w=600' },
-      { name: 'Trailblazer Hoodie', slug: 'trailblazer-hoodie', price: 899, cat: 'hoodies', img: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600' },
-      { name: 'Summit Cap', slug: 'summit-cap', price: 299, cat: 'accessories', img: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600' },
-      { name: 'Canvas Trail Tote', slug: 'canvas-trail-tote', price: 399, cat: 'accessories', img: 'https://images.unsplash.com/photo-1597484661643-2f5fef642dd1?w=600' },
-      { name: 'Midnight Black Hoodie', slug: 'midnight-black-hoodie', price: 649, cat: 'hoodies', img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600' },
-      { name: 'Ridge Runner Heather Tee', slug: 'ridge-runner-heather', price: 449, cat: 't-shirts', img: 'https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?w=600' },
+      { name: 'Slate Frost T-Shirt', slug: 'slate-frost', price: 499, cat: 't-shirts', sku: 'WM-TS-001', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600' },
+      { name: 'Alpine Cabin T-Shirt', slug: 'alpine-cabin', price: 499, cat: 't-shirts', sku: 'WM-TS-002', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600' },
+      { name: 'Glacier White T-Shirt', slug: 'glacier-white', price: 499, cat: 't-shirts', sku: 'WM-TS-003', img: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600' },
+      { name: 'Peak Seeker Black T-Shirt', slug: 'peak-seeker-black', price: 549, cat: 't-shirts', sku: 'WM-TS-004', img: 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=600' },
+      { name: 'Summit Grey T-Shirt', slug: 'summit-grey', price: 499, cat: 't-shirts', sku: 'WM-TS-005', img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600' },
+      { name: 'Forest Trail Olive T-Shirt', slug: 'forest-trail-olive', price: 529, cat: 't-shirts', sku: 'WM-TS-006', img: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600' },
+      { name: 'Alpine Navy T-Shirt', slug: 'alpine-navy', price: 499, cat: 't-shirts', sku: 'WM-TS-007', img: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600' },
+      { name: 'Misty Morning Cream T-Shirt', slug: 'misty-morning-cream', price: 479, cat: 't-shirts', sku: 'WM-TS-008', img: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc942d?w=600' },
+      { name: 'Trailblazer Hoodie', slug: 'trailblazer-hoodie', price: 899, cat: 'hoodies', sku: 'WM-HD-001', img: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600' },
+      { name: 'Summit Cap', slug: 'summit-cap', price: 299, cat: 'accessories', sku: 'WM-AC-001', sizes: ['OS'], img: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600' },
+      { name: 'Canvas Trail Tote', slug: 'canvas-trail-tote', price: 399, cat: 'accessories', sku: 'WM-AC-002', sizes: ['OS'], img: 'https://images.unsplash.com/photo-1597484661643-2f5fef642dd1?w=600' },
+      { name: 'Midnight Black Hoodie', slug: 'midnight-black-hoodie', price: 649, cat: 'hoodies', sku: 'WM-HD-002', img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600' },
+      { name: 'Ridge Runner Heather Tee', slug: 'ridge-runner-heather', price: 449, cat: 't-shirts', sku: 'WM-TS-009', img: 'https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?w=600' },
     ];
 
     for (const p of products) {
+      const { sizes, ...rest } = p;
+      const defaultSizes = sizes || ['S', 'M', 'L', 'XL'];
       const product = await this.prisma.product.upsert({
-        where: { slug: p.slug },
+        where: { slug: rest.slug },
         update: {},
         create: {
-          name: p.name, slug: p.slug, description: p.name,
-          basePrice: p.price, sku: p.slug.toUpperCase().replace(/-/g, '_'),
+          name: rest.name, slug: rest.slug, description: rest.name,
+          basePrice: rest.price, sku: rest.sku,
           isFeatured: true,
         },
       });
       await this.prisma.productCategory.upsert({
-        where: { productId_categoryId: { productId: product.id, categoryId: cats[p.cat].id } },
+        where: { productId_categoryId: { productId: product.id, categoryId: cats[rest.cat].id } },
         update: {},
-        create: { productId: product.id, categoryId: cats[p.cat].id },
+        create: { productId: product.id, categoryId: cats[rest.cat].id },
       });
       await this.prisma.productImage.upsert({
         where: { id: `${product.id}-main` },
         update: {},
-        create: { productId: product.id, url: p.img, sortOrder: 0 },
+        create: { productId: product.id, url: rest.img, sortOrder: 0 },
       });
+      for (const size of defaultSizes) {
+        const variantSku = `${rest.sku}-${size}`;
+        await this.prisma.productVariant.upsert({
+          where: { sku: variantSku },
+          update: {},
+          create: {
+            productId: product.id,
+            name: size,
+            size,
+            sku: variantSku,
+            stock: Math.floor(Math.random() * 50) + 10,
+            sortOrder: defaultSizes.indexOf(size),
+          },
+        });
+      }
     }
 
     return { success: true, message: 'Database seeded successfully' };
