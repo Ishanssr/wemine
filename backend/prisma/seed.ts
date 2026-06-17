@@ -247,18 +247,36 @@ async function main() {
         ...data,
         categories: { create: [{ categoryId }] },
         images: imageUrl ? { create: [{ url: imageUrl, isPrimary: true, sortOrder: 0 }] } : undefined,
-        variants: {
-          create: defaultSizes.map((size, idx) => ({
-            name: size,
-            size,
-            sku: `${data.sku}-${size}`,
-            stock: Math.floor(Math.random() * 50) + 10,
-            sortOrder: idx,
-          })),
-        },
       },
     });
-    console.log(`Created product: ${product.name}`);
+    await prisma.productCategory.upsert({
+      where: { productId_categoryId: { productId: product.id, categoryId } },
+      update: {},
+      create: { productId: product.id, categoryId },
+    });
+    if (imageUrl) {
+      await prisma.productImage.upsert({
+        where: { id: `${product.id}-main` },
+        update: {},
+        create: { productId: product.id, url: imageUrl, isPrimary: true, sortOrder: 0 },
+      });
+    }
+    for (const size of defaultSizes) {
+      const variantSku = `${data.sku}-${size}`;
+      await prisma.productVariant.upsert({
+        where: { sku: variantSku },
+        update: {},
+        create: {
+          productId: product.id,
+          name: size,
+          size,
+          sku: variantSku,
+          stock: Math.floor(Math.random() * 50) + 10,
+          sortOrder: defaultSizes.indexOf(size),
+        },
+      });
+    }
+    console.log(`Seeded product: ${product.name}`);
   }
 
   const coupon = await prisma.coupon.upsert({
