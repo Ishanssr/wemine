@@ -95,7 +95,7 @@ function SearchContent() {
         ) : (
           <div className="text-center py-20">
             <Search className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-            <p className="font-body text-gray-400">Search for your favorite mountain wear</p>
+            <p className="font-body text-gray-400">Search for your favorite pieces</p>
           </div>
         )}
       </div>

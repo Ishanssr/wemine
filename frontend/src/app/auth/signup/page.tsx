@@ -48,7 +48,7 @@ export default function SignupPage() {
             Create your account
           </h1>
           <p className="font-body text-sm text-gray-500 text-center mb-8">
-            Join the mountain community
+            Join the WEMINE community
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">

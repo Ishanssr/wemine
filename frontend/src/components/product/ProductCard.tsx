@@ -38,7 +38,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               alt={primaryImage.altText || product.name}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
-              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
               onError={() => setImgError(true)}
             />
           ) : (
@@ -49,7 +49,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
           {product.comingSoon ? (
             <span className="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur text-black text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
-              Coming Soon
+              Launching Soon
             </span>
           ) : hasDiscount ? (
             <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-heading font-medium tracking-[0.05em] uppercase">
@@ -64,7 +64,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           </h3>
           {product.comingSoon ? (
             <p className="font-body text-[11px] text-gray-400 tracking-[0.05em] uppercase">
-              Coming Soon
+              Launching Soon
             </p>
           ) : (
             <div className="flex items-baseline gap-1.5">
