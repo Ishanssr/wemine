@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { CONTACT } from '@/lib/constants';
 import toast from 'react-hot-toast';
 
 export default function ContactPage() {
@@ -99,7 +100,7 @@ export default function ContactPage() {
 
               <div className="flex items-start gap-3">
                 <Mail className="w-4 h-4 text-gray-400 mt-0.5" />
-                <p className="font-body text-sm text-gray-900">15h4nj4n81r@gmail.com</p>
+                <p className="font-body text-sm text-gray-900">{CONTACT.email}</p>
               </div>
 
               <div className="flex items-start gap-3">

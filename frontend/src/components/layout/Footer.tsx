@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Logo } from '@/components/ui/Logo';
-import { FOOTER_LINKS } from '@/lib/constants';
+import { CONTACT, FOOTER_LINKS } from '@/lib/constants';
 
 export function Footer() {
   return (
@@ -19,7 +19,7 @@ export function Footer() {
             </p>
             <div className="mt-4 space-y-1.5">
               <p className="font-body text-[11px] text-gray-400">+91 9828847782</p>
-              <p className="font-body text-[11px] text-gray-400">15h4nj4n81r@gmail.com</p>
+               <p className="font-body text-[11px] text-gray-400">{CONTACT.email}</p>
             </div>
           </div>
 

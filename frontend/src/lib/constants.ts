@@ -1,6 +1,6 @@
 export const CONTACT = {
   phone: '+91 9828847782',
-  email: '15h4nj4n81r@gmail.com',
+  email: 'Wearwemine@gmail.com',
   address: 'Himachal Pradesh, India',
 };
 
