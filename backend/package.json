@@ -76,6 +76,9 @@
     "socket.io": "^4.7.5",
     "stripe": "^16.0.0",
     "swagger-ui-express": "^5.0.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.0",
     "uuid": "^10.0.0",
     "winston": "^3.13.0"
   },
@@ -86,10 +89,7 @@
     "prisma": "^5.17.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.0",
-    "ts-loader": "^9.5.1",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.0"
+    "ts-loader": "^9.5.1"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
