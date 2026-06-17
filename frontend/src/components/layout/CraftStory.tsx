@@ -41,8 +41,8 @@ export function CraftStory() {
   }, []);
 
   return (
-    <section className="py-16 md:py-20 bg-cream-50/50 overflow-hidden">
-      <div className="max-content mb-10">
+    <section className="py-12 md:py-16 bg-cream-50/50 overflow-hidden">
+      <div className="max-content mb-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -53,16 +53,18 @@ export function CraftStory() {
             The Difference
           </p>
           <h2 className="font-heading text-2xl md:text-3xl font-medium text-gray-900 tracking-tight">
-            Quality You Can Feel
+            Worth Every Wear
           </h2>
         </motion.div>
       </div>
 
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide px-6 md:px-16"
+        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
       >
+        <div className="shrink-0" style={{ width: 'calc(50vw - 1rem)' }} />
+
         {slides.map((src, i) => {
           const dist = i - active;
           const abs = Math.abs(dist);
@@ -72,7 +74,7 @@ export function CraftStory() {
             <div
               key={src}
               data-index={i}
-              className="snap-center shrink-0 flex items-center justify-center"
+              className="snap-center shrink-0 flex items-center justify-center px-2"
               style={{ width: '80vw', maxWidth: 680 }}
             >
               <motion.div
@@ -96,9 +98,11 @@ export function CraftStory() {
             </div>
           );
         })}
+
+        <div className="shrink-0" style={{ width: 'calc(50vw - 1rem)' }} />
       </div>
 
-      <div className="flex justify-center gap-2 mt-6">
+      <div className="flex justify-center gap-2 mt-4">
         {slides.map((_, i) => (
           <button
             key={i}
