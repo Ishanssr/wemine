@@ -2,7 +2,6 @@
 
 import { Suspense, useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -34,25 +33,10 @@ function designToProduct(d: any): Product {
 }
 
 function ProductsContent() {
-  const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
 
-  const productsQuery = useQuery({
-    queryKey: ['products', 'list'],
-    queryFn: async () => {
-      try {
-        const res = await api.get('/products', { params: { limit: 50 } });
-        return ((res.data.data || res.data).products || []) as Product[];
-      } catch {
-        return [] as Product[];
-      }
-    },
-    retry: 1,
-    staleTime: 300000,
-  });
-
-  const designsQuery = useQuery({
-    queryKey: ['designs'],
+  const { data: designs, isLoading } = useQuery({
+    queryKey: ['designs', 'products-page'],
     queryFn: async () => {
       try {
         const res = await api.get('/designs');
@@ -64,13 +48,9 @@ function ProductsContent() {
     staleTime: 300000,
   });
 
-  const isLoading = productsQuery.isLoading || designsQuery.isLoading;
-
   const items = useMemo(() => {
-    const products = productsQuery.data || [];
-    const designs = (designsQuery.data || []).map(designToProduct);
-    return [...products, ...designs];
-  }, [productsQuery.data, designsQuery.data]);
+    return (designs || []).map(designToProduct);
+  }, [designs]);
 
   const filtered = useMemo(() => {
     if (!search) return items;
@@ -87,16 +67,19 @@ function ProductsContent() {
           className="mb-10"
         >
           <p className="font-heading text-xs font-medium text-glacier-600 tracking-[0.2em] uppercase mb-3">
-            Collection
+            Coming Soon
           </p>
-          <h1 className="font-heading text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
-            Our Products
+          <h1 className="font-heading text-4xl md:text-5xl font-semibold text-gray-900 mb-3">
+            Upcoming Releases
           </h1>
+          <p className="font-body text-sm text-gray-400 mb-6 max-w-lg">
+            Browse our upcoming collection. Drop your feedback on each design to help us finalize what lands in production.
+          </p>
           <div className="relative max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search products & designs..."
+              placeholder="Search designs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="input-field pl-11"
@@ -112,7 +95,9 @@ function ProductsContent() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
-            <p className="font-body text-gray-400">Nothing found</p>
+            <p className="font-body text-gray-400">
+              {search ? 'No designs match your search' : 'No designs yet. Check back soon!'}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">

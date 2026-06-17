@@ -30,22 +30,8 @@ function designToProduct(d: any): Product {
 }
 
 export function ProductGrid() {
-  const productsQuery = useQuery({
-    queryKey: ['products', 'featured-grid'],
-    queryFn: async () => {
-      try {
-        const res = await api.get('/products', { params: { featured: true, limit: 12 } });
-        return ((res.data.data || res.data).products || []) as Product[];
-      } catch {
-        return [] as Product[];
-      }
-    },
-    retry: 1,
-    staleTime: 300000,
-  });
-
-  const designsQuery = useQuery({
-    queryKey: ['designs'],
+  const { data: designs, isLoading } = useQuery({
+    queryKey: ['designs', 'home-grid'],
     queryFn: async () => {
       try {
         const res = await api.get('/designs');
@@ -57,9 +43,7 @@ export function ProductGrid() {
     staleTime: 300000,
   });
 
-  const isLoading = productsQuery.isLoading || designsQuery.isLoading;
-
-  const products = [...(productsQuery.data || []), ...(designsQuery.data || []).map(designToProduct)];
+  const products = (designs || []).map(designToProduct);
 
   if (isLoading) {
     return (
