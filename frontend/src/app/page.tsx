@@ -5,13 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { HeroSection } from '@/components/layout/HeroSection';
-
-const specs = [
-  { label: '240 GSM Premium Cotton', desc: 'Heavyweight fabric that holds its shape', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80' },
-  { label: 'Pre-Shrunk Fabric', desc: 'Wash after wash, the fit stays true', img: 'https://images.unsplash.com/photo-1614236097055-5c22c7fb8b5c?w=400&q=80' },
-  { label: 'Fade Resistant Prints', desc: 'Screen-printed graphics made to last', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&q=80' },
-  { label: 'Built for 100+ Washes', desc: 'Reinforced seams, double-stitched hems', img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80' },
-];
+import { CraftStory } from '@/components/layout/CraftStory';
 
 const features = [
   { title: 'Premium Materials', desc: '100% organic cotton, ethically sourced' },
@@ -25,51 +19,7 @@ export default function HomePage() {
     <>
       <HeroSection />
 
-      <section className="section-padding py-20 md:py-28 bg-black/5">
-        <div className="max-content">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <p className="font-heading text-[10px] font-medium text-gray-400 tracking-[0.15em] uppercase mb-3">
-              The Difference
-            </p>
-            <h2 className="font-heading text-2xl md:text-3xl font-medium text-gray-900 tracking-tight">
-              Quality You Can Feel
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            {specs.map((spec, i) => (
-              <motion.div
-                key={spec.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-              >
-                <div className="aspect-square overflow-hidden bg-glacier-100/50 mb-4">
-                  <Image
-                    src={spec.img}
-                    alt={spec.label}
-                    width={400}
-                    height={400}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="font-heading text-xs font-medium text-gray-900 mb-1.5 tracking-[0.05em] uppercase">
-                  {spec.label}
-                </h3>
-                <p className="font-body text-xs text-gray-400 leading-relaxed">
-                  {spec.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <CraftStory />
 
       <section id="products" className="section-padding py-20 md:py-28">
         <div className="max-content">
