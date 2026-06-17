@@ -3,63 +3,27 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { ProductCard } from './ProductCard';
+import { MOCK_PRODUCTS } from '@/lib/mock-data';
 import type { Product } from '@/types';
 
-function designToProduct(d: any): Product {
-  const id = `design-${d.id}`;
-  return {
-    id,
-    name: d.title,
-    slug: id,
-    description: d.description || '',
-    shortDesc: d.description || '',
-    basePrice: 0,
-    sku: id,
-    isActive: true,
-    isFeatured: false,
-    comingSoon: true,
-    tags: d.category ? [d.category] : [],
-    totalStock: 0,
-    avgRating: d.avgRating || 0,
-    reviewCount: d.ratingCount || 0,
-    images: [{ id: `${id}-img`, url: d.imageUrl, altText: d.title, isPrimary: true, sortOrder: 0 }],
-    variants: [],
-    categories: [],
-    reviews: [],
-  };
-}
-
 export function ProductGrid() {
-  const productsQuery = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['products', 'featured'],
     queryFn: async () => {
       try {
         const res = await api.get('/products', { params: { featured: true, limit: 12 } });
-        return ((res.data.data || res.data).products || []) as Product[];
+        const apiProducts = (res.data.data || res.data).products || [];
+        const mockFeatured = MOCK_PRODUCTS.filter((p) => p.isFeatured);
+        const apiSlugs = new Set(apiProducts.map((p: Product) => p.slug));
+        const extras = mockFeatured.filter((p) => !apiSlugs.has(p.slug));
+        return [...apiProducts, ...extras];
       } catch {
-        return [] as Product[];
+        return MOCK_PRODUCTS.filter((p) => p.isFeatured);
       }
     },
     retry: 1,
     staleTime: 300000,
   });
-
-  const designsQuery = useQuery({
-    queryKey: ['designs'],
-    queryFn: async () => {
-      try {
-        const res = await api.get('/designs');
-        return (res.data.designs || []) as any[];
-      } catch {
-        return [];
-      }
-    },
-    staleTime: 300000,
-  });
-
-  const isLoading = productsQuery.isLoading || designsQuery.isLoading;
-
-  const products = [...(productsQuery.data || []), ...(designsQuery.data || []).map(designToProduct)];
 
   if (isLoading) {
     return (
@@ -76,6 +40,8 @@ export function ProductGrid() {
       </div>
     );
   }
+
+  const products = (data as Product[]) || (isError ? MOCK_PRODUCTS.filter((p) => p.isFeatured) : []);
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
