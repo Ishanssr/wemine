@@ -1,21 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
-  private transporter: nodemailer.Transporter;
+  private resend: Resend;
 
   constructor(private config: ConfigService) {
-    this.transporter = nodemailer.createTransport({
-      host: this.config.get('SMTP_HOST'),
-      port: parseInt(this.config.get('SMTP_PORT') || '587'),
-      auth: {
-        user: this.config.get('SMTP_USER'),
-        pass: this.config.get('SMTP_PASS'),
-      },
-    });
+    this.resend = new Resend(this.config.get('RESEND_API_KEY'));
   }
 
   async sendOtpEmail(email: string, otp: string) {
@@ -81,12 +74,8 @@ export class EmailService {
 
   private async sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
     try {
-      await this.transporter.sendMail({
-        from: this.config.get('EMAIL_FROM') || 'noreply@wemine.com',
-        to,
-        subject,
-        html,
-      });
+      const from = this.config.get('EMAIL_FROM') || 'Wemine <noreply@wemine.in>';
+      await this.resend.emails.send({ from, to, subject, html });
       this.logger.log(`Email sent to ${to}: ${subject}`);
     } catch (error) {
       this.logger.error(`Failed to send email to ${to}: ${error.message}`);
@@ -104,7 +93,7 @@ export class EmailService {
               <table width="480" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
                 <tr><td style="padding:40px;text-align:center;">
                   <h1 style="font-size:28px;font-weight:600;color:#1a1a1a;margin:0 0 8px;font-family:'Outfit',sans-serif;">WEMINE</h1>
-                  <p style="color:#888;font-size:13px;margin:0 0 32px;">Premium Mountain Wear</p>
+                  <p style="color:#888;font-size:13px;margin:0 0 32px;">hello@wemine.in</p>
                   <h2 style="font-size:20px;color:#1a1a1a;margin:0 0 24px;">${title}</h2>
                   ${content}
                   ${footer ? `<p style="color:#888;font-size:13px;margin-top:24px;">${footer}</p>` : ''}
