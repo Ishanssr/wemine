@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -34,12 +35,17 @@ function designToProduct(d: any): Product {
 
 function ProductsContent() {
   const [search, setSearch] = useState('');
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category');
 
   const { data: designs, isLoading } = useQuery({
-    queryKey: ['designs', 'products-page'],
+    queryKey: ['designs', 'products-page', categoryParam],
     queryFn: async () => {
       try {
-        const res = await api.get('/designs');
+        const params = new URLSearchParams();
+        if (categoryParam) params.set('category', categoryParam);
+        const qs = params.toString();
+        const res = await api.get(`/designs${qs ? `?${qs}` : ''}`);
         return (res.data.designs || []) as any[];
       } catch {
         return [];
@@ -115,5 +121,9 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
-  return <ProductsContent />;
+  return (
+    <Suspense>
+      <ProductsContent />
+    </Suspense>
+  );
 }

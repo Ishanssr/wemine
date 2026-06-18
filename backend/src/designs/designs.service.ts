@@ -18,7 +18,7 @@ export class DesignsService {
     if (cached) return cached;
 
     const where: any = { isActive: true };
-    if (category) where.category = category;
+    if (category) where.category = { equals: category, mode: 'insensitive' };
 
     const [designs, total] = await Promise.all([
       this.prisma.design.findMany({

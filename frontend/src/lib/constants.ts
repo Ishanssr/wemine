@@ -20,7 +20,6 @@ export const SOCIAL = {
 
 export const NAV_LINKS = [
   { label: 'Shop', href: '/products' },
-  { label: 'Collections', href: '/collections' },
   { label: 'New Arrivals', href: '/products?sort=newest' },
   { label: 'Our Story', href: '/#about' },
 ];
@@ -28,8 +27,6 @@ export const NAV_LINKS = [
 export const FOOTER_LINKS = {
   shop: [
     { label: 'All Products', href: '/products' },
-    { label: 'T-Shirts', href: '/products?category=t-shirts' },
-    { label: 'Hoodies', href: '/products?category=hoodies' },
     { label: 'New Arrivals', href: '/products?sort=newest' },
   ],
   support: [
