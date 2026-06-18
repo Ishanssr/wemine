@@ -16,6 +16,9 @@ const queryClient = new QueryClient({
 function AuthLoader({ children }: { children: React.ReactNode }) {
   const fetchProfile = useAuthStore((s) => s.fetchProfile);
   useEffect(() => { fetchProfile(); }, [fetchProfile]);
+  useEffect(() => {
+    fetch('/api/designs?limit=1').catch(() => {});
+  }, []);
   return <>{children}</>;
 }
 
