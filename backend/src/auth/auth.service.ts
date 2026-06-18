@@ -14,6 +14,7 @@ import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import { Role } from '@prisma/client';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
 
@@ -59,6 +60,10 @@ export class AuthService {
 
     const valid = await argon2.verify(user.passwordHash, dto.password);
     if (!valid) throw new UnauthorizedException('Invalid credentials');
+
+    if (user.role !== Role.ADMIN && !user.isEmailVerified) {
+      throw new UnauthorizedException('Please verify your email before logging in');
+    }
 
     await this.prisma.user.update({
       where: { id: user.id },

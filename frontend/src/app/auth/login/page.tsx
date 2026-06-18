@@ -18,17 +18,36 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
 
+  const [unverifiedEmail, setUnverifiedEmail] = useState('');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setUnverifiedEmail('');
     try {
       await login(form.email, form.password);
       toast.success('Welcome back!');
       router.push('/');
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || 'Invalid credentials');
+      const msg = err?.response?.data?.message || '';
+      if (msg.includes('verify your email')) {
+        setUnverifiedEmail(form.email);
+      }
+      toast.error(msg || 'Invalid credentials');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const resendVerification = async () => {
+    try {
+      await fetch(`${API_URL}/auth/send-otp`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: unverifiedEmail }),
+      });
+      toast.success('Verification email sent!');
+    } catch {
+      toast.error('Failed to send verification email');
     }
   };
 
@@ -133,8 +152,19 @@ export default function LoginPage() {
             </a>
           </div>
 
+          {unverifiedEmail && (
+            <div className="mt-6 text-center">
+              <p className="font-body text-xs text-gray-500 mb-2">
+                Didn&apos;t receive the email?
+              </p>
+              <button onClick={resendVerification} className="font-heading text-[11px] font-medium text-gray-900 underline hover:no-underline">
+                Resend verification
+              </button>
+            </div>
+          )}
+
           <p className="font-body text-xs text-gray-400 text-center mt-6">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/auth/signup" className="text-gray-900 font-semibold hover:underline">
               Sign up
             </Link>
