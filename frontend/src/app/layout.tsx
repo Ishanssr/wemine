@@ -4,6 +4,7 @@ import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://wemine.in'),
   title: 'WEMINE | Premium Minimal Wear',
   description: 'Premium minimal apparel. Threads with character.',
   keywords: ['t-shirts', 'minimal wear', 'premium apparel', 'minimalist fashion'],
