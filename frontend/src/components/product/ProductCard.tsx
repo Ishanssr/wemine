@@ -19,7 +19,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const price = product.variants?.[0]?.price || product.basePrice;
   const hasDiscount = product.comparePrice && product.comparePrice > price;
 
-  const href = product.comingSoon
+  const isDesign = product.slug?.startsWith('design-');
+  const href = isDesign
     ? `/designs/${product.id.replace('design-', '')}`
     : `/product/${product.slug}`;
 
