@@ -21,7 +21,7 @@ import { EmailService } from '../email/email.service';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-  private otpStore = new Map<string, { otp: string; expires: Date }>();
+  private otpStore = new Map<string, { otp: string; expires: Date; attempts?: number }>();
 
   constructor(
     private prisma: PrismaService,
@@ -138,7 +138,15 @@ export class AuthService {
 
   async verifyEmail(email: string, otp: string) {
     const stored = this.otpStore.get(email);
-    if (!stored || stored.otp !== otp || stored.expires < new Date()) {
+    if (!stored || stored.expires < new Date()) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+    stored.attempts = (stored.attempts || 0) + 1;
+    if (stored.attempts > 5) {
+      this.otpStore.delete(email);
+      throw new BadRequestException('Too many attempts. Request a new OTP.');
+    }
+    if (stored.otp !== otp) {
       throw new BadRequestException('Invalid or expired OTP');
     }
     this.otpStore.delete(email);
@@ -192,9 +200,14 @@ export class AuthService {
   }
 
   async updateProfile(userId: string, data: any) {
+    const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl'];
+    const safe: any = {};
+    for (const key of allowedFields) {
+      if (data[key] !== undefined) safe[key] = data[key];
+    }
     const user = await this.prisma.user.update({
       where: { id: userId },
-      data,
+      data: safe,
     });
     return this.sanitizeUser(user);
   }

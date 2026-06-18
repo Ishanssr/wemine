@@ -10,7 +10,10 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { ConfigService } from '@nestjs/config';
 import * as cloudinary from 'cloudinary';
+import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '@prisma/client';
 
+@Roles(Role.ADMIN)
 @Controller('upload')
 export class UploadController {
   private cloudinary: any;

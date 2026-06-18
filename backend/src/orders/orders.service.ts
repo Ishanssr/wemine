@@ -19,6 +19,15 @@ export class OrdersService {
 
     if (!cart?.items.length) throw new NotFoundException('Cart is empty');
 
+    if (data.shippingAddressId) {
+      const addr = await this.prisma.address.findUnique({ where: { id: data.shippingAddressId } });
+      if (!addr || addr.userId !== userId) throw new NotFoundException('Address not found');
+    }
+    if (data.billingAddressId && data.billingAddressId !== data.shippingAddressId) {
+      const addr = await this.prisma.address.findUnique({ where: { id: data.billingAddressId } });
+      if (!addr || addr.userId !== userId) throw new NotFoundException('Address not found');
+    }
+
     const subtotal = cart.items.reduce(
       (sum, item) => sum + (item.variant?.price || item.product.basePrice) * item.quantity,
       0,
@@ -84,7 +93,7 @@ export class OrdersService {
     };
   }
 
-  async findById(id: string) {
+  async findById(id: string, userId?: string) {
     const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
@@ -95,10 +104,11 @@ export class OrdersService {
       },
     });
     if (!order) throw new NotFoundException('Order not found');
+    if (userId && order.userId !== userId) throw new NotFoundException('Order not found');
     return order;
   }
 
-  async findByOrderNumber(orderNumber: string) {
+  async findByOrderNumber(orderNumber: string, userId?: string) {
     const order = await this.prisma.order.findUnique({
       where: { orderNumber },
       include: {
@@ -107,6 +117,7 @@ export class OrdersService {
       },
     });
     if (!order) throw new NotFoundException('Order not found');
+    if (userId && order.userId !== userId) throw new NotFoundException('Order not found');
     return order;
   }
 

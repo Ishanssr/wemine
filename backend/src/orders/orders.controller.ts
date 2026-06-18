@@ -17,13 +17,13 @@ export class OrdersController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    return this.orders.findById(id);
+  async findById(@CurrentUser('id') userId: string, @Param('id') id: string) {
+    return this.orders.findById(id, userId);
   }
 
   @Get('number/:orderNumber')
-  async findByOrderNumber(@Param('orderNumber') orderNumber: string) {
-    return this.orders.findByOrderNumber(orderNumber);
+  async findByOrderNumber(@CurrentUser('id') userId: string, @Param('orderNumber') orderNumber: string) {
+    return this.orders.findByOrderNumber(orderNumber, userId);
   }
 
   @Post(':id/refund')

@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
 
@@ -97,7 +98,7 @@ export class AuthController {
   }
 
   @Patch('profile')
-  async updateProfile(@CurrentUser('id') userId: string, @Body() body: any) {
+  async updateProfile(@CurrentUser('id') userId: string, @Body() body: UpdateProfileDto) {
     return this.auth.updateProfile(userId, body);
   }
 
@@ -144,7 +145,7 @@ export class AuthController {
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}&refreshToken=${result.refreshToken}`);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}`);
   }
 
   @Public()
@@ -164,6 +165,6 @@ export class AuthController {
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}&refreshToken=${result.refreshToken}`);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${result.accessToken}`);
   }
 }

@@ -11,10 +11,8 @@ function CallbackHandler() {
 
   useEffect(() => {
     const token = searchParams.get('token');
-    const refreshToken = searchParams.get('refreshToken');
     if (token) {
       localStorage.setItem('accessToken', token);
-      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
       fetchProfile().finally(() => router.push('/'));
     } else {
       router.push('/auth/login');
