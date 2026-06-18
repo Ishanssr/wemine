@@ -1,13 +1,21 @@
 'use client';
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { api } from '@/lib/api';
 import { ProductCard } from '@/components/product/ProductCard';
 import type { Product } from '@/types';
+
+const CATEGORIES = [
+  { label: 'All', value: '' },
+  { label: 'T-Shirts', value: 'T-Shirt' },
+  { label: 'Hoodies', value: 'Hoodie' },
+  { label: 'Jackets', value: 'Jacket' },
+  { label: 'Accessories', value: 'Accessories' },
+];
 
 function designToProduct(d: any): Product {
   const id = `design-${d.id}`;
@@ -36,14 +44,16 @@ function designToProduct(d: any): Product {
 function ProductsContent() {
   const [search, setSearch] = useState('');
   const searchParams = useSearchParams();
-  const categoryParam = searchParams.get('category');
+  const router = useRouter();
+  const pathname = usePathname();
+  const activeCategory = searchParams.get('category') || '';
 
   const { data: designs, isLoading } = useQuery({
-    queryKey: ['designs', 'products-page', categoryParam],
+    queryKey: ['designs', 'products-page', activeCategory],
     queryFn: async () => {
       try {
         const params = new URLSearchParams();
-        if (categoryParam) params.set('category', categoryParam);
+        if (activeCategory) params.set('category', activeCategory);
         const qs = params.toString();
         const res = await api.get(`/designs${qs ? `?${qs}` : ''}`);
         return (res.data.designs || []) as any[];
@@ -63,6 +73,20 @@ function ProductsContent() {
 
   const isEmpty = !isLoading && filtered.length === 0;
 
+  const handleCategoryChange = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value) {
+        params.set('category', value);
+      } else {
+        params.delete('category');
+      }
+      const qs = params.toString();
+      router.push(`${pathname}${qs ? `?${qs}` : ''}`);
+    },
+    [router, pathname, searchParams],
+  );
+
   return (
     <div className="pt-28 pb-24">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -77,6 +101,24 @@ function ProductsContent() {
           <p className="font-body text-sm text-gray-400 mb-6 max-w-lg">
             Browse our collection of premium apparel.
           </p>
+          <div className="flex flex-wrap items-center gap-1.5 mb-6">
+            {CATEGORIES.map((cat) => {
+              const isActive = cat.value === activeCategory;
+              return (
+                <button
+                  key={cat.value}
+                  onClick={() => handleCategoryChange(cat.value)}
+                  className={`px-4 py-1.5 text-sm font-body rounded-full border transition-all duration-200 ${
+                    isActive
+                      ? 'bg-black text-white border-black'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
           <div className="relative max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
