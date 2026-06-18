@@ -1,8 +1,7 @@
 'use client';
 
-import { Suspense, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -33,16 +32,7 @@ function designToProduct(d: any): Product {
   };
 }
 
-const categoryTitles: Record<string, string> = {
-  't-shirts': 'T-Shirts',
-  'hoodies': 'Hoodies',
-  'jackets': 'Jackets',
-  'accessories': 'Accessories',
-};
-
 function ProductsContent() {
-  const searchParams = useSearchParams();
-  const category = searchParams.get('category') || '';
   const [search, setSearch] = useState('');
 
   const { data: designs, isLoading } = useQuery({
@@ -58,17 +48,13 @@ function ProductsContent() {
     staleTime: 300000,
   });
 
-  const items = useMemo(() => {
-    return (designs || []).map(designToProduct);
-  }, [designs]);
-
   const filtered = useMemo(() => {
+    const items = (designs || []).map(designToProduct);
     if (!search) return items;
     const q = search.toLowerCase();
     return items.filter((p) => p.name.toLowerCase().includes(q));
-  }, [items, search]);
+  }, [designs, search]);
 
-  const title = categoryTitles[category] || 'Upcoming Releases';
   const isEmpty = !isLoading && filtered.length === 0;
 
   return (
@@ -80,12 +66,10 @@ function ProductsContent() {
           className="mb-10"
         >
           <h1 className="font-heading text-4xl md:text-5xl font-semibold text-gray-900 mb-3">
-            {title}
+            Our Collection
           </h1>
           <p className="font-body text-sm text-gray-400 mb-6 max-w-lg">
-            {category
-              ? `Explore our ${title.toLowerCase()} collection.`
-              : 'Browse our collection of premium apparel.'}
+            Browse our collection of premium apparel.
           </p>
           <div className="relative max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -111,9 +95,7 @@ function ProductsContent() {
               Launching Soon
             </p>
             <p className="font-body text-sm text-gray-400">
-              {category
-                ? `Our ${title.toLowerCase()} collection is being designed. Follow us for updates!`
-                : 'No designs yet. Check back soon!'}
+              No designs yet. Check back soon!
             </p>
           </div>
         ) : filtered.length === 0 ? (
@@ -133,17 +115,5 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
-  return (
-    <Suspense fallback={
-      <div className="pt-28 pb-24 max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="rounded-2xl bg-white/30 animate-pulse aspect-[4/5]" />
-          ))}
-        </div>
-      </div>
-    }>
-      <ProductsContent />
-    </Suspense>
-  );
+  return <ProductsContent />;
 }
