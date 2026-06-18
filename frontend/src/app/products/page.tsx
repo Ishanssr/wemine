@@ -46,12 +46,10 @@ function ProductsContent() {
   const [search, setSearch] = useState('');
 
   const { data: designs, isLoading } = useQuery({
-    queryKey: ['designs', 'products-page', category],
+    queryKey: ['designs', 'products-page'],
     queryFn: async () => {
       try {
-        const params: any = {};
-        if (category) params.category = category;
-        const res = await api.get('/designs', { params });
+        const res = await api.get('/designs');
         return (res.data.designs || []) as any[];
       } catch {
         return [];
@@ -65,10 +63,16 @@ function ProductsContent() {
   }, [designs]);
 
   const filtered = useMemo(() => {
-    if (!search) return items;
-    const q = search.toLowerCase();
-    return items.filter((p) => p.name.toLowerCase().includes(q));
-  }, [items, search]);
+    let list = items;
+    if (category) {
+      list = list.filter((p) => p.tags?.some((t) => t.toLowerCase() === category));
+    }
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter((p) => p.name.toLowerCase().includes(q));
+    }
+    return list;
+  }, [items, category, search]);
 
   const title = categoryTitles[category] || 'Upcoming Releases';
   const isEmpty = !isLoading && filtered.length === 0;
