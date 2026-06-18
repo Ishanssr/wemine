@@ -48,18 +48,26 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
 
-          {hasDiscount && (
+          {isDesign ? (
+            <span className="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur text-black text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
+              Launching Soon
+            </span>
+          ) : hasDiscount ? (
             <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-heading font-medium tracking-[0.05em] uppercase">
               {Math.round(((product.comparePrice! - price) / product.comparePrice!) * 100)}% OFF
             </span>
-          )}
+          ) : null}
         </div>
 
         <div className="space-y-1">
           <h3 className="font-heading text-[11px] font-medium text-gray-900 tracking-[0.05em] uppercase line-clamp-1">
             {product.name}
           </h3>
-          {price > 0 ? (
+          {isDesign ? (
+            <p className="font-body text-[11px] text-gray-400 tracking-[0.05em] uppercase">
+              Launching Soon
+            </p>
+          ) : price > 0 ? (
             <div className="flex items-baseline gap-1.5">
               <span className="font-body text-xs text-gray-500">
                 {formatINR(price)}
