@@ -63,16 +63,10 @@ function ProductsContent() {
   }, [designs]);
 
   const filtered = useMemo(() => {
-    let list = items;
-    if (category) {
-      list = list.filter((p) => p.tags?.some((t) => t.toLowerCase() === category));
-    }
-    if (search) {
-      const q = search.toLowerCase();
-      list = list.filter((p) => p.name.toLowerCase().includes(q));
-    }
-    return list;
-  }, [items, category, search]);
+    if (!search) return items;
+    const q = search.toLowerCase();
+    return items.filter((p) => p.name.toLowerCase().includes(q));
+  }, [items, search]);
 
   const title = categoryTitles[category] || 'Upcoming Releases';
   const isEmpty = !isLoading && filtered.length === 0;
