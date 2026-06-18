@@ -21,7 +21,7 @@ function designToProduct(d: any): Product {
     sku: id,
     isActive: true,
     isFeatured: false,
-    comingSoon: true,
+    comingSoon: false,
     tags: d.category ? [d.category] : [],
     totalStock: 0,
     avgRating: d.avgRating || 0,
@@ -81,16 +81,13 @@ function ProductsContent() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-10"
         >
-          <p className="font-heading text-xs font-medium text-glacier-600 tracking-[0.2em] uppercase mb-3">
-            {category ? 'Coming Soon' : 'Coming Soon'}
-          </p>
           <h1 className="font-heading text-4xl md:text-5xl font-semibold text-gray-900 mb-3">
             {title}
           </h1>
           <p className="font-body text-sm text-gray-400 mb-6 max-w-lg">
             {category
-              ? `Our ${title.toLowerCase()} collection is in the works. Preview the designs below and share your feedback.`
-              : 'Browse our upcoming collection. Drop your feedback on each design to help us finalize what lands in production.'}
+              ? `Explore our ${title.toLowerCase()} collection.`
+              : 'Browse our collection of premium apparel.'}
           </p>
           <div className="relative max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />

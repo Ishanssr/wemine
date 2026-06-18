@@ -30,7 +30,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
     >
-      <Link href={href} className="group block">
+      <Link href={href} className="group block" scroll={false}>
         <div className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
           {primaryImage && !imgError ? (
             <Image
@@ -47,26 +47,18 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
 
-          {product.comingSoon ? (
-            <span className="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur text-black text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
-              Launching Soon
-            </span>
-          ) : hasDiscount ? (
+          {hasDiscount && (
             <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-heading font-medium tracking-[0.05em] uppercase">
               {Math.round(((product.comparePrice! - price) / product.comparePrice!) * 100)}% OFF
             </span>
-          ) : null}
+          )}
         </div>
 
         <div className="space-y-1">
           <h3 className="font-heading text-[11px] font-medium text-gray-900 tracking-[0.05em] uppercase line-clamp-1">
             {product.name}
           </h3>
-          {product.comingSoon ? (
-            <p className="font-body text-[11px] text-gray-400 tracking-[0.05em] uppercase">
-              Launching Soon
-            </p>
-          ) : (
+          {price > 0 ? (
             <div className="flex items-baseline gap-1.5">
               <span className="font-body text-xs text-gray-500">
                 {formatINR(price)}
@@ -77,7 +69,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 </span>
               )}
             </div>
-          )}
+          ) : null}
         </div>
       </Link>
     </motion.div>

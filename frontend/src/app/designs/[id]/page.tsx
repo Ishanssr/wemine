@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { api } from '@/lib/api';
@@ -76,8 +77,8 @@ export default function DesignDetailPage() {
   return (
       <div className="pt-28 pb-24">
         <div className="max-w-4xl mx-auto px-6 md:px-12">
-          <button onClick={() => router.push('/designs')} className="flex items-center gap-1.5 font-body text-xs text-gray-400 hover:text-gray-900 transition-colors mb-8">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Collection
+          <button onClick={() => router.back()} className="flex items-center gap-1.5 font-body text-xs text-gray-400 hover:text-gray-900 transition-colors mb-8">
+            <ArrowLeft className="w-3.5 h-3.5" /> Back
           </button>
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
