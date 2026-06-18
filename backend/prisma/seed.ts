@@ -6,12 +6,21 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
-  // Clear old dummy products and banners
-  await prisma.productVariant.deleteMany({});
-  await prisma.productImage.deleteMany({});
-  await prisma.productCategory.deleteMany({});
-  await prisma.product.deleteMany({});
-  await prisma.banner.deleteMany({});
+  // Nuke all old dummy products and banners using raw SQL (bypasses FK issues)
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE recently_viewed CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE search_history CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE wishlist_items CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE cart_items CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE order_items CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE reviews CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE flash_sale_items CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE flash_sales CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE product_variants CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE product_images CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE product_categories CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE related_products CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE products CASCADE`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE banners CASCADE`);
   console.log('Cleared old products and banners.');
 
   const adminPassword = await argon2.hash('admin123');
