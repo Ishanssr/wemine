@@ -6,6 +6,14 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
+  // Clear old dummy products and banners
+  await prisma.productVariant.deleteMany({});
+  await prisma.productImage.deleteMany({});
+  await prisma.productCategory.deleteMany({});
+  await prisma.product.deleteMany({});
+  await prisma.banner.deleteMany({});
+  console.log('Cleared old products and banners.');
+
   const adminPassword = await argon2.hash('admin123');
 
   const admin = await prisma.user.upsert({
@@ -56,11 +64,6 @@ async function main() {
       create: { name: 'New Arrivals', slug: 'new-arrivals', description: 'Fresh from the peak' },
     }),
   ]);
-
-  const categoryMap: Record<string, string> = {};
-  for (const cat of categories) {
-    categoryMap[cat.slug] = cat.id;
-  }
 
   const coupon = await prisma.coupon.upsert({
     where: { code: 'WELCOME10' },
