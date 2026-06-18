@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -13,7 +13,6 @@ import { api, formatINR } from '@/lib/api';
 import { useCartStore } from '@/store/cart-store';
 import { useAuthStore } from '@/store/auth-store';
 import { ProductCard } from '@/components/product/ProductCard';
-import { MOCK_PRODUCTS } from '@/lib/mock-data';
 import type { Product } from '@/types';
 
 export default function ProductDetailPage() {
@@ -25,20 +24,11 @@ export default function ProductDetailPage() {
   const { addItem } = useCartStore();
   const { isAuthenticated } = useAuthStore();
 
-  const mockProduct = useMemo(
-    () => MOCK_PRODUCTS.find((p) => p.slug === slug) as Product | undefined,
-    [slug],
-  );
-
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', slug],
     queryFn: async () => {
-      try {
-        const res = await api.get(`/products/${slug}`);
-        return (res.data.data || res.data) as Product;
-      } catch {
-        return mockProduct;
-      }
+      const res = await api.get(`/products/${slug}`);
+      return (res.data.data || res.data) as Product;
     },
     retry: 1,
     staleTime: 300000,
@@ -47,12 +37,8 @@ export default function ProductDetailPage() {
   const { data: related } = useQuery({
     queryKey: ['related', product?.id],
     queryFn: async () => {
-      try {
-        const res = await api.get(`/products/${product!.id}/related`);
-        return (res.data.data || res.data) as Product[];
-      } catch {
-        return MOCK_PRODUCTS.filter((p) => p.id !== product!.id).slice(0, 4) as Product[];
-      }
+      const res = await api.get(`/products/${product!.id}/related`);
+      return (res.data.data || res.data) as Product[];
     },
     enabled: !!product?.id,
   });
