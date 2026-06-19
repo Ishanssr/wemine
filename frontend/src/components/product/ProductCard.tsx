@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import { formatINR } from '@/lib/api';
-import { optimizeImage } from '@/lib/optimize-image';
 import type { Product } from '@/types';
 
 interface ProductCardProps {
@@ -36,12 +35,11 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         <div className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
           {primaryImage && !imgError ? (
             <Image
-              src={optimizeImage(primaryImage.url, 600)}
+              src={primaryImage.url}
               alt={primaryImage.altText || product.name}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
               className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
-              unoptimized
               onError={() => setImgError(true)}
             />
           ) : (

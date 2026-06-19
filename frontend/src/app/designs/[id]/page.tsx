@@ -8,7 +8,6 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
-import { optimizeImage } from '@/lib/optimize-image';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -85,14 +84,13 @@ export default function DesignDetailPage() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
             <div className="grid md:grid-cols-5 gap-10">
               <div className="md:col-span-3">
-                <div className="aspect-[4/5] overflow-hidden bg-black/5 relative">
+                <div className="aspect-[4/5] overflow-hidden bg-black/5 relative group">
                   <Image
-                    src={optimizeImage(views[viewIdx]?.url, 1200)}
+                    src={views[viewIdx]?.url}
                     alt={`${design.title} - ${views[viewIdx]?.label}`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 60vw"
-                    unoptimized
                   />
                   {views.length > 1 && (
                     <>
@@ -122,7 +120,7 @@ export default function DesignDetailPage() {
                            i === viewIdx ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'
                          }`}
                       >
-                        <Image src={optimizeImage(v.url, 160)} alt={v.label} fill className="object-cover" sizes="80px" unoptimized />
+                        <Image src={v.url} alt={v.label} fill className="object-cover" sizes="64px" />
                       </button>
                     ))}
                   </div>
