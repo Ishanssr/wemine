@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, Suspense, useCallback } from 'react';
+import { useState, useMemo, Suspense, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -47,6 +47,20 @@ function ProductsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const activeCategory = searchParams.get('category') || '';
+
+  useEffect(() => {
+    return () => {
+      if (window.scrollY > 0) sessionStorage.setItem('products_scroll', String(window.scrollY));
+    };
+  }, []);
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem('products_scroll');
+    if (saved) {
+      sessionStorage.removeItem('products_scroll');
+      requestAnimationFrame(() => window.scrollTo(0, parseInt(saved, 10)));
+    }
+  }, []);
 
   const { data: designs, isLoading } = useQuery({
     queryKey: ['designs', 'products-page', activeCategory],

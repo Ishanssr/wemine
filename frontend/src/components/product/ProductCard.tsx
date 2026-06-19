@@ -31,7 +31,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
     >
-      <Link href={href} className="group block" scroll={false}>
+      <Link href={href} className="group block">
         <div className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
           {primaryImage && !imgError ? (
             <Image
