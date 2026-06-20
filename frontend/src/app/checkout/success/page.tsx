@@ -1,14 +1,21 @@
 'use client';
 
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 
 function SuccessContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get('order');
+
+  useEffect(() => {
+    if (!orderNumber) {
+      router.replace('/products');
+    }
+  }, [orderNumber, router]);
 
   return (
     <motion.div

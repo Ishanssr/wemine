@@ -25,6 +25,7 @@ import { BlogModule } from './blog/blog.module';
 import { DesignsModule } from './designs/designs.module';
 import { ChatModule } from './chat/chat.module';
 import { CacheModule } from './cache/cache.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { CacheModule } from './cache/cache.module';
     BlogModule,
     ChatModule,
     CacheModule,
+    ContactModule,
     DesignsModule,
   ],
   providers: [

@@ -13,11 +13,20 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    // Simulate send — no backend endpoint for contact yet
-    await new Promise((r) => setTimeout(r, 1000));
-    toast.success('Message sent! We\'ll get back to you soon.');
-    setForm({ name: '', email: '', message: '' });
-    setSending(false);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error('Failed to send');
+      toast.success('Message sent! We\'ll get back to you soon.');
+      setForm({ name: '', email: '', message: '' });
+    } catch {
+      toast.error('Failed to send. Please email us directly at hello@wemine.in');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (

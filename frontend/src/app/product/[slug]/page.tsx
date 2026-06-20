@@ -5,7 +5,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
-  Minus, Plus, Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft, Expand,
+  Minus, Plus, Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft, Expand, Ruler, X,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
@@ -32,6 +32,8 @@ export default function ProductDetailPage() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isAdding, setIsAdding] = useState(false);
+  const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const { addItem, setItems } = useCartStore();
   const { isAuthenticated } = useAuthStore();
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -85,7 +87,7 @@ export default function ProductDetailPage() {
   }, [product]);
 
   const handleAddToCart = async () => {
-    if (!product) return;
+    if (!product || isAdding) return;
 
     if (product.variants && product.variants.length > 0) {
       if (!selectedSize) {
@@ -97,13 +99,23 @@ export default function ProductDetailPage() {
         toast.error('Selected size variant not found');
         return;
       }
+      setIsAdding(true);
       const snapshot = useCartStore.getState().items;
-      await addItem(product, selectedVariant, quantity);
-      showUndoToast(snapshot);
+      try {
+        await addItem(product, selectedVariant, quantity);
+        showUndoToast(snapshot);
+      } finally {
+        setIsAdding(false);
+      }
     } else {
+      setIsAdding(true);
       const snapshot = useCartStore.getState().items;
-      await addItem(product, null, quantity);
-      showUndoToast(snapshot);
+      try {
+        await addItem(product, null, quantity);
+        showUndoToast(snapshot);
+      } finally {
+        setIsAdding(false);
+      }
     }
   };
 
@@ -277,9 +289,18 @@ export default function ProductDetailPage() {
             </p>
 
             <div className="mb-6">
-              <label className="font-heading font-semibold text-sm text-gray-900 mb-3 block">
-                Select Size
-              </label>
+              <div className="flex items-center justify-between mb-3">
+                <label className="font-heading font-semibold text-sm text-gray-900">
+                  Select Size
+                </label>
+                <button
+                  onClick={() => setSizeChartOpen(true)}
+                  className="font-body text-xs text-gray-400 hover:text-gray-900 flex items-center gap-1 transition-colors"
+                >
+                  <Ruler className="w-3.5 h-3.5" />
+                  Size Guide
+                </button>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {product.variants?.map((variant) => (
                   <button
@@ -323,10 +344,11 @@ export default function ProductDetailPage() {
             <div ref={ctaRef} className="flex items-center gap-3 mb-8">
               <button
                 onClick={handleAddToCart}
-                className="btn-primary flex-1 text-base py-4"
+                disabled={isAdding}
+                className="btn-primary flex-1 text-base py-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ShoppingCart className="w-5 h-5" />
-                Add to Cart
+                {isAdding ? 'Adding...' : 'Add to Cart'}
               </button>
               <button
                 onClick={() => isAuthenticated ? addToWishlistMutation.mutate() : router.push('/auth/login')}
@@ -363,6 +385,62 @@ export default function ProductDetailPage() {
         )}
       </div>
 
+      {sizeChartOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+          onClick={() => setSizeChartOpen(false)}
+        >
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl"
+          >
+            <button
+              onClick={() => setSizeChartOpen(false)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <h3 className="font-heading text-lg font-semibold text-gray-900 mb-6">Size Guide</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="font-heading text-xs font-medium text-gray-400 uppercase tracking-wider pb-3 pr-4">Size</th>
+                    <th className="font-heading text-xs font-medium text-gray-400 uppercase tracking-wider pb-3 pr-4">Chest (in)</th>
+                    <th className="font-heading text-xs font-medium text-gray-400 uppercase tracking-wider pb-3 pr-4">Length (in)</th>
+                    <th className="font-heading text-xs font-medium text-gray-400 uppercase tracking-wider pb-3">Shoulder (in)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {[
+                    { size: 'S', chest: '38', length: '27', shoulder: '17' },
+                    { size: 'M', chest: '40', length: '28', shoulder: '18' },
+                    { size: 'L', chest: '42', length: '29', shoulder: '19' },
+                    { size: 'XL', chest: '44', length: '30', shoulder: '20' },
+                    { size: 'XXL', chest: '46', length: '31', shoulder: '21' },
+                  ].map((row) => (
+                    <tr key={row.size} className="hover:bg-gray-50">
+                      <td className="font-heading text-sm font-medium text-gray-900 py-3 pr-4">{row.size}</td>
+                      <td className="font-body text-sm text-gray-600 py-3 pr-4">{row.chest}</td>
+                      <td className="font-body text-sm text-gray-600 py-3 pr-4">{row.length}</td>
+                      <td className="font-body text-sm text-gray-600 py-3">{row.shoulder}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="font-body text-xs text-gray-400 mt-4">
+              Measurements are in inches. Fit may vary by style. For the best fit, measure a similar garment you own.
+            </p>
+          </motion.div>
+        </motion.div>
+      )}
+
       <Lightbox
         open={lightboxOpen}
         close={() => setLightboxOpen(false)}
@@ -387,10 +465,11 @@ export default function ProductDetailPage() {
           </div>
           <button
             onClick={handleAddToCart}
-            className="btn-primary flex-1 text-sm py-3"
+            disabled={isAdding}
+            className="btn-primary flex-1 text-sm py-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ShoppingCart className="w-4 h-4" />
-            Add to Cart
+            {isAdding ? 'Adding...' : 'Add to Cart'}
           </button>
         </div>
       </div>

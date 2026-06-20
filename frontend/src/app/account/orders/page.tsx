@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import { api, formatINR } from '@/lib/api';
 import type { Order } from '@/types';
 
@@ -41,7 +42,7 @@ export default function OrdersPage() {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order.id} className="glass-surface rounded-2xl p-6">
+            <Link key={order.id} href={`/account/orders/${order.id}`} className="block glass-surface rounded-2xl p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <p className="font-heading font-semibold text-sm text-gray-900">{order.orderNumber}</p>
@@ -72,7 +73,7 @@ export default function OrdersPage() {
                 <span className="font-body text-sm text-gray-500">{order.items?.length} items</span>
                 <span className="font-heading font-semibold text-base">{formatINR(order.total)}</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

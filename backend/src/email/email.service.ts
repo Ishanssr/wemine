@@ -77,7 +77,7 @@ export class EmailService {
     });
   }
 
-  private async sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+  async sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
     if (!this.resend) {
       this.logger.log(`[Email skipped] To: ${to} | Subject: ${subject}`);
       return;
