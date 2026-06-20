@@ -17,7 +17,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', password: '', phone: '',
+    firstName: '', lastName: '', email: '', password: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -104,12 +104,6 @@ export default function SignupPage() {
                   <input type="email" required value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className="input-field" placeholder="you@example.com" />
-                </div>
-                <div>
-                  <label className="font-body text-xs font-medium text-gray-600 mb-1.5 block">Phone (optional)</label>
-                  <input type="tel" value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="input-field" placeholder="+91 98765 43210" />
                 </div>
                 <div>
                   <label className="font-body text-xs font-medium text-gray-600 mb-1.5 block">Password</label>
