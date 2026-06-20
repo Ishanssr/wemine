@@ -13,7 +13,19 @@ function CallbackHandler() {
     const token = searchParams.get('token');
     if (token) {
       localStorage.setItem('accessToken', token);
-      fetchProfile().finally(() => router.push('/'));
+      fetchProfile().then(() => {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          if (payload.email) {
+            localStorage.setItem('googleUser', JSON.stringify({
+              email: payload.email,
+              name: payload.name || payload.email?.split('@')[0] || 'User',
+              picture: payload.picture || '',
+            }));
+          }
+        } catch {}
+        router.push('/');
+      });
     } else {
       router.push('/auth/login');
     }
