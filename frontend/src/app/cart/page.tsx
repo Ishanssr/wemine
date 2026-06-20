@@ -69,13 +69,14 @@ export default function CartPage() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="md:col-span-2 space-y-4">
               {activeItems.map((item, i) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="glass-surface rounded-2xl p-4 md:p-6 flex gap-4"
-                >
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 20, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ delay: i * 0.05, type: 'spring', stiffness: 300, damping: 25 }}
+                    layout
+                    className="glass-surface rounded-2xl p-4 md:p-6 flex gap-4"
+                  >
                   <Link href={`/product/${item.product.slug}`} className="w-24 h-24 rounded-xl overflow-hidden bg-glacier-100/50 flex-shrink-0">
                     {item.product.images?.[0] ? (
                       <Image src={item.product.images[0].url} alt="" width={96} height={96} className="w-full h-full object-cover" />

@@ -153,6 +153,9 @@ function ProductsContent() {
           </div>
         ) : isEmpty && !search ? (
           <div className="text-center py-20">
+            <svg className="w-16 h-16 mx-auto mb-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 0 2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128m0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
+            </svg>
             <p className="font-heading text-xl font-medium text-gray-900 mb-2">
               Launching Soon
             </p>
@@ -162,6 +165,9 @@ function ProductsContent() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
+            <svg className="w-16 h-16 mx-auto mb-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
             <p className="font-body text-gray-400">No designs match your search</p>
           </div>
         ) : (
@@ -178,7 +184,15 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense>
+    <Suspense fallback={
+      <div className="pt-28 pb-24 max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="rounded-2xl bg-white/30 animate-pulse aspect-[4/5]" />
+          ))}
+        </div>
+      </div>
+    }>
       <ProductsContent />
     </Suspense>
   );

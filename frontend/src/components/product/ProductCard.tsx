@@ -13,8 +13,13 @@ interface ProductCardProps {
   index?: number;
 }
 
+const BLUR =
+  'data:image/svg+xml;base64,' +
+  Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20"><rect width="16" height="20" fill="#e5e7eb"/></svg>').toString('base64');
+
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
   const price = product.variants?.[0]?.price || product.basePrice;
   const hasDiscount = product.comparePrice && product.comparePrice > price;
@@ -34,14 +39,24 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       <Link href={href} className="group block">
         <div className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
           {primaryImage && !imgError ? (
-            <Image
-              src={primaryImage.url}
-              alt={primaryImage.altText || product.name}
-              fill
-              sizes="(max-width: 768px) 50vw, 25vw"
-              className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
-              onError={() => setImgError(true)}
-            />
+            <>
+              <Image
+                src={primaryImage.url}
+                alt={primaryImage.altText || product.name}
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
+                className={`object-cover transition-all duration-700 ease-out ${
+                  imgLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02]'
+                } group-hover:scale-[1.03]`}
+                placeholder="blur"
+                blurDataURL={BLUR}
+                onError={() => setImgError(true)}
+                onLoad={() => setImgLoaded(true)}
+              />
+              {!imgLoaded && (
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 animate-pulse" />
+              )}
+            </>
           ) : (
             <div className="w-full h-full bg-gray-100" />
           )}

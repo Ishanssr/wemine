@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -15,14 +15,20 @@ import { useAuthStore } from '@/store/auth-store';
 import { ProductCard } from '@/components/product/ProductCard';
 import type { Product } from '@/types';
 
+const BLUR =
+  'data:image/svg+xml;base64,' +
+  Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20"><rect width="16" height="20" fill="#e5e7eb"/></svg>').toString('base64');
+
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const router = useRouter();
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [imgError, setImgError] = useState(false);
-  const { addItem } = useCartStore();
+  const [stickyCtaVisible, setStickyCtaVisible] = useState(false);
+  const { addItem, setItems } = useCartStore();
   const { isAuthenticated } = useAuthStore();
+  const ctaRef = useRef<HTMLDivElement>(null);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', slug],
@@ -43,30 +49,6 @@ export default function ProductDetailPage() {
     enabled: !!product?.id,
   });
 
-  const addToCartMutation = useMutation({
-    mutationFn: async () => {
-      if (!product) return;
-      
-      if (product.variants && product.variants.length > 0) {
-        if (!selectedSize) {
-          toast.error('Please select a size');
-          throw new Error('Size not selected');
-        }
-        const selectedVariant = product.variants.find((v) => v.size === selectedSize);
-        if (!selectedVariant) {
-          toast.error('Selected size variant not found');
-          throw new Error('Variant not found');
-        }
-        await addItem(product, selectedVariant, quantity);
-      } else {
-        await addItem(product, null, quantity);
-      }
-    },
-    onSuccess: () => {
-      toast.success('Added to cart');
-    },
-  });
-
   const addToWishlistMutation = useMutation({
     mutationFn: async () => {
       if (!product) return;
@@ -74,6 +56,69 @@ export default function ProductDetailPage() {
     },
     onSuccess: () => toast.success('Added to wishlist'),
   });
+
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setStickyCtaVisible(!entry.isIntersecting),
+      { threshold: 0, rootMargin: '-80px 0px 0px 0px' },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [product]);
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+
+    if (product.variants && product.variants.length > 0) {
+      if (!selectedSize) {
+        toast.error('Please select a size');
+        return;
+      }
+      const selectedVariant = product.variants.find((v) => v.size === selectedSize);
+      if (!selectedVariant) {
+        toast.error('Selected size variant not found');
+        return;
+      }
+      const snapshot = useCartStore.getState().items;
+      await addItem(product, selectedVariant, quantity);
+      showUndoToast(snapshot);
+    } else {
+      const snapshot = useCartStore.getState().items;
+      await addItem(product, null, quantity);
+      showUndoToast(snapshot);
+    }
+  };
+
+  const showUndoToast = (snapshot: any[]) => {
+    toast.custom(
+      (t) => (
+        <div
+          className={`flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg border border-white/30 ${
+            t.visible ? 'animate-enter' : 'animate-leave'
+          }`}
+          style={{
+            background: 'rgba(15,15,15,0.95)',
+            backdropFilter: 'blur(20px)',
+            fontFamily: 'Manrope, sans-serif',
+          }}
+        >
+          <span className="text-sm text-white font-body">Added to cart</span>
+          <button
+            onClick={() => {
+              setItems(snapshot);
+              toast.dismiss(t.id);
+            }}
+            className="text-xs font-heading font-medium tracking-[0.05em] uppercase text-white/80 hover:text-white transition-colors"
+          >
+            Undo
+          </button>
+        </div>
+      ),
+      { duration: 5000, position: 'bottom-right' },
+    );
+  };
 
   if (isLoading) {
     return (
@@ -126,6 +171,8 @@ export default function ProductDetailPage() {
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover hover:scale-105 transition-transform duration-700"
+                  placeholder="blur"
+                  blurDataURL={BLUR}
                   onError={() => setImgError(true)}
                 />
               ) : (
@@ -249,10 +296,9 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 mb-8">
+            <div ref={ctaRef} className="flex items-center gap-3 mb-8">
               <button
-                onClick={() => addToCartMutation.mutate()}
-                disabled={addToCartMutation.isPending}
+                onClick={handleAddToCart}
                 className="btn-primary flex-1 text-base py-4"
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -291,6 +337,27 @@ export default function ProductDetailPage() {
             </div>
           </section>
         )}
+      </div>
+
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-50 md:hidden transition-transform duration-300 ${
+          stickyCtaVisible ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="bg-cream-50/95 backdrop-blur-xl border-t border-gray-200/60 px-4 py-3 flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="font-heading text-lg font-semibold text-gray-900">
+              {formatINR(product?.variants?.[0]?.price || product?.basePrice || 0)}
+            </p>
+          </div>
+          <button
+            onClick={handleAddToCart}
+            className="btn-primary flex-1 text-sm py-3"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            Add to Cart
+          </button>
+        </div>
       </div>
     </div>
   );

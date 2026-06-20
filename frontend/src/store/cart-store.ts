@@ -79,6 +79,7 @@ interface CartState {
   toggleSaveForLater: (itemId: string) => Promise<void>;
   clearCart: () => Promise<void>;
   getTotal: () => number;
+  setItems: (items: CartItem[]) => void;
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -123,21 +124,39 @@ export const useCartStore = create<CartState>((set, get) => ({
   addItem: async (product, variant = null, quantity = 1) => {
     const safeQuantity = Math.max(1, quantity);
     const items = [...get().items];
+    const existingIdx = items.findIndex(
+      (i) => i.product.id === product.id && (variant ? i.variant?.id === variant.id : !i.variant),
+    );
 
     if (hasToken()) {
-      const { data } = await api.post('/cart/items', {
-        productId: product.id,
-        variantId: variant?.id ?? undefined,
-        quantity: safeQuantity,
-      });
-      const newItem = toCartItem(data);
-      const existingIdx = items.findIndex((i) => i.product.id === product.id && (variant ? i.variant?.id === variant.id : !i.variant));
+      const tempId = `temp_${Date.now()}`;
+
       if (existingIdx >= 0) {
-        items[existingIdx] = newItem;
+        items[existingIdx] = { ...items[existingIdx], quantity: items[existingIdx].quantity + safeQuantity };
       } else {
-        items.unshift(newItem);
+        items.unshift({
+          id: tempId,
+          product,
+          variant: variant ?? null,
+          quantity: safeQuantity,
+          savedForLater: false,
+        } as CartItem);
       }
       set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
+
+      try {
+        const { data } = await api.post('/cart/items', {
+          productId: product.id,
+          variantId: variant?.id ?? undefined,
+          quantity: safeQuantity,
+        });
+        const newItem = toCartItem(data);
+        const synced = get().items.map((i) => (i.id === tempId ? newItem : i));
+        set({ items: synced, itemCount: synced.reduce((s, i) => s + i.quantity, 0) });
+      } catch {
+        const reverted = get().items.filter((i) => i.id !== tempId);
+        set({ items: reverted, itemCount: reverted.reduce((s, i) => s + i.quantity, 0) });
+      }
       return;
     }
 
@@ -170,7 +189,6 @@ export const useCartStore = create<CartState>((set, get) => ({
           await api.patch(`/cart/items/${itemId}`, { quantity });
         }
       } catch {}
-      // Update local state regardless of API result
       const items = get().items.map((i) =>
         i.id === itemId ? { ...i, quantity: Math.max(0, quantity) } : i,
       ).filter((i) => i.quantity > 0);
@@ -217,5 +235,9 @@ export const useCartStore = create<CartState>((set, get) => ({
     return get().items
       .filter((i) => !i.savedForLater)
       .reduce((sum, i) => sum + (i.variant?.price || i.product.basePrice || 0) * i.quantity, 0);
+  },
+
+  setItems: (items: CartItem[]) => {
+    set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
   },
 }));

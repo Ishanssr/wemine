@@ -95,3 +95,21 @@
     image-rendering: crisp-edges;
   }
 }
+
+@keyframes enter {
+  from { transform: translateY(8px) scale(0.96); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes leave {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(8px) scale(0.96); opacity: 0; }
+}
+
+.animate-enter {
+  animation: enter 0.2s ease-out;
+}
+
+.animate-leave {
+  animation: leave 0.15s ease-in forwards;
+}
