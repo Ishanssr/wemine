@@ -92,8 +92,8 @@ export function Navbar() {
               <Heart className="w-5 h-5 text-gray-900" />
             </Link>
 
-            <Link
-              href="/cart"
+            <button
+              onClick={() => useCartStore.getState().openDrawer()}
               className="relative w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all duration-200"
             >
               <ShoppingCart className="w-5 h-5 text-gray-900" />
@@ -102,7 +102,7 @@ export function Navbar() {
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>
               )}
-            </Link>
+            </button>
 
             {isAuthenticated ? (
               <>

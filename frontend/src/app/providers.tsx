@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/store/auth-store';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { CartDrawer } from '@/components/cart/CartDrawer';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +35,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         {!isAdminRoute && <Navbar />}
         <main className="min-h-screen">{children}</main>
         {!isAdminRoute && <Footer />}
+        <CartDrawer />
       </AuthLoader>
       <Toaster
         position="bottom-right"

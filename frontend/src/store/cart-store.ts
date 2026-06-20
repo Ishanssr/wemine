@@ -72,6 +72,7 @@ interface CartState {
   items: CartItem[];
   isLoading: boolean;
   itemCount: number;
+  isDrawerOpen: boolean;
   fetchCart: () => Promise<void>;
   addItem: (product: Product, variant?: ProductVariant | null, quantity?: number) => Promise<void>;
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
@@ -80,12 +81,15 @@ interface CartState {
   clearCart: () => Promise<void>;
   getTotal: () => number;
   setItems: (items: CartItem[]) => void;
+  openDrawer: () => void;
+  closeDrawer: () => void;
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   isLoading: false,
   itemCount: 0,
+  isDrawerOpen: false,
 
   fetchCart: async () => {
     set({ isLoading: true });
@@ -240,4 +244,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   setItems: (items: CartItem[]) => {
     set({ items, itemCount: items.reduce((s, i) => s + i.quantity, 0) });
   },
+
+  openDrawer: () => set({ isDrawerOpen: true }),
+  closeDrawer: () => set({ isDrawerOpen: false }),
 }));

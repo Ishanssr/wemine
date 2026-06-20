@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, Suspense, useCallback, useEffect } from 'react';
+import { useState, useMemo, Suspense, useCallback, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -42,11 +42,13 @@ function designToProduct(d: any): Product {
 }
 
 function ProductsContent() {
-  const [search, setSearch] = useState('');
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const activeCategory = searchParams.get('category') || '';
+  const searchQuery = searchParams.get('search') || '';
+  const [inputValue, setInputValue] = useState(searchQuery);
 
   useEffect(() => {
     return () => {
@@ -61,6 +63,10 @@ function ProductsContent() {
       requestAnimationFrame(() => window.scrollTo(0, parseInt(saved, 10)));
     }
   }, []);
+
+  useEffect(() => {
+    setInputValue(searchQuery);
+  }, [searchQuery]);
 
   const { data: designs, isLoading } = useQuery({
     queryKey: ['designs', 'products-page', activeCategory],
@@ -80,25 +86,38 @@ function ProductsContent() {
 
   const filtered = useMemo(() => {
     const items = (designs || []).map(designToProduct);
-    if (!search) return items;
-    const q = search.toLowerCase();
+    if (!searchQuery) return items;
+    const q = searchQuery.toLowerCase();
     return items.filter((p) => p.name.toLowerCase().includes(q));
-  }, [designs, search]);
+  }, [designs, searchQuery]);
 
   const isEmpty = !isLoading && filtered.length === 0;
 
-  const handleCategoryChange = useCallback(
-    (value: string) => {
+  const updateParams = useCallback(
+    (updates: Record<string, string>) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (value) {
-        params.set('category', value);
-      } else {
-        params.delete('category');
+      for (const [key, value] of Object.entries(updates)) {
+        if (value) params.set(key, value);
+        else params.delete(key);
       }
       const qs = params.toString();
       router.push(`${pathname}${qs ? `?${qs}` : ''}`);
     },
     [router, pathname, searchParams],
+  );
+
+  const handleCategoryChange = useCallback(
+    (value: string) => updateParams({ category: value }),
+    [updateParams],
+  );
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setInputValue(value);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => updateParams({ search: value }), 300);
+    },
+    [updateParams],
   );
 
   return (
@@ -138,8 +157,8 @@ function ProductsContent() {
             <input
               type="text"
               placeholder="Search designs..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={inputValue}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="input-field pl-11"
             />
           </div>
@@ -151,7 +170,7 @@ function ProductsContent() {
               <div key={i} className="rounded-2xl bg-white/30 animate-pulse aspect-[4/5]" />
             ))}
           </div>
-        ) : isEmpty && !search ? (
+        ) : isEmpty && !searchQuery ? (
           <div className="text-center py-20">
             <svg className="w-16 h-16 mx-auto mb-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 0 2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128m0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
