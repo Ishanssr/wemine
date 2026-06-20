@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { motion, LayoutGroup } from 'framer-motion';
 import { ShoppingCart, User, Menu, X, Search, Heart } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { useAuthStore } from '@/store/auth-store';
@@ -15,6 +17,8 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const { user, isAuthenticated } = useAuthStore();
   const { itemCount, fetchCart } = useCartStore();
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -24,6 +28,12 @@ export function Navbar() {
     if (isAuthenticated) fetchCart();
     return () => window.removeEventListener('scroll', onScroll);
   }, [isAuthenticated, fetchCart]);
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    if (href.startsWith('/#')) return false;
+    return pathname.startsWith(href.split('?')[0]);
+  };
 
   return (
     <nav
@@ -40,16 +50,31 @@ export function Navbar() {
             </span>
           </Link>
 
-          <div className="hidden lg:flex items-center lg:gap-6">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="font-heading text-[11px] font-medium text-gray-900 tracking-[0.1em] uppercase hover:text-gray-500 transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden lg:flex items-center gap-1">
+            <LayoutGroup>
+              {NAV_LINKS.map((link) => {
+                const active = isActive(link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onMouseEnter={() => router.prefetch(link.href)}
+                    className={`relative px-4 py-2 font-heading text-[11px] font-medium tracking-[0.1em] uppercase transition-colors duration-200 ${
+                      active ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900'
+                    }`}
+                  >
+                    {link.label}
+                    {active && (
+                      <motion.div
+                        layoutId="nav-underline"
+                        className="absolute bottom-0 left-4 right-4 h-[2px] bg-black"
+                        transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </LayoutGroup>
           </div>
 
           <div className="flex items-center gap-2">
@@ -130,7 +155,9 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="block px-4 py-3 text-[11px] font-heading font-medium tracking-[0.1em] uppercase text-gray-700 hover:text-gray-900 transition-all"
+              className={`block px-4 py-3 text-[11px] font-heading font-medium tracking-[0.1em] uppercase transition-all ${
+                isActive(link.href) ? 'text-gray-900 bg-black/5' : 'text-gray-700 hover:text-gray-900'
+              }`}
             >
               {link.label}
             </Link>

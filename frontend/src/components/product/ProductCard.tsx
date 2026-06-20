@@ -20,7 +20,10 @@ const BLUR =
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const [imgError, setImgError] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
+  const secondaryImage = product.images?.[1];
+  const displayImage = isHovered && secondaryImage ? secondaryImage : primaryImage;
   const price = product.variants?.[0]?.price || product.basePrice;
   const hasDiscount = product.comparePrice && product.comparePrice > price;
 
@@ -36,13 +39,19 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
     >
-      <Link href={href} className="group block">
+      <Link
+        href={href}
+        className="group block"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <div className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
-          {primaryImage && !imgError ? (
+          {displayImage && !imgError ? (
             <>
               <Image
-                src={primaryImage.url}
-                alt={primaryImage.altText || product.name}
+                key={isHovered && secondaryImage ? 'secondary' : 'primary'}
+                src={displayImage.url}
+                alt={displayImage.altText || product.name}
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"
                 className={`object-cover transition-all duration-700 ease-out ${

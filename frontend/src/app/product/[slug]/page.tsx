@@ -1,14 +1,17 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
-  Minus, Plus, Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft,
+  Minus, Plus, Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft, Expand,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
+import Lightbox from 'yet-another-react-lightbox';
+import Zoom from 'yet-another-react-lightbox/plugins/zoom';
+import 'yet-another-react-lightbox/styles.css';
 import { api, formatINR } from '@/lib/api';
 import { useCartStore } from '@/store/cart-store';
 import { useAuthStore } from '@/store/auth-store';
@@ -26,6 +29,9 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [imgError, setImgError] = useState(false);
   const [stickyCtaVisible, setStickyCtaVisible] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addItem, setItems } = useCartStore();
   const { isAuthenticated } = useAuthStore();
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -56,6 +62,16 @@ export default function ProductDetailPage() {
     },
     onSuccess: () => toast.success('Added to wishlist'),
   });
+
+  const slides = useMemo(() => {
+    if (!product?.images?.length) return [];
+    return product.images.map((img) => ({
+      src: img.url,
+      alt: img.altText || product.name,
+    }));
+  }, [product]);
+
+  const currentImage = product?.images?.[selectedImageIndex] || product?.images?.[0];
 
   useEffect(() => {
     const el = ctaRef.current;
@@ -144,7 +160,6 @@ export default function ProductDetailPage() {
   }
 
   const price = product.variants?.[0]?.price || product.basePrice;
-  const primaryImage = product.images?.find((i) => i.isPrimary) || product.images?.[0];
 
   return (
     <div className="pt-28 pb-24">
@@ -163,18 +178,26 @@ export default function ProductDetailPage() {
             animate={{ opacity: 1, x: 0 }}
             className="space-y-4"
           >
-            <div className="aspect-[4/5] relative rounded-3xl overflow-hidden bg-glacier-100/30 glass-surface">
-              {primaryImage && !imgError ? (
-                <Image
-                  src={primaryImage.url}
-                  alt={primaryImage.altText || product.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover hover:scale-105 transition-transform duration-700"
-                  placeholder="blur"
-                  blurDataURL={BLUR}
-                  onError={() => setImgError(true)}
-                />
+            <button
+              onClick={() => { setLightboxIndex(selectedImageIndex); setLightboxOpen(true); }}
+              className="aspect-[4/5] relative rounded-3xl overflow-hidden bg-glacier-100/30 glass-surface w-full text-left group cursor-zoom-in"
+            >
+              {currentImage && !imgError ? (
+                <>
+                  <Image
+                    src={currentImage.url}
+                    alt={currentImage.altText || product.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    placeholder="blur"
+                    blurDataURL={BLUR}
+                    onError={() => setImgError(true)}
+                  />
+                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Expand className="w-4 h-4 text-gray-700" />
+                  </div>
+                </>
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-glacier-200 to-glacier-300 flex items-center justify-center">
                   <span className="font-heading text-8xl font-semibold text-white/40">
@@ -182,14 +205,15 @@ export default function ProductDetailPage() {
                   </span>
                 </div>
               )}
-            </div>
+            </button>
             {product.images?.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
-                {product.images.map((img) => (
+                {product.images.map((img, idx) => (
                   <button
                     key={img.id}
+                    onClick={() => { setSelectedImageIndex(idx); setImgError(false); }}
                     className={`flex-shrink-0 relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
-                      img.isPrimary ? 'border-glacier-400' : 'border-transparent hover:border-gray-200'
+                      idx === selectedImageIndex ? 'border-glacier-400' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
                     <Image src={img.url} alt="" fill className="object-cover" sizes="80px" />
@@ -338,6 +362,17 @@ export default function ProductDetailPage() {
           </section>
         )}
       </div>
+
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        index={lightboxIndex}
+        slides={slides}
+        plugins={[Zoom]}
+        zoom={{ maxZoomPixelRatio: 3 }}
+        carousel={{ finite: true }}
+        styles={{ container: { backgroundColor: 'rgba(0,0,0,0.95)' } }}
+      />
 
       <div
         className={`fixed bottom-0 left-0 right-0 z-50 md:hidden transition-transform duration-300 ${
