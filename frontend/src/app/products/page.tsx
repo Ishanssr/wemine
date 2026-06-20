@@ -167,7 +167,13 @@ function ProductsContent() {
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="rounded-2xl bg-white/30 animate-pulse aspect-[4/5]" />
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[4/5] rounded-2xl bg-white/30 mb-3" />
+                <div className="space-y-1.5 px-1">
+                  <div className="h-3 bg-gray-100 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-1/4" />
+                </div>
+              </div>
             ))}
           </div>
         ) : isEmpty && !searchQuery ? (
@@ -192,7 +198,7 @@ function ProductsContent() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filtered.map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} />
+              <ProductCard key={product.id} product={product} index={i} priority={i < 4} />
             ))}
           </div>
         )}
@@ -203,16 +209,38 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={
-      <div className="pt-28 pb-24 max-w-7xl mx-auto px-6 md:px-12">
+    <Suspense fallback={<ProductsPageFallback />}>
+      <ProductsContent />
+    </Suspense>
+  );
+}
+
+function ProductsPageFallback() {
+  return (
+    <div className="pt-28 pb-24">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="mb-10">
+          <div className="h-10 w-64 bg-gray-100 rounded mb-3 animate-pulse" />
+          <div className="h-4 w-96 bg-gray-100 rounded mb-6 animate-pulse" />
+          <div className="flex flex-wrap items-center gap-1.5 mb-6">
+            {CATEGORIES.map((cat) => (
+              <div key={cat.value} className="h-8 w-20 bg-gray-100 rounded-full animate-pulse" />
+            ))}
+          </div>
+          <div className="h-10 max-w-md bg-gray-100 rounded-full animate-pulse" />
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="rounded-2xl bg-white/30 animate-pulse aspect-[4/5]" />
+            <div key={i} className="animate-pulse">
+              <div className="aspect-[4/5] rounded-2xl bg-white/30 mb-3" />
+              <div className="space-y-1.5 px-1">
+                <div className="h-3 bg-gray-100 rounded w-3/4" />
+                <div className="h-3 bg-gray-100 rounded w-1/4" />
+              </div>
+            </div>
           ))}
         </div>
       </div>
-    }>
-      <ProductsContent />
-    </Suspense>
+    </div>
   );
 }

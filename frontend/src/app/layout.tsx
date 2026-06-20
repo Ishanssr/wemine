@@ -1,9 +1,22 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { Outfit, Manrope } from 'next/font/google';
 import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD } from '@/lib/json-ld';
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-heading',
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-body',
+});
 
 const siteUrl = 'https://wemine.in';
 
@@ -59,14 +72,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`${outfit.variable} ${manrope.variable} scroll-smooth`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
         <meta name="theme-color" content="#fefcf5" />
         <meta name="color-scheme" content="light" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />

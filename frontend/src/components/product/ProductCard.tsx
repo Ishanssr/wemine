@@ -11,13 +11,14 @@ import type { Product } from '@/types';
 interface ProductCardProps {
   product: Product;
   index?: number;
+  priority?: boolean;
 }
 
 const BLUR =
   'data:image/svg+xml;base64,' +
   Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20"><rect width="16" height="20" fill="#e5e7eb"/></svg>').toString('base64');
 
-export function ProductCard({ product, index = 0 }: ProductCardProps) {
+export function ProductCard({ product, index = 0, priority = false }: ProductCardProps) {
   const [imgError, setImgError] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -54,11 +55,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 alt={displayImage.altText || product.name}
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"
-                className={`object-cover transition-all duration-700 ease-out ${
+                className={`object-cover transition-opacity duration-700 ease-out ${
                   imgLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02]'
                 } group-hover:scale-[1.03]`}
                 placeholder="blur"
                 blurDataURL={BLUR}
+                priority={priority}
                 onError={() => setImgError(true)}
                 onLoad={() => setImgLoaded(true)}
               />
