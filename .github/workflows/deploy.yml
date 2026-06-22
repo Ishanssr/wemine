@@ -18,6 +18,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.ORACLE_SSH_KEY }}
           script: |
+            export NODE_OPTIONS="--max-old-space-size=512"
             cd /home/ubuntu/backend
             git pull
             cd backend
