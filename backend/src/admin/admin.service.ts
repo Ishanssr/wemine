@@ -30,11 +30,11 @@ export class AdminService {
     });
 
     const revenueByDay = await this.prisma.$queryRaw`
-      SELECT DATE(created_at) as date, SUM(total) as revenue
+      SELECT DATE("createdAt") as date, SUM(total) as revenue
       FROM orders
-      WHERE created_at >= NOW() - INTERVAL '30 days'
-      AND payment_status = 'SUCCESSFUL'
-      GROUP BY DATE(created_at)
+      WHERE "createdAt" >= NOW() - INTERVAL '30 days'
+      AND "paymentStatus" = 'SUCCESSFUL'
+      GROUP BY DATE("createdAt")
       ORDER BY date
     `;
 
