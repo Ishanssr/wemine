@@ -1,0 +1,27 @@
+name: Deploy to Oracle VM
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Oracle VM
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: 80.225.249.88
+          username: ubuntu
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/backend
+            git pull
+            cd backend
+            npm ci
+            npm run build
+            npx prisma migrate deploy
+            pm2 restart wemine-api --update-env
