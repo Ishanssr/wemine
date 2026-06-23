@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
-import { ArrowLeft, ChevronLeft, ChevronRight, Bookmark } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function DesignDetailPage() {
@@ -26,34 +26,6 @@ export default function DesignDetailPage() {
     queryFn: async () => {
       const res = await api.get(`/designs/${id}`);
       return res.data;
-    },
-  });
-
-  const { data: userPrebooks } = useQuery({
-    queryKey: ['user-prebooks'],
-    queryFn: async () => {
-      const res = await api.get('/users/prebooks');
-      return res.data as any[];
-    },
-    enabled: isAuthenticated,
-  });
-
-  const isPrebooked = userPrebooks?.some((p: any) => p.designId === id) ?? false;
-
-  const prebookMutation = useMutation({
-    mutationFn: async (prebooked: boolean) => {
-      if (prebooked) {
-        await api.delete(`/designs/${id}/prebook`);
-      } else {
-        await api.post(`/designs/${id}/prebook`);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user-prebooks'] });
-      toast.success(isPrebooked ? 'Prebook cancelled' : 'Design prebooked!');
-    },
-    onError: (err: any) => {
-      toast.error(err?.response?.data?.message || 'Failed to update prebook');
     },
   });
 
@@ -174,33 +146,6 @@ export default function DesignDetailPage() {
                     {design.ratings?.length || 0} rating{design.ratings?.length !== 1 ? 's' : ''}
                   </p>
                 </div>
-
-                {design.isPrebook && (
-                  <div className="border border-black/10 p-4 mb-6">
-                    <p className="font-heading text-xs tracking-[0.05em] uppercase text-gray-400 mb-1">Prebook</p>
-                    <p className="font-body text-sm text-gray-500 mb-3">
-                      Secure this design at ₹{design.prebookPrice} before it launches.
-                    </p>
-                    {isAuthenticated ? (
-                      <button
-                        onClick={() => prebookMutation.mutate(isPrebooked)}
-                        disabled={prebookMutation.isPending}
-                        className={`w-full font-heading text-xs font-medium tracking-[0.15em] uppercase py-3 transition-colors disabled:opacity-40 flex items-center justify-center gap-2 ${
-                          isPrebooked
-                            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            : 'bg-black text-white hover:bg-gray-800'
-                        }`}
-                      >
-                        <Bookmark className={`w-3.5 h-3.5 ${isPrebooked ? 'fill-current' : ''}`} />
-                        {prebookMutation.isPending ? 'Processing...' : isPrebooked ? 'Prebooked' : `Prebook at ₹${design.prebookPrice}`}
-                      </button>
-                    ) : (
-                      <a href="/auth/login" className="block w-full text-center bg-black text-white font-heading text-xs font-medium tracking-[0.15em] uppercase py-3 hover:bg-gray-800 transition-colors">
-                        Sign in to Prebook
-                      </a>
-                    )}
-                  </div>
-                )}
 
                 {isAuthenticated && (
                   <div className="border border-black/10 p-4 mb-6">

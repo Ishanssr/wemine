@@ -24,7 +24,7 @@ export class DesignsService {
       this.prisma.design.findMany({
         where,
         include: {
-          _count: { select: { ratings: true, prebooks: true } },
+          _count: { select: { ratings: true } },
           ratings: { select: { score: true } },
           createdBy: { select: { firstName: true, lastName: true } },
         },
@@ -38,7 +38,7 @@ export class DesignsService {
     const items = designs.map((d) => {
       const avg = d.ratings.reduce((s, r) => s + r.score, 0) / (d.ratings.length || 1);
       const { ratings, ...rest } = d;
-      return { ...rest, avgRating: d.ratings.length ? Math.round(avg * 10) / 10 : null, ratingCount: d._count.ratings, prebookCount: d._count.prebooks };
+      return { ...rest, avgRating: d.ratings.length ? Math.round(avg * 10) / 10 : null, ratingCount: d._count.ratings };
     });
 
     const result = { designs: items, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
@@ -86,31 +86,6 @@ export class DesignsService {
   async remove(id: string) {
     await this.cache.del('designs:*');
     await this.prisma.design.delete({ where: { id } });
-    return { success: true };
-  }
-
-  async prebook(designId: string, userId: string) {
-    const design = await this.prisma.design.findUnique({ where: { id: designId } });
-    if (!design) throw new NotFoundException('Design not found');
-    if (!design.isPrebook) throw new BadRequestException('Design is not available for prebooking');
-
-    await this.cache.del('designs:*');
-
-    return this.prisma.prebook.upsert({
-      where: { userId_designId: { userId, designId } },
-      update: {},
-      create: { userId, designId },
-    });
-  }
-
-  async unprebook(designId: string, userId: string) {
-    const prebook = await this.prisma.prebook.findUnique({
-      where: { userId_designId: { userId, designId } },
-    });
-    if (!prebook) throw new NotFoundException('Prebook not found');
-
-    await this.cache.del('designs:*');
-    await this.prisma.prebook.delete({ where: { userId_designId: { userId, designId } } });
     return { success: true };
   }
 

@@ -4,13 +4,12 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { User, Package, Heart, MapPin, Shield, Bell, Bookmark, LogOut } from 'lucide-react';
+import { User, Package, Heart, MapPin, Shield, Bell, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 
 const accountLinks = [
   { label: 'Profile', href: '/account/profile', icon: User },
   { label: 'Orders', href: '/account/orders', icon: Package },
-  { label: 'Prebooks', href: '/account/prebooks', icon: Bookmark },
   { label: 'Wishlist', href: '/account/wishlist', icon: Heart },
   { label: 'Addresses', href: '/account/addresses', icon: MapPin },
   { label: 'Security', href: '/account/security', icon: Shield },

@@ -10,8 +10,6 @@ export interface Product {
   isActive: boolean;
   isFeatured: boolean;
   comingSoon?: boolean;
-  isPrebook?: boolean;
-  prebookPrice?: number;
   tags: string[];
   totalStock: number;
   avgRating: number;

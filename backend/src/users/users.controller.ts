@@ -6,11 +6,6 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 export class UsersController {
   constructor(private users: UsersService) {}
 
-  @Get('prebooks')
-  async getPrebooks(@CurrentUser('id') userId: string) {
-    return this.users.getPrebooks(userId);
-  }
-
   @Get('addresses')
   async getAddresses(@CurrentUser('id') userId: string) {
     return this.users.getAddresses(userId);

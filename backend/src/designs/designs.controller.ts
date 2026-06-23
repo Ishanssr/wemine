@@ -33,16 +33,6 @@ export class DesignsController {
     return this.designs.remove(id);
   }
 
-  @Post(':id/prebook')
-  async prebook(@Param('id') id: string, @CurrentUser('id') userId: string) {
-    return this.designs.prebook(id, userId);
-  }
-
-  @Delete(':id/prebook')
-  async unprebook(@Param('id') id: string, @CurrentUser('id') userId: string) {
-    return this.designs.unprebook(id, userId);
-  }
-
   @Post(':id/rate')
   async rate(
     @Param('id') id: string,
