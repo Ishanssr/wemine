@@ -19,6 +19,26 @@ export class UsersService {
     return this.prisma.user.update({ where: { id }, data });
   }
 
+  async getPrebooks(userId: string) {
+    return this.prisma.prebook.findMany({
+      where: { userId },
+      include: {
+        design: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            imageUrl: true,
+            category: true,
+            isPrebook: true,
+            prebookPrice: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async getAddresses(userId: string) {
     return this.prisma.address.findMany({
       where: { userId },

@@ -81,6 +81,7 @@ model User {
   blogPosts         BlogPost[]
   designs           Design[]
   designRatings     DesignRating[]
+  prebooks          Prebook[]
 
   @@map("users")
 }
@@ -676,16 +677,31 @@ model Design {
   imageFemaleBack  String   @default("")
   category         String?
   isActive         Boolean  @default(true)
+  isPrebook        Boolean  @default(false)
+  prebookPrice     Float?
   createdById      String
   createdBy        User     @relation(fields: [createdById], references: [id])
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   ratings DesignRating[]
+  prebooks Prebook[]
 
   @@index([createdById])
   @@index([isActive])
   @@map("designs")
+}
+
+model Prebook {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  designId  String
+  design    Design   @relation(fields: [designId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, designId])
+  @@map("prebooks")
 }
 
 model DesignRating {

@@ -18,6 +18,8 @@ function designToProduct(d: any): Product {
     isActive: true,
     isFeatured: false,
     comingSoon: true,
+    isPrebook: d.isPrebook || false,
+    prebookPrice: d.prebookPrice || undefined,
     tags: d.category ? [d.category] : [],
     totalStock: 0,
     avgRating: d.avgRating || 0,

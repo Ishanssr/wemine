@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Role } from '@prisma/client';
 import * as argon2 from 'argon2';
@@ -129,6 +129,81 @@ export class AdminService {
       where: { id: refundId },
       data: { status: action === 'approve' ? 'APPROVED' : 'REJECTED', adminNotes },
     });
+  }
+
+  async toggleDesignPrebook(designId: string, data: { isPrebook: boolean; prebookPrice?: number }) {
+    const design = await this.prisma.design.findUnique({ where: { id: designId } });
+    if (!design) throw new NotFoundException('Design not found');
+
+    if (data.isPrebook && (!data.prebookPrice || data.prebookPrice <= 0)) {
+      throw new BadRequestException('Prebook price must be greater than 0');
+    }
+
+    return this.prisma.design.update({
+      where: { id: designId },
+      data: { isPrebook: data.isPrebook, prebookPrice: data.prebookPrice },
+    });
+  }
+
+  async convertDesignToProduct(designId: string, data: { name?: string; basePrice?: number }) {
+    const design = await this.prisma.design.findUnique({
+      where: { id: designId },
+      include: { ratings: true },
+    });
+    if (!design) throw new NotFoundException('Design not found');
+
+    const product = await this.prisma.product.create({
+      data: {
+        name: data.name || design.title,
+        slug: `design-${design.id}`,
+        description: design.description || '',
+        basePrice: data.basePrice || design.prebookPrice || 0,
+        sku: `DSG-${design.id.slice(0, 8).toUpperCase()}`,
+        isActive: true,
+        images: {
+          create: [
+            { url: design.imageUrl, altText: design.title, isPrimary: true, sortOrder: 0 },
+            ...(design.imageBack ? [{ url: design.imageBack, altText: `${design.title} - Back`, sortOrder: 1 } as any] : []),
+          ],
+        },
+      },
+    });
+
+    await this.prisma.design.update({
+      where: { id: designId },
+      data: { isActive: false, isPrebook: false },
+    });
+
+    return product;
+  }
+
+  async getDesigns(query: any) {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 50;
+    const where: any = {};
+    if (query.isActive !== undefined) where.isActive = query.isActive === 'true';
+
+    const [designs, total] = await Promise.all([
+      this.prisma.design.findMany({
+        where,
+        include: {
+          _count: { select: { ratings: true, prebooks: true } },
+          ratings: { select: { score: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.design.count({ where }),
+    ]);
+
+    const items = designs.map((d) => {
+      const avg = d.ratings.reduce((s, r) => s + r.score, 0) / (d.ratings.length || 1);
+      const { ratings, ...rest } = d;
+      return { ...rest, avgRating: d.ratings.length ? Math.round(avg * 10) / 10 : null, ratingCount: d._count.ratings, prebookCount: d._count.prebooks };
+    });
+
+    return { designs: items, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
   }
 
   async runSeed() {

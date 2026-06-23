@@ -40,6 +40,27 @@ export class AdminController {
     return this.admin.handleRefund(id, action, body.adminNotes);
   }
 
+  @Put('designs/:id/prebook')
+  async toggleDesignPrebook(
+    @Param('id') id: string,
+    @Body() body: { isPrebook: boolean; prebookPrice?: number },
+  ) {
+    return this.admin.toggleDesignPrebook(id, body);
+  }
+
+  @Post('designs/:id/convert')
+  async convertDesignToProduct(
+    @Param('id') id: string,
+    @Body() body: { name?: string; basePrice?: number },
+  ) {
+    return this.admin.convertDesignToProduct(id, body);
+  }
+
+  @Get('designs')
+  async getDesigns(@Query() query: any) {
+    return this.admin.getDesigns(query);
+  }
+
   @Post('seed')
   async seed() {
     return this.admin.runSeed();
