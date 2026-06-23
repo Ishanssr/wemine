@@ -77,17 +77,18 @@ export class EmailService {
     });
   }
 
-  async sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+  async sendEmail({ to, subject, html, replyTo }: { to: string; subject: string; html: string; replyTo?: string }) {
     if (!this.resend) {
-      this.logger.log(`[Email skipped] To: ${to} | Subject: ${subject}`);
-      return;
+      this.logger.error(`[Email skipped] RESEND_API_KEY not configured — cannot send to ${to}`);
+      throw new Error('Email service not configured (RESEND_API_KEY missing)');
     }
     try {
       const from = this.config.get('EMAIL_FROM') || 'Wemine <noreply@wemine.in>';
-      await this.resend.emails.send({ from, to, subject, html });
+      await this.resend.emails.send({ from, to, subject, html, replyTo });
       this.logger.log(`Email sent to ${to}: ${subject}`);
     } catch (error) {
       this.logger.error(`Failed to send email to ${to}: ${error.message}`);
+      throw error;
     }
   }
 
