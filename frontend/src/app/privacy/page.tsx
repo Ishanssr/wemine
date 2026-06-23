@@ -68,8 +68,8 @@ export default function PrivacyPage() {
               <h2 className="font-heading text-sm font-medium text-gray-900 mb-2">Contact</h2>
               <p>
                 For privacy-related inquiries, reach out to{' '}
-                <a href="mailto:Wearwemine@gmail.com" className="text-gray-900 underline">
-                  Wearwemine@gmail.com
+                <a href="mailto:hello@wemine.in" className="text-gray-900 underline">
+                  hello@wemine.in
                 </a>
                 .
               </p>

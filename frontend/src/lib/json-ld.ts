@@ -15,7 +15,7 @@ export const ORGANIZATION_JSON_LD = {
     'https://twitter.com/wemine',
     'https://pinterest.com/wemine',
   ],
-  email: 'Wearwemine@gmail.com',
+  email: 'hello@wemine.in',
   telephone: '+91 9828847782',
   address: {
     '@type': 'PostalAddress',

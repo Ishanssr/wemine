@@ -30,8 +30,8 @@ export default function CareersPage() {
           </p>
           <p className="font-body text-sm text-gray-400">
             In the meantime, say hi at{' '}
-            <a href="mailto:Wearwemine@gmail.com" className="text-gray-900 underline">
-              Wearwemine@gmail.com
+            <a href="mailto:hello@wemine.in" className="text-gray-900 underline">
+              hello@wemine.in
             </a>
           </p>
         </div>

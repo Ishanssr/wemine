@@ -4,7 +4,7 @@ import { SITE_URL } from '@/lib/json-ld';
 export const metadata: Metadata = {
   title: 'Contact',
   description:
-    'Get in touch with WEMINE. Email us at Wearwemine@gmail.com or call +91 9828847782. Based in Himachal Pradesh, India.',
+    'Get in touch with WEMINE. Email us at hello@wemine.in or call +91 9828847782. Based in Himachal Pradesh, India.',
   alternates: { canonical: `${SITE_URL}/contact` },
   openGraph: {
     title: 'Contact | WEMINE',
