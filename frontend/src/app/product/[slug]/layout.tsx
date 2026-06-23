@@ -3,7 +3,7 @@ import { SITE_URL, productJsonLd } from '@/lib/json-ld';
 
 async function getProduct(slug: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wemine-api.onrender.com';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in';
     const res = await fetch(`${baseUrl}/api/products/${slug}`, { next: { revalidate: 300 } });
     if (!res.ok) return null;
     const data = await res.json();

@@ -3,7 +3,7 @@ import { SITE_URL } from '@/lib/json-ld';
 
 async function getDesign(id: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wemine-api.onrender.com';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in';
     const res = await fetch(`${baseUrl}/api/designs/${id}`, { next: { revalidate: 300 } });
     if (!res.ok) return null;
     return res.json();

@@ -30,7 +30,7 @@ export class UploadController {
   }
 
   private getBaseUrl() {
-    return this.config.get('BASE_URL') || 'https://wemine-api.onrender.com';
+    return this.config.get('BASE_URL') || 'https://api.wemine.in';
   }
 
   async uploadToCloudinary(buffer: Buffer, folder: string): Promise<string> {

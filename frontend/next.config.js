@@ -1,13 +1,12 @@
 /** @type {import('next').NextConfig} */
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://80.225.249.88:4000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in';
 
 const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'plus.unsplash.com' },
-      { protocol: 'http', hostname: '80.225.249.88', port: '4000' },
-      { protocol: 'https', hostname: 'wemine-api.onrender.com' },
+      { protocol: 'https', hostname: 'api.wemine.in' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'http', hostname: 'localhost', port: '4000' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },

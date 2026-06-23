@@ -18,7 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let designUrls: MetadataRoute.Sitemap = [];
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://wemine-api.onrender.com'}/designs?limit=100`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in'}/designs?limit=100`, {
       next: { revalidate: 3600 },
     });
     const data = await res.json();
