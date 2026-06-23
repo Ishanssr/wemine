@@ -13,6 +13,17 @@ const nextConfig = {
     ],
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.wemine.in' }],
+        destination: 'https://wemine.in/:path*',
+        permanent: true,
+      },
+    ];
+  },
+
   async rewrites() {
     return [
       {
