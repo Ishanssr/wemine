@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { api } from '@/lib/api';
 import { optimizeImage } from '@/lib/images';
-import { Plus, Trash2, Star, Upload } from 'lucide-react';
+import { Plus, Trash2, Star, Upload, Bookmark, DollarSign } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function AdminDesignsPage() {
@@ -15,12 +15,13 @@ export default function AdminDesignsPage() {
   const [form, setForm] = useState({ title: '', description: '', category: '' });
   const [images, setImages] = useState<{ file: File; preview: string; label: string; key: string }[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [prebookPrices, setPrebookPrices] = useState<Record<string, string>>({});
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-designs'],
     queryFn: async () => {
-      const res = await api.get('/designs');
+      const res = await api.get('/admin/designs');
       return (res.data.designs || []);
     },
   });
@@ -75,6 +76,45 @@ export default function AdminDesignsPage() {
       toast.error(err?.response?.data?.message || 'Failed to create design');
     },
   });
+
+  const prebookMutation = useMutation({
+    mutationFn: async ({ id, isPrebook, prebookPrice }: { id: string; isPrebook: boolean; prebookPrice?: number }) => {
+      await api.put(`/admin/designs/${id}/prebook`, { isPrebook, prebookPrice });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-designs'] });
+      toast.success('Prebook status updated');
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message || 'Failed to update prebook status');
+    },
+  });
+
+  const convertMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await api.post(`/admin/designs/${id}/convert`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-designs'] });
+      toast.success('Design converted to product!');
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message || 'Failed to convert design');
+    },
+  });
+
+  const handleTogglePrebook = (design: any) => {
+    const price = prebookPrices[design.id];
+    if (!design.isPrebook && (!price || parseFloat(price) <= 0)) {
+      toast.error('Set a prebook price first');
+      return;
+    }
+    prebookMutation.mutate({
+      id: design.id,
+      isPrebook: !design.isPrebook,
+      prebookPrice: design.isPrebook ? undefined : parseFloat(price),
+    });
+  };
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -187,16 +227,60 @@ export default function AdminDesignsPage() {
                     <span className="font-heading text-xs font-medium">{design.avgRating}</span>
                   </div>
                 )}
+                {design.isPrebook && (
+                  <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur px-2 py-1 flex items-center gap-1">
+                    <Bookmark className="w-3 h-3 text-white" />
+                    <span className="font-heading text-[10px] font-medium text-white">₹{design.prebookPrice}</span>
+                  </div>
+                )}
               </div>
-              <div className="mt-2 flex items-start justify-between">
-                <div className="min-w-0">
-                  <p className="font-heading text-xs font-medium text-gray-900 truncate">{design.title}</p>
-                  <p className="font-body text-[10px] text-gray-400">{design.ratingCount || 0} ratings</p>
+              <div className="mt-2 space-y-1.5">
+                <div className="flex items-start justify-between">
+                  <div className="min-w-0">
+                    <p className="font-heading text-xs font-medium text-gray-900 truncate">{design.title}</p>
+                    <p className="font-body text-[10px] text-gray-400">{design.ratingCount || 0} ratings · {design.prebookCount || 0} prebooks</p>
+                  </div>
+                  <button onClick={() => deleteMutation.mutate(design.id)}
+                    className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-                <button onClick={() => deleteMutation.mutate(design.id)}
-                  className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex items-center gap-1.5">
+                  {!design.isPrebook && (
+                    <div className="flex items-center gap-1 flex-1">
+                      <DollarSign className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                      <input
+                        type="number"
+                        placeholder="Price"
+                        value={prebookPrices[design.id] || ''}
+                        onChange={(e) => setPrebookPrices({ ...prebookPrices, [design.id]: e.target.value })}
+                        className="w-full min-w-0 px-2 py-1 text-[10px] font-body border border-black/10 outline-none focus:border-black transition-colors"
+                        step="1"
+                        min="1"
+                      />
+                    </div>
+                  )}
+                  <button
+                    onClick={() => handleTogglePrebook(design)}
+                    disabled={prebookMutation.isPending}
+                    className={`text-[10px] font-heading font-medium tracking-[0.05em] uppercase px-2.5 py-1 border transition-all flex-shrink-0 disabled:opacity-40 ${
+                      design.isPrebook
+                        ? 'bg-black text-white border-black hover:bg-gray-800'
+                        : 'border-black/10 text-gray-500 hover:border-black/30'
+                    }`}
+                  >
+                    {design.isPrebook ? 'Prebook ON' : 'Prebook OFF'}
+                  </button>
+                  {design.isPrebook && (
+                    <button
+                      onClick={() => convertMutation.mutate(design.id)}
+                      disabled={convertMutation.isPending}
+                      className="text-[10px] font-heading font-medium tracking-[0.05em] uppercase px-2.5 py-1 border border-emerald-600 text-emerald-600 hover:bg-emerald-50 transition-all flex-shrink-0 disabled:opacity-40"
+                    >
+                      Convert
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}

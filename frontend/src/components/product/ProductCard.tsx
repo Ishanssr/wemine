@@ -74,7 +74,11 @@ export function ProductCard({ product, index = 0, priority = false }: ProductCar
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
 
-          {isDesign ? (
+          {isDesign && product.isPrebook ? (
+            <span className="absolute bottom-3 left-3 px-3 py-1 bg-black text-white text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
+              Prebook {product.prebookPrice ? `₹${product.prebookPrice}` : ''}
+            </span>
+          ) : isDesign ? (
             <span className="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur text-black text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
               Launching Soon
             </span>
@@ -89,7 +93,11 @@ export function ProductCard({ product, index = 0, priority = false }: ProductCar
           <h3 className="font-heading text-[11px] font-medium text-gray-900 tracking-[0.05em] uppercase line-clamp-1">
             {product.name}
           </h3>
-          {isDesign ? (
+          {isDesign && product.isPrebook ? (
+            <p className="font-body text-[11px] text-gray-500 tracking-[0.05em] uppercase">
+              Prebook at ₹{product.prebookPrice}
+            </p>
+          ) : isDesign ? (
             <p className="font-body text-[11px] text-gray-400 tracking-[0.05em] uppercase">
               Launching Soon
             </p>

@@ -93,6 +93,16 @@ async function main() {
     },
   });
 
+  const specificDesign = await prisma.design.update({
+    where: { id: 'cmqdxu9qw002ejavmy9rnc7wh' },
+    data: { isPrebook: true, prebookPrice: 1499 },
+  }).catch(() => null);
+  if (specificDesign) {
+    console.log(`Design "${specificDesign.title}" marked as prebookable at ₹${specificDesign.prebookPrice}`);
+  } else {
+    console.log('Specific design not found — skipping prebook seed');
+  }
+
   console.log('Seed complete! Supporting data (categories, users, coupons) created.');
   console.log('Admin: admin@wemine.com / admin123');
   console.log('User: user@wemine.com / admin123');
