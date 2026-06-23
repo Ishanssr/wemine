@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in';
+const RAW = process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in';
+const API_URL = RAW.endsWith('/api') ? RAW.replace(/\/api$/, '') : RAW;
 
 const nextConfig = {
   images: {
