@@ -26,4 +26,5 @@ jobs:
             NODE_OPTIONS="--max-old-space-size=1024" npx prisma generate
             npm run build
             npx prisma migrate deploy
-            pm2 restart wemine-api --update-env
+            mkdir -p /home/ubuntu/logs
+            pm2 start ecosystem.config.js --update-env 2>/dev/null || pm2 restart wemine-api --update-env

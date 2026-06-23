@@ -43,6 +43,23 @@
     border: 1px solid rgba(0, 0, 0, 0.06);
   }
 
+  .glass-darker {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .hero-gradient {
+    background: linear-gradient(135deg, #fefcf5 0%, #f4f9f9 50%, #e2edee 100%);
+  }
+
+  .bg-grid {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
   .nav-glass {
     background: rgba(254, 252, 245, 0.85);
     backdrop-filter: blur(20px);

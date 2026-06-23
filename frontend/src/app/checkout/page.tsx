@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CreditCard, Shield, Truck, Lock, ChevronDown } from 'lucide-react';
+import { CreditCard, Shield, Truck, Lock, ChevronDown, Tag, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { api, formatINR } from '@/lib/api';
@@ -15,7 +15,7 @@ import { useAuthStore } from '@/store/auth-store';
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, isLoading, fetchCart, getTotal } = useCartStore();
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const [step, setStep] = useState(1);
   const [addresses, setAddresses] = useState<any[]>([]);
   const [selectedAddress, setSelectedAddress] = useState('');
@@ -26,10 +26,45 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     firstName: '', lastName: '', line1: '', city: '', state: '', zipCode: '', phone: '',
   });
+  const [couponCode, setCouponCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState('');
 
   const activeItems = items.filter((i) => !i.savedForLater);
   const total = getTotal();
-  const grandTotal = total + (total >= 999 ? 0 : 99) + total * 0.18;
+  const shipping = total >= 999 ? 0 : 99;
+  const tax = total * 0.18;
+  const grandTotal = total + shipping + tax - couponDiscount;
+
+  const applyCoupon = async () => {
+    const code = couponCode.trim().toUpperCase();
+    if (!code) return;
+    setCouponLoading(true);
+    setCouponError('');
+    try {
+      const { data } = await api.post('/coupons/validate', {
+        code,
+        orderValue: total,
+      });
+      const discount = data.discountAmount || data.discountValue || 0;
+      setCouponDiscount(discount);
+      setAppliedCoupon(code);
+      setCouponCode('');
+      toast.success(`Coupon applied! You saved ${formatINR(discount)}`);
+    } catch (err: any) {
+      setCouponError(err?.response?.data?.message || 'Invalid or expired coupon');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon('');
+    setCouponDiscount(0);
+    setCouponError('');
+  };
 
   useEffect(() => {
     if (!isAuthenticated) { router.push('/auth/login'); return; }
@@ -73,8 +108,9 @@ export default function CheckoutPage() {
       const { data } = await api.post('/orders', {
         shippingAddressId: addressId,
         paymentMethod,
-        shippingCost: total >= 999 ? 0 : 99,
-        taxAmount: total * 0.18,
+        shippingCost: shipping,
+        taxAmount: tax,
+        couponCode: appliedCoupon || undefined,
       });
 
       const order = data.data || data;
@@ -383,9 +419,51 @@ export default function CheckoutPage() {
 
               <div className="space-y-2 mb-4 pb-4 border-b border-black/10">
                 <div className="flex justify-between font-body text-sm"><span className="text-gray-500">Subtotal</span><span>{formatINR(total)}</span></div>
-                <div className="flex justify-between font-body text-sm"><span className="text-gray-500">Shipping</span><span>{total >= 999 ? 'Free' : '₹99'}</span></div>
-                <div className="flex justify-between font-body text-sm"><span className="text-gray-500">Tax</span><span>{formatINR(total * 0.18)}</span></div>
+                <div className="flex justify-between font-body text-sm"><span className="text-gray-500">Shipping</span><span>{shipping === 0 ? 'Free' : '₹99'}</span></div>
+                <div className="flex justify-between font-body text-sm"><span className="text-gray-500">Tax</span><span>{formatINR(tax)}</span></div>
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between font-body text-sm text-green-600">
+                    <span>Discount</span>
+                    <span>-{formatINR(couponDiscount)}</span>
+                  </div>
+                )}
               </div>
+
+              <div className="mb-4 pb-4 border-b border-black/10">
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-green-50 border border-green-200 px-3 py-2">
+                    <div className="flex items-center gap-2">
+                      <Tag className="w-3.5 h-3.5 text-green-600" />
+                      <span className="font-body text-xs font-medium text-green-700">{appliedCoupon}</span>
+                    </div>
+                    <button onClick={removeCoupon} className="text-green-600 hover:text-green-800">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Coupon code"
+                      value={couponCode}
+                      onChange={(e) => { setCouponCode(e.target.value); setCouponError(''); }}
+                      onKeyDown={(e) => e.key === 'Enter' && applyCoupon()}
+                      className="input-field flex-1 text-xs"
+                    />
+                    <button
+                      onClick={applyCoupon}
+                      disabled={couponLoading || !couponCode.trim()}
+                      className="btn-primary text-[10px] px-4 whitespace-nowrap"
+                    >
+                      {couponLoading ? '...' : 'Apply'}
+                    </button>
+                  </div>
+                )}
+                {couponError && (
+                  <p className="font-body text-[11px] text-red-500 mt-1">{couponError}</p>
+                )}
+              </div>
+
               <div className="flex justify-between font-heading font-semibold text-base mb-6">
                 <span>Total</span>
                 <span>{formatINR(grandTotal)}</span>
