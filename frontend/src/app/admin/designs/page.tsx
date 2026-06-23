@@ -2,11 +2,11 @@
 
 import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { api } from '@/lib/api';
 import { optimizeImage } from '@/lib/images';
-import { Plus, Trash2, Star, Upload, Bookmark, DollarSign } from 'lucide-react';
+import { Plus, Trash2, Star, Upload, Bookmark, DollarSign, Users, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function AdminDesignsPage() {
@@ -16,6 +16,7 @@ export default function AdminDesignsPage() {
   const [images, setImages] = useState<{ file: File; preview: string; label: string; key: string }[]>([]);
   const [uploading, setUploading] = useState(false);
   const [prebookPrices, setPrebookPrices] = useState<Record<string, string>>({});
+  const [viewingPrebooks, setViewingPrebooks] = useState<string | null>(null);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const { data, isLoading } = useQuery({
@@ -124,6 +125,16 @@ export default function AdminDesignsPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-designs'] });
       toast.success('Design deleted');
     },
+  });
+
+  const { data: prebookUsers } = useQuery({
+    queryKey: ['design-prebooks', viewingPrebooks],
+    queryFn: async () => {
+      if (!viewingPrebooks) return [];
+      const res = await api.get(`/admin/designs/${viewingPrebooks}/prebooks`);
+      return (res.data || []) as any[];
+    },
+    enabled: !!viewingPrebooks,
   });
 
   const imageFields = [
@@ -239,6 +250,11 @@ export default function AdminDesignsPage() {
                   <div className="min-w-0">
                     <p className="font-heading text-xs font-medium text-gray-900 truncate">{design.title}</p>
                     <p className="font-body text-[10px] text-gray-400">{design.ratingCount || 0} ratings · {design.prebookCount || 0} prebooks</p>
+                    {design.prebookCount > 0 && (
+                      <button onClick={() => setViewingPrebooks(design.id)} className="text-[10px] font-heading font-medium text-glacier-600 hover:text-glacier-700 transition-colors">
+                        View
+                      </button>
+                    )}
                   </div>
                   <button onClick={() => deleteMutation.mutate(design.id)}
                     className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0">
@@ -286,6 +302,53 @@ export default function AdminDesignsPage() {
           ))}
         </div>
       )}
+      <AnimatePresence>
+        {viewingPrebooks && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+            onClick={() => setViewingPrebooks(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white w-full max-w-lg max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-4 border-b border-black/5">
+                <h3 className="font-heading text-sm font-medium text-gray-900">Prebooked Users</h3>
+                <button onClick={() => setViewingPrebooks(null)} className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-600">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-4">
+                {!prebookUsers?.length ? (
+                  <p className="font-body text-sm text-gray-400 text-center py-8">No prebooks yet</p>
+                ) : (
+                  <div className="space-y-2">
+                    {prebookUsers.map((pb: any) => (
+                      <div key={pb.id} className="flex items-center justify-between border border-black/5 p-3">
+                        <div>
+                          <p className="font-heading text-xs font-medium text-gray-900">
+                            {pb.user.firstName || pb.user.email} {pb.user.lastName || ''}
+                          </p>
+                          <p className="font-body text-[10px] text-gray-400">{pb.user.email}</p>
+                        </div>
+                        <p className="font-body text-[10px] text-gray-400">
+                          {new Date(pb.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
