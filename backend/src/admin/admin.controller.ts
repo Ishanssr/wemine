@@ -40,11 +40,6 @@ export class AdminController {
     return this.admin.handleRefund(id, action, body.adminNotes);
   }
 
-  @Get('designs/:id/prebooks')
-  async getDesignPrebooks(@Param('id') id: string) {
-    return this.admin.getDesignPrebooks(id);
-  }
-
   @Put('designs/:id/prebook')
   async toggleDesignPrebook(
     @Param('id') id: string,

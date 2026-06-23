@@ -131,19 +131,6 @@ export class AdminService {
     });
   }
 
-  async getDesignPrebooks(designId: string) {
-    const design = await this.prisma.design.findUnique({ where: { id: designId } });
-    if (!design) throw new NotFoundException('Design not found');
-
-    return this.prisma.prebook.findMany({
-      where: { designId },
-      include: {
-        user: { select: { id: true, email: true, firstName: true, lastName: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
-
   async toggleDesignPrebook(designId: string, data: { isPrebook: boolean; prebookPrice?: number }) {
     const design = await this.prisma.design.findUnique({ where: { id: designId } });
     if (!design) throw new NotFoundException('Design not found');
