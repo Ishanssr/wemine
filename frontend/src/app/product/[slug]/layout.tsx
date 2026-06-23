@@ -57,6 +57,49 @@ export async function generateMetadata({
   };
 }
 
-export default function ProductDetailLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default async function ProductDetailLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+
+  if (!product) return <>{children}</>;
+
+  const imageUrl = product.images?.[0]?.url;
+  const price = product.variants?.[0]?.price;
+  const ratingValue = product.rating || product.averageRating;
+  const reviewCount = product.reviewCount || product.numReviews;
+
+  const jsonLd = productJsonLd({
+    name: product.name,
+    description: product.description?.slice(0, 200) || product.name,
+    image: imageUrl || `${SITE_URL}/og-image.png`,
+    sku: product.sku || product.id,
+    brand: 'WEMINE',
+    price: price || 0,
+    currency: 'INR',
+    availability: product.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    ratingValue: ratingValue,
+    reviewCount: reviewCount,
+    url: `${SITE_URL}/product/${slug}`,
+  });
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            ...jsonLd,
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

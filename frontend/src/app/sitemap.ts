@@ -1,45 +1,39 @@
-import { MetadataRoute } from 'next';
-import { SITE_URL } from '@/lib/json-ld';
+import type { MetadataRoute } from 'next';
 
-const STATIC_URLS = [
-  { url: '', priority: 1.0, changeFreq: 'weekly' as const },
-  { url: '/products', priority: 0.9, changeFreq: 'daily' as const },
-  { url: '/shipping', priority: 0.4, changeFreq: 'monthly' as const },
-  { url: '/returns', priority: 0.4, changeFreq: 'monthly' as const },
-  { url: '/faq', priority: 0.6, changeFreq: 'monthly' as const },
-  { url: '/contact', priority: 0.5, changeFreq: 'monthly' as const },
-  { url: '/blog', priority: 0.5, changeFreq: 'weekly' as const },
-  { url: '/privacy', priority: 0.3, changeFreq: 'monthly' as const },
-  { url: '/terms', priority: 0.3, changeFreq: 'monthly' as const },
-  { url: '/careers', priority: 0.3, changeFreq: 'monthly' as const },
-];
+const SITE_URL = 'https://wemine.in';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  let designUrls: MetadataRoute.Sitemap = [];
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in';
 
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: SITE_URL, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
+    { url: `${SITE_URL}/products`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    { url: `${SITE_URL}/designs`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
+    { url: `${SITE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${SITE_URL}/shipping`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${SITE_URL}/returns`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${SITE_URL}/faq`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${SITE_URL}/search`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.3 },
+    { url: `${SITE_URL}/privacy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${SITE_URL}/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.2 },
+  ];
+
+  let productPages: MetadataRoute.Sitemap = [];
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in'}/designs?limit=100`, {
-      next: { revalidate: 3600 },
-    });
-    const data = await res.json();
-    if (data?.designs) {
-      designUrls = data.designs.map((d: any) => ({
-        url: `${SITE_URL}/designs/${d.id}`,
-        lastModified: new Date(d.updatedAt || d.createdAt),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6,
-      }));
+    const res = await fetch(`${baseUrl}/api/products?limit=100`, { next: { revalidate: 3600 } });
+    if (res.ok) {
+      const data = await res.json();
+      const products = data.data || data.products || data;
+      if (Array.isArray(products)) {
+        productPages = products.map((p: { slug: string; updatedAt?: string }) => ({
+          url: `${SITE_URL}/product/${p.slug}`,
+          lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+          changeFrequency: 'weekly' as const,
+          priority: 0.8,
+        }));
+      }
     }
-  } catch {
-    // API unavailable — serve just static URLs
-  }
+  } catch {}
 
-  const staticUrls: MetadataRoute.Sitemap = STATIC_URLS.map(({ url, priority, changeFreq }) => ({
-    url: `${SITE_URL}${url}`,
-    lastModified: new Date(),
-    changeFrequency: changeFreq,
-    priority,
-  }));
-
-  return [...staticUrls, ...designUrls];
+  return [...staticPages, ...productPages];
 }

@@ -26,14 +26,20 @@ export async function generateMetadata({
   return {
     title: `${design.title} — Community Design`,
     description:
-      design.description || `Rate the ${design.title} t-shirt design by WEMINE. Share your feedback.`,
+      design.description || `Rate the ${design.title} t-shirt design by WEMINE. Share your feedback and help shape our next minimalist collection.`,
     alternates: { canonical: `${SITE_URL}/designs/${id}` },
     openGraph: {
       title: `${design.title} | WEMINE`,
-      description: design.description?.slice(0, 160) || '',
+      description: (design.description || `Rate the ${design.title} t-shirt design.`).slice(0, 160),
       images: design.imageUrl
         ? [{ url: design.imageUrl, width: 1200, height: 1500, alt: design.title }]
         : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${design.title} | WEMINE`,
+      description: (design.description || `Rate the ${design.title} t-shirt design.`).slice(0, 160),
+      images: design.imageUrl ? [design.imageUrl] : undefined,
     },
   };
 }

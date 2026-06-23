@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Outfit, Manrope } from 'next/font/google';
 import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/react';
@@ -27,16 +27,21 @@ export const metadata: Metadata = {
     default: 'WEMINE | Premium Minimal Wear — Premium Cotton T-Shirts',
   },
   description:
-    'Premium cotton t-shirts with graphics that mean something. 240 GSM pre-shrunk fabric, thoughtful design, built to last. Free shipping above ₹999.',
+    'Premium cotton t-shirts with graphics that mean something. 240 GSM pre-shrunk fabric, minimalist aesthetic, thoughtful design, built to last. Free shipping above ₹999.',
   keywords: [
     'premium t-shirts India',
     'minimal apparel',
+    'minimalist aesthetic fashion',
     'cotton t-shirts',
     '240 GSM t-shirts',
     'WEMINE clothing',
-    'graphic tees',
+    'graphic tees India',
     'minimalist fashion',
     'Indian clothing brand',
+    'aesthetic t-shirts',
+    'minimal wear',
+    'premium cotton tees',
+    'Indian streetwear',
   ],
   robots: { index: true, follow: true },
   icons: { icon: '/logo.png', apple: '/logo.png' },
@@ -45,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'WEMINE | Premium Minimal Wear — Premium Cotton T-Shirts',
     description:
-      'Premium cotton t-shirts with graphics that mean something. 240 GSM pre-shrunk fabric, thoughtful design, built to last.',
+      'Premium cotton t-shirts with graphics that mean something. 240 GSM pre-shrunk fabric, minimalist aesthetic, thoughtful design, built to last.',
     siteName: 'WEMINE',
     type: 'website',
     locale: 'en_IN',
@@ -70,13 +75,15 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: '#fefcf5',
+  colorScheme: 'light',
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${outfit.variable} ${manrope.variable} scroll-smooth`}>
       <head>
-        <meta name="theme-color" content="#fefcf5" />
-        <meta name="color-scheme" content="light" />
-        <meta name="referrer" content="strict-origin-when-cross-origin" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
