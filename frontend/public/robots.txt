@@ -6,7 +6,8 @@ Disallow: /_next/data/
 Disallow: /auth/
 Disallow: /cart
 Disallow: /checkout
-Disallow: /search
+Disallow: /search?q=*
+Allow: /search$
 Disallow: /account
 Disallow: /*sort_by=*
 Disallow: /*filter=*

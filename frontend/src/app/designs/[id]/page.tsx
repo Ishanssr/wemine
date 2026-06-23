@@ -195,7 +195,7 @@ export default function DesignDetailPage() {
                         {prebookMutation.isPending ? 'Processing...' : isPrebooked ? 'Prebooked' : `Prebook at ₹${design.prebookPrice}`}
                       </button>
                     ) : (
-                      <a href="/auth/login" className="block w-full text-center bg-black text-white font-heading text-xs font-medium tracking-[0.15em] uppercase py-3 hover:bg-gray-800 transition-colors">
+                      <a href="/auth/login" rel="nofollow" className="block w-full text-center bg-black text-white font-heading text-xs font-medium tracking-[0.15em] uppercase py-3 hover:bg-gray-800 transition-colors">
                         Sign in to Prebook
                       </a>
                     )}
@@ -244,7 +244,7 @@ export default function DesignDetailPage() {
 
                 {!isAuthenticated && (
                   <p className="font-body text-xs text-gray-400 mb-6">
-                    <a href="/auth/login" className="underline">Sign in</a> to rate this design
+                    <a href="/auth/login" rel="nofollow" className="underline">Sign in</a> to rate this design
                   </p>
                 )}
 

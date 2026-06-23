@@ -87,6 +87,7 @@ export function Navbar() {
 
             <Link
               href={isAuthenticated ? '/account/wishlist' : '/auth/login'}
+              rel="nofollow"
               className="hidden lg:flex w-10 h-10 items-center justify-center hover:bg-black/5 transition-all duration-200"
             >
               <Heart className="w-5 h-5 text-gray-900" />
@@ -128,6 +129,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/auth/login"
+                rel="nofollow"
                 className="hidden lg:inline-flex items-center px-5 py-2 bg-black text-white text-[11px] font-heading font-medium tracking-[0.05em] uppercase hover:bg-gray-800 transition-all duration-300"
               >
                 Sign In
@@ -165,6 +167,7 @@ export function Navbar() {
           {!isAuthenticated && (
             <Link
               href="/auth/login"
+              rel="nofollow"
               onClick={() => setIsOpen(false)}
               className="block px-4 py-3 text-[11px] font-heading font-medium tracking-[0.05em] uppercase text-white bg-black text-center mt-2"
             >
