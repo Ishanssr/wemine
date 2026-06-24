@@ -121,25 +121,6 @@ export const CLOTHING_STORE_JSON_LD = {
     '@type': 'Country',
     name: 'India',
   },
-  hasOfferCatalog: {
-    '@type': 'OfferCatalog',
-    name: 'WEMINE T-Shirt Collection',
-    itemListElement: [
-      {
-        '@type': 'OfferCatalog',
-        name: 'Premium Cotton T-Shirts',
-        itemListElement: [
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Product',
-              name: 'Premium Graphic T-Shirts',
-            },
-          },
-        ],
-      },
-    ],
-  },
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────
