@@ -12,7 +12,11 @@ const nextConfig = {
       { protocol: 'http', hostname: 'localhost', port: '4000' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
     ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
   },
+
+  poweredByHeader: false,
 
   async redirects() {
     return [
@@ -43,16 +47,24 @@ const nextConfig = {
       {
         source: '/(.*)',
         headers: [
-          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'X-DNS-Prefetch-Control', value: 'on' },
         ],
       },
       {
         source: '/_next/static/(.*)',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/_next/image(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'X-Robots-Tag', value: 'all' },
+        ],
       },
     ];
   },
