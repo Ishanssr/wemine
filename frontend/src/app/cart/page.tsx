@@ -79,7 +79,7 @@ export default function CartPage() {
                   >
                   <Link href={`/product/${item.product.slug}`} className="w-24 h-24 rounded-xl overflow-hidden bg-glacier-100/50 flex-shrink-0">
                     {item.product.images?.[0] ? (
-                      <Image src={item.product.images[0].url} alt="" width={96} height={96} className="w-full h-full object-cover" />
+                      <Image src={item.product.images[0].url} alt={item.product.name} width={96} height={96} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <ShoppingBag className="w-6 h-6 text-glacier-300" />
@@ -159,7 +159,7 @@ export default function CartPage() {
                       <div key={item.id} className="glass-surface rounded-xl p-4 flex items-center gap-4 opacity-70">
                         <div className="w-16 h-16 rounded-lg overflow-hidden bg-glacier-100/50 flex-shrink-0">
                           {item.product.images?.[0] && (
-                            <Image src={item.product.images[0].url} alt="" width={80} height={80} className="w-full h-full object-cover" />
+                            <Image src={item.product.images[0].url} alt={item.product.name} width={80} height={80} className="w-full h-full object-cover" />
                           )}
                         </div>
                         <div className="flex-1">

@@ -62,7 +62,7 @@ export default function AdminProductsPage() {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-glacier-100/50 overflow-hidden flex-shrink-0">
-                          {product.images?.[0] && <Image src={product.images[0].url} alt="" width={40} height={40} className="w-full h-full object-cover" />}
+                          {product.images?.[0] && <Image src={product.images[0].url} alt={product.name} width={40} height={40} className="w-full h-full object-cover" />}
                         </div>
                         <Link href={`/admin/products/${product.id}`} className="font-body text-sm text-gray-900 hover:text-glacier-600 transition-colors">
                           {product.name}

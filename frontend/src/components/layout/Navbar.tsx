@@ -119,7 +119,7 @@ export function Navbar() {
                   className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-all duration-200"
                 >
                   {user?.avatarUrl ? (
-                    <Image src={user.avatarUrl} alt="" width={28} height={28} className="rounded-full object-cover" />
+                    <Image src={user.avatarUrl} alt={`${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User avatar'} width={28} height={28} className="rounded-full object-cover" />
                   ) : (
                     <User className="w-5 h-5 text-gray-900" />
                   )}

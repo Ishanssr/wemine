@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     default: 'WEMINE | Premium Minimal Wear — Premium Cotton T-Shirts',
   },
   description:
-    'Premium cotton t-shirts with graphics that mean something. 240 GSM pre-shrunk fabric, minimalist aesthetic, thoughtful design, built to last. Free shipping above ₹999.',
+    'Premium cotton t-shirts with minimalist aesthetic. 240 GSM pre-shrunk fabric, thoughtful design, built to last. Free shipping above ₹999.',
   keywords: [
     'premium t-shirts India',
     'minimal apparel',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'WEMINE | Premium Minimal Wear — Premium Cotton T-Shirts',
     description:
-      'Premium cotton t-shirts with graphics that mean something. 240 GSM pre-shrunk fabric, minimalist aesthetic, thoughtful design, built to last.',
+      'Premium cotton t-shirts with minimalist aesthetic. 240 GSM pre-shrunk fabric, thoughtful design, built to last.',
     siteName: 'WEMINE',
     type: 'website',
     locale: 'en_IN',

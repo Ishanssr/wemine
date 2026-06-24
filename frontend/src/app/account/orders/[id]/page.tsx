@@ -74,7 +74,7 @@ export default function OrderDetailPage() {
           {order.items?.map((item) => (
             <div key={item.id} className="flex items-center gap-4 py-3 border-b border-white/40 last:border-0">
               <div className="w-16 h-16 rounded-xl bg-glacier-100/50 overflow-hidden flex-shrink-0">
-                {item.imageUrl && <Image src={item.imageUrl} alt="" width={64} height={64} className="w-full h-full object-cover" />}
+                {item.imageUrl && <Image src={item.imageUrl} alt={item.name} width={64} height={64} className="w-full h-full object-cover" />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-body text-sm text-gray-900 truncate">{item.name}</p>

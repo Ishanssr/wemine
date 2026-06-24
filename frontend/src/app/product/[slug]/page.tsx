@@ -228,7 +228,7 @@ export default function ProductDetailPage() {
                       idx === selectedImageIndex ? 'border-glacier-400' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
-                    <Image src={img.url} alt="" fill className="object-cover" sizes="80px" />
+                    <Image src={img.url} alt={product?.name ? `${product.name} thumbnail ${idx + 1}` : 'Product image'} fill className="object-cover" sizes="80px" />
                   </button>
                 ))}
               </div>

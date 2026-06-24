@@ -403,7 +403,7 @@ export default function CheckoutPage() {
                   <div key={item.id} className="flex items-center gap-3">
                     <div className="w-12 h-12 overflow-hidden bg-black/5 flex-shrink-0">
                       {item.product.images?.[0] && (
-                        <Image src={item.product.images[0].url} alt="" width={48} height={48} className="w-full h-full object-cover" />
+                        <Image src={item.product.images[0].url} alt={item.product.name} width={48} height={48} className="w-full h-full object-cover" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">

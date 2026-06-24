@@ -95,7 +95,7 @@ export function CartDrawer() {
                         {item.product.images?.[0] ? (
                           <Image
                             src={item.product.images[0].url}
-                            alt=""
+                            alt={item.product.name}
                             width={80}
                             height={80}
                             className="w-full h-full object-cover"

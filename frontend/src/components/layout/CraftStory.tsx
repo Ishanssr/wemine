@@ -5,10 +5,10 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 const slides = [
-  '/cotton-240gsm.png',
-  '/pre-shrunk.png',
-  '/fade-resistant.png',
-  '/built-for-washes.png',
+  { src: '/cotton-240gsm.png', alt: 'WEMINE 240 GSM premium cotton fabric detail' },
+  { src: '/pre-shrunk.png', alt: 'Pre-shrunk cotton t-shirt fabric — stays true to size' },
+  { src: '/fade-resistant.png', alt: 'Fade-resistant print on WEMINE premium t-shirt' },
+  { src: '/built-for-washes.png', alt: 'Durable t-shirt fabric designed for repeated washes' },
 ];
 
 export function CraftStory() {
@@ -65,14 +65,14 @@ export function CraftStory() {
       >
         <div className="shrink-0" style={{ width: 'calc(50vw - 1rem)' }} />
 
-        {slides.map((src, i) => {
+        {slides.map((slide, i) => {
           const dist = i - active;
           const abs = Math.abs(dist);
           const scale = 1 - abs * 0.07;
 
           return (
             <div
-              key={src}
+              key={slide.src}
               data-index={i}
               className="snap-center shrink-0 flex items-center justify-center px-2"
               style={{ width: '80vw', maxWidth: 680 }}
@@ -87,8 +87,8 @@ export function CraftStory() {
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
                 <Image
-                  src={src}
-                  alt=""
+                  src={slide.src}
+                  alt={slide.alt}
                   width={1440}
                   height={900}
                   className="w-full h-auto"
