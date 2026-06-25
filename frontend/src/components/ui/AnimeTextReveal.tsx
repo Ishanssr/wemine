@@ -17,10 +17,10 @@ export function AnimeTextReveal({ text, className = '', delay = 0 }: AnimeTextRe
 
     // Split text into words, and words into letters
     const words = text.split(' ').map(word => {
-      const letters = word.split('').map(letter => 
+      const letters = [...word].map(letter => 
         `<span class="inline-block translate-y-[100%] opacity-0 letter-reveal">${letter}</span>`
       ).join('');
-      return `<span class="inline-block overflow-hidden mr-[0.25em]">${letters}</span>`;
+      return `<span class="inline-flex whitespace-nowrap overflow-hidden mr-[0.25em]">${letters}</span>`;
     });
 
     containerRef.current.innerHTML = words.join('');
