@@ -146,13 +146,10 @@ export default function AdminDesignsPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="font-heading font-semibold text-lg text-gray-900">Designs</h2>
-          <p className="font-body text-sm text-gray-400">Upload and manage community designs</p>
-        </div>
-        <button onClick={() => setShowForm(!showForm)} className="btn-primary text-sm px-5 py-2.5">
-          <Plus className="w-4 h-4" /> New Design
+      <div className="flex items-end justify-between mb-8 border-b border-black pb-4">
+        <h1 className="font-heading text-4xl font-medium text-black tracking-tight uppercase">Designs</h1>
+        <button onClick={() => setShowForm(!showForm)} className="font-heading text-[10px] font-medium tracking-[0.1em] uppercase text-black hover:opacity-50 transition-opacity">
+          + New Design
         </button>
       </div>
 
