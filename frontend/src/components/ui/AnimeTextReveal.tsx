@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-// @ts-ignore
-import anime from 'animejs';
+import { animate, stagger } from 'animejs';
 
 interface AnimeTextRevealProps {
   text: string;
@@ -27,14 +26,16 @@ export function AnimeTextReveal({ text, className = '', delay = 0 }: AnimeTextRe
     containerRef.current.innerHTML = words.join('');
 
     // Animate the letters
-    anime({
-      targets: containerRef.current.querySelectorAll('.letter-reveal'),
-      translateY: ['100%', '0%'],
-      opacity: [0, 1],
-      easing: 'easeOutExpo',
-      duration: 800,
-      delay: anime.stagger(30, { start: delay }),
-    });
+    animate(
+      containerRef.current.querySelectorAll('.letter-reveal'),
+      {
+        translateY: ['100%', '0%'],
+        opacity: [0, 1],
+        easing: 'easeOutExpo',
+        duration: 800,
+        delay: stagger(30, { start: delay }),
+      }
+    );
 
   }, [text, delay]);
 
