@@ -5,22 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import {
-  LayoutDashboard, Package, Users, ShoppingCart, Tag, Image, FileText, LogOut, Palette, ArrowLeft,
-} from 'lucide-react';
-import { api, formatINR } from '@/lib/api';
+import { LogOut, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
-
-const sidebarLinks = [
-  { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { label: 'Products', href: '/admin/products', icon: Package },
-  { label: 'Orders', href: '/admin/orders', icon: ShoppingCart },
-  { label: 'Users', href: '/admin/users', icon: Users },
-  { label: 'Coupons', href: '/admin/coupons', icon: Tag },
-  { label: 'Banners', href: '/admin/banners', icon: Image },
-  { label: 'Blog', href: '/admin/blog', icon: FileText },
-  { label: 'Designs', href: '/admin/designs', icon: Palette },
-];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated, isLoading, logout } = useAuthStore();
@@ -36,55 +22,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-cream-50">
-      <div className="flex">
-        <aside className="hidden md:flex w-64 min-h-screen flex-col glass-darker border-r border-white/40 p-4 fixed left-0 top-0">
-          <Link href="/admin" className="flex items-center gap-2.5 mb-6 px-3">
-            <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-4 h-4">
-                <path d="M3 20L10 8L14 14L17 10L21 20H3Z" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <span className="font-heading font-semibold text-base">WEMINE Admin</span>
-          </Link>
+      <header className="glass-surface border-b border-white/40 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link href="/admin" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-4 h-4">
+                  <path d="M3 20L10 8L14 14L17 10L21 20H3Z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <span className="font-heading font-semibold text-base hidden sm:block">WEMINE Admin</span>
+            </Link>
+            <Link href="/" className="flex items-center gap-2 font-body text-xs text-gray-500 hover:text-gray-900 transition-colors">
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to Site
+            </Link>
+          </div>
 
-          <Link href="/" className="flex items-center gap-3 px-4 py-2.5 mb-4 rounded-xl font-body text-xs text-gray-400 hover:text-gray-900 hover:bg-white/40 transition-all">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Site
-          </Link>
-
-          <nav className="flex-1 space-y-1">
-            {sidebarLinks.map(({ label, href, icon: Icon }) => (
-              <Link key={href} href={href}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl font-body text-sm text-gray-600 hover:text-gray-900 hover:bg-white/40 transition-all"
-              >
-                <Icon className="w-4 h-4" />
-                {label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="border-t border-white/40 pt-4 mt-4">
-            <div className="flex items-center gap-3 px-4 mb-3">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:block text-right">
+                <p className="font-body text-xs font-medium text-gray-900">{user.email}</p>
+                <p className="font-body text-[9px] text-gray-400 uppercase tracking-wider">{user.role}</p>
+              </div>
               <div className="w-8 h-8 rounded-full bg-glacier-200 flex items-center justify-center">
                 <span className="font-heading font-semibold text-xs text-glacier-700">
-                  {user.firstName?.[0]}{user.lastName?.[0]}
+                  {user.firstName?.[0] || 'A'}{user.lastName?.[0] || 'W'}
                 </span>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-body text-sm font-medium text-gray-900 truncate">{user.email}</p>
-                <p className="font-body text-[10px] text-gray-400 uppercase tracking-wider">{user.role}</p>
-              </div>
             </div>
+            <div className="h-6 w-px bg-gray-200" />
             <button onClick={() => { logout(); router.push('/'); }}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-xl font-body text-sm text-red-500 hover:bg-red-50 transition-all">
-              <LogOut className="w-4 h-4" /> Sign Out
+              className="flex items-center gap-2 font-body text-xs text-red-500 hover:text-red-600 transition-colors">
+              <LogOut className="w-3.5 h-3.5" /> <span className="hidden sm:block">Sign Out</span>
             </button>
           </div>
-        </aside>
+        </div>
+      </header>
 
-        <main className="flex-1 md:ml-64 pb-16 px-6 md:px-10">
-          {children}
-        </main>
-      </div>
+      <main className="max-w-7xl mx-auto px-6 md:px-10 py-8 pb-24">
+        {children}
+      </main>
     </div>
   );
 }
