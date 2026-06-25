@@ -37,72 +37,86 @@ export function CraftStory() {
 
     el.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+    
     return () => el.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
-    <section className="py-12 md:py-16 bg-cream-50/50 overflow-hidden">
-      <div className="max-content mb-8">
+    <section className="py-16 md:py-24 bg-white overflow-hidden border-t border-black/10">
+      <div className="max-content mb-10 px-6 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-4"
         >
-          <p className="font-heading text-[10px] font-medium text-gray-400 tracking-[0.15em] uppercase mb-3">
-            The Difference
-          </p>
-          <h2 className="font-heading text-2xl md:text-3xl font-medium text-gray-900 tracking-tight">
-            Worth Every Wear
-          </h2>
+          <div>
+            <p className="font-heading text-[10px] font-medium text-gray-400 tracking-[0.15em] uppercase mb-3">
+              The Difference
+            </p>
+            <h2 className="font-heading text-3xl md:text-5xl font-medium text-black tracking-tight uppercase">
+              Worth Every Wear
+            </h2>
+          </div>
+          
+          <div className="gap-2 pb-1 hidden md:flex">
+             <button
+              onClick={() => {
+                const el = scrollRef.current;
+                if (!el) return;
+                const prev = Math.max(0, active - 1);
+                const card = el.querySelector<HTMLElement>(`[data-index="${prev}"]`);
+                if (card) card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+              }}
+              className="w-10 h-10 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors"
+              aria-label="Previous slide"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => {
+                const el = scrollRef.current;
+                if (!el) return;
+                const next = Math.min(slides.length - 1, active + 1);
+                const card = el.querySelector<HTMLElement>(`[data-index="${next}"]`);
+                if (card) card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+              }}
+              className="w-10 h-10 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors"
+              aria-label="Next slide"
+            >
+              →
+            </button>
+          </div>
         </motion.div>
       </div>
 
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide px-6 md:px-12 gap-4 pb-8"
         style={{ scrollBehavior: 'smooth' }}
       >
-        <div className="shrink-0" style={{ width: 'calc(50vw - 1rem)' }} />
-
-        {slides.map((slide, i) => {
-          const dist = i - active;
-          const abs = Math.abs(dist);
-          const scale = 1 - abs * 0.07;
-
-          return (
-            <div
-              key={slide.src}
-              data-index={i}
-              className="snap-center shrink-0 flex items-center justify-center px-2"
-              style={{ width: '80vw', maxWidth: 680 }}
-            >
-              <motion.div
-                className="w-full rounded-3xl overflow-hidden bg-white shadow-sm border border-black/5"
-                animate={{
-                  scale: Math.max(scale, 0.72),
-                  opacity: 1 - abs * 0.15,
-                }}
-                style={{ perspective: 1200 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              >
-                <Image
-                  src={slide.src}
-                  alt={slide.alt}
-                  width={1440}
-                  height={900}
-                  className="w-full h-auto"
-                  priority={i < 2}
-                />
-              </motion.div>
+        {slides.map((slide, i) => (
+          <div
+            key={slide.src}
+            data-index={i}
+            className="snap-center shrink-0 w-[85vw] sm:w-[65vw] md:w-[50vw] lg:w-[45vw] max-w-[800px]"
+          >
+            <div className="w-full bg-white border border-black/10 overflow-hidden relative aspect-[4/3] md:aspect-[16/10] group">
+              <Image
+                src={slide.src}
+                alt={slide.alt}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 85vw, 50vw"
+                priority={i < 2}
+              />
             </div>
-          );
-        })}
-
-        <div className="shrink-0" style={{ width: 'calc(50vw - 1rem)' }} />
+          </div>
+        ))}
+        <div className="shrink-0 w-6 md:w-12" />
       </div>
 
-      <div className="flex justify-center gap-2 mt-4">
+      <div className="flex justify-center gap-1 mt-4 px-6">
         {slides.map((_, i) => (
           <button
             key={i}
@@ -114,8 +128,8 @@ export function CraftStory() {
                 card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
               }
             }}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              i === active ? 'bg-gray-800 w-6' : 'bg-gray-300 hover:bg-gray-400'
+            className={`h-1 transition-all duration-300 ${
+              i === active ? 'bg-black w-8' : 'bg-black/10 w-4 hover:bg-black/30'
             }`}
             aria-label={`Slide ${i + 1}`}
           />
