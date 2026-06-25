@@ -52,7 +52,9 @@ export class AdminService {
   }
 
   async getUsers(query: any) {
-    const { page = 1, limit = 20, search, role } = query;
+    const page = Math.max(1, parseInt(query.page) || 1);
+    const limit = Math.min(200, Math.max(1, parseInt(query.limit) || 100));
+    const { search, role } = query;
     const where: any = {};
     if (search) {
       where.OR = [

@@ -8,7 +8,7 @@ export default function AdminUsersPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'users'],
     queryFn: async () => {
-      const res = await api.get('/admin/users?limit=200');
+      const res = await api.get('/admin/users');
       return (res.data.data || res.data).users || [];
     },
   });
