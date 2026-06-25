@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import { AnimeTextReveal } from '@/components/ui/AnimeTextReveal';
 
 export function HeroSection() {
   return (
@@ -28,16 +29,11 @@ export function HeroSection() {
             Premium T-shirts
           </motion.p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.4 }}
-            className="font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-medium text-gray-900 leading-[1.05] mb-6 text-balance"
-          >
-            Threads With
-            <br />
-            Character.
-          </motion.h1>
+          <AnimeTextReveal
+            text="Threads With Character."
+            delay={200}
+            className="font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-medium text-gray-900 leading-[1.05] mb-6 text-balance uppercase tracking-tight"
+          />
 
           <motion.p
             initial={{ opacity: 0, y: 12 }}
