@@ -33,15 +33,14 @@ export default function WishlistPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      <h2 className="font-heading font-semibold text-lg text-gray-900 mb-6">Wishlist</h2>
+      <h2 className="font-heading text-sm font-medium tracking-[0.05em] uppercase text-black mb-6 pb-4 border-b border-black/5">Wishlist</h2>
       {isLoading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => <div key={i} className="aspect-[4/5] rounded-2xl bg-white/30 animate-pulse" />)}
+          {[1, 2, 3].map((i) => <div key={i} className="aspect-[4/5] bg-black/5 animate-pulse" />)}
         </div>
       ) : !items?.length ? (
-        <div className="glass-surface rounded-2xl p-10 text-center">
-          <Heart className="w-10 h-10 text-gray-200 mx-auto mb-4" />
-          <p className="font-body text-gray-400">Your wishlist is empty</p>
+        <div className="bg-white border border-black/10 p-10 text-center">
+          <p className="font-heading text-[10px] tracking-[0.1em] uppercase text-gray-400">Your wishlist is empty</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -50,9 +49,9 @@ export default function WishlistPage() {
               <ProductCard product={item.product as Product} />
               <button
                 onClick={() => removeMutation.mutate(item.product.id)}
-                className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-white"
+                className="absolute top-4 right-4 w-8 h-8 z-10 flex items-center justify-center bg-white border border-black/10 opacity-0 group-hover:opacity-100 transition-all hover:bg-black hover:text-white"
               >
-                <X className="w-4 h-4 text-gray-500" />
+                <X className="w-4 h-4" />
               </button>
             </div>
           ))}

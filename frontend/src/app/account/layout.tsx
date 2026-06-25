@@ -30,28 +30,25 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   return (
     <div className="pt-28 pb-24">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-end justify-between mb-10 border-b border-black pb-4">
           <div>
-            <p className="font-heading text-xs font-medium text-glacier-600 tracking-[0.2em] uppercase mb-2">
-              Account
-            </p>
-            <h1 className="font-heading text-3xl font-semibold text-gray-900">
+            <h1 className="font-heading text-4xl font-medium text-black tracking-tight uppercase">
               {user?.firstName ? `Hello, ${user.firstName}` : 'My Account'}
             </h1>
           </div>
-          <button onClick={() => { logout(); router.push('/'); }} className="btn-ghost text-red-500 hover:text-red-600">
-            <LogOut className="w-4 h-4" /> Sign Out
+          <button onClick={() => { logout(); router.push('/'); }} className="font-heading text-[10px] font-medium tracking-[0.1em] uppercase text-red-600 hover:opacity-50 transition-opacity flex items-center gap-2">
+            <LogOut className="w-3 h-3" /> Sign Out
           </button>
         </div>
 
         <div className="grid md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
-            <nav className="glass-surface rounded-2xl p-3 space-y-1">
+            <nav className="border border-black/10 bg-white">
               {accountLinks.map(({ label, href, icon: Icon }) => (
                 <Link key={href} href={href}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl font-body text-sm text-gray-600 hover:text-gray-900 hover:bg-white/40 transition-all"
+                  className="flex items-center gap-3 px-6 py-4 font-heading text-[10px] tracking-[0.1em] uppercase text-black border-b border-black/5 hover:bg-black/5 transition-colors last:border-b-0"
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-4 h-4 text-gray-400" />
                   {label}
                 </Link>
               ))}

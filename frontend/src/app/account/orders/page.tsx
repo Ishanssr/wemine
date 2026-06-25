@@ -7,16 +7,6 @@ import Link from 'next/link';
 import { api, formatINR } from '@/lib/api';
 import type { Order } from '@/types';
 
-const statusColors: Record<string, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-700',
-  CONFIRMED: 'bg-blue-100 text-blue-700',
-  PROCESSING: 'bg-purple-100 text-purple-700',
-  SHIPPED: 'bg-glacier-100 text-glacier-700',
-  DELIVERED: 'bg-green-100 text-green-700',
-  CANCELLED: 'bg-red-100 text-red-700',
-  REFUNDED: 'bg-gray-100 text-gray-700',
-};
-
 export default function OrdersPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['orders'],
@@ -30,48 +20,48 @@ export default function OrdersPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      <h2 className="font-heading font-semibold text-lg text-gray-900 mb-6">Orders</h2>
+      <h2 className="font-heading text-sm font-medium tracking-[0.05em] uppercase text-black mb-6 pb-4 border-b border-black/5">Orders</h2>
       {isLoading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => <div key={i} className="h-28 rounded-2xl bg-white/30 animate-pulse" />)}
+        <div className="space-y-px bg-black/10 border border-black/10">
+          {[1, 2, 3].map((i) => <div key={i} className="h-28 bg-white animate-pulse" />)}
         </div>
       ) : !orders?.length ? (
-        <div className="glass-surface rounded-2xl p-10 text-center">
-          <p className="font-body text-gray-400">No orders yet</p>
+        <div className="bg-white border border-black/10 p-10 text-center">
+          <p className="font-heading text-[10px] tracking-[0.1em] uppercase text-gray-400">No orders yet</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-px bg-black/10 border border-black/10">
           {orders.map((order) => (
-            <Link key={order.id} href={`/account/orders/${order.id}`} className="block glass-surface rounded-2xl p-6 hover:shadow-lg transition-shadow">
+            <Link key={order.id} href={`/account/orders/${order.id}`} className="block bg-white p-6 hover:bg-black/5 transition-colors">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="font-heading font-semibold text-sm text-gray-900">{order.orderNumber}</p>
-                  <p className="font-body text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <p className="font-heading font-medium text-sm text-black">{order.orderNumber}</p>
+                  <p className="font-body text-xs text-gray-400 uppercase tracking-wider">{new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
-                <span className={`badge ${statusColors[order.status] || 'bg-gray-100 text-gray-600'}`}>
+                <span className="font-heading text-[10px] tracking-[0.1em] uppercase text-black">
                   {order.status}
                 </span>
               </div>
               <div className="space-y-2 mb-4">
                 {order.items?.slice(0, 3).map((item) => (
-                  <div key={item.id} className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-glacier-100/50 overflow-hidden flex-shrink-0">
-                      {item.imageUrl && <Image src={item.imageUrl} alt={item.name} width={40} height={40} className="w-full h-full object-cover" />}
+                  <div key={item.id} className="flex items-center gap-4">
+                    <div className="w-12 h-12 border border-black/10 bg-gray-50 overflow-hidden flex-shrink-0">
+                      {item.imageUrl && <Image src={item.imageUrl} alt={item.name} width={48} height={48} className="w-full h-full object-cover" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-body text-sm text-gray-900 truncate">{item.name}</p>
-                      <p className="font-body text-xs text-gray-400">Qty: {item.quantity}</p>
+                      <p className="font-body text-sm text-black font-medium truncate">{item.name}</p>
+                      <p className="font-heading text-[10px] tracking-wider text-gray-400 uppercase">Qty: {item.quantity}</p>
                     </div>
-                    <span className="font-heading font-medium text-sm">{formatINR(item.total)}</span>
+                    <span className="font-heading font-medium text-sm text-black">{formatINR(item.total)}</span>
                   </div>
                 ))}
                 {(order.items?.length || 0) > 3 && (
-                  <p className="font-body text-xs text-gray-400">+{order.items!.length - 3} more items</p>
+                  <p className="font-heading text-[10px] tracking-wider uppercase text-gray-400">+{order.items!.length - 3} more items</p>
                 )}
               </div>
-              <div className="flex items-center justify-between pt-3 border-t border-white/40">
-                <span className="font-body text-sm text-gray-500">{order.items?.length} items</span>
-                <span className="font-heading font-semibold text-base">{formatINR(order.total)}</span>
+              <div className="flex items-center justify-between pt-4 border-t border-black/5">
+                <span className="font-heading text-[10px] tracking-wider uppercase text-gray-500">{order.items?.length} items</span>
+                <span className="font-heading font-medium text-base text-black">{formatINR(order.total)}</span>
               </div>
             </Link>
           ))}

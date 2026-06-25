@@ -33,9 +33,9 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-surface rounded-2xl p-6 md:p-8">
-        <h2 className="font-heading font-semibold text-lg text-gray-900 mb-6">Profile</h2>
-        <div className="grid grid-cols-2 gap-4">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-black/10 p-6 md:p-8">
+        <h2 className="font-heading text-sm font-medium tracking-[0.05em] uppercase text-black mb-6 pb-4 border-b border-black/5">Profile</h2>
+        <div className="grid grid-cols-2 gap-8">
           {[
             { label: 'First Name', value: user?.firstName },
             { label: 'Last Name', value: user?.lastName },
@@ -45,18 +45,18 @@ export default function ProfilePage() {
             { label: 'Email Verified', value: user?.isEmailVerified ? 'Yes' : 'No' },
           ].map(({ label, value }) => (
             <div key={label}>
-              <p className="font-body text-xs text-gray-400 mb-1">{label}</p>
-              <p className="font-body text-sm text-gray-900">{value || '—'}</p>
+              <p className="font-heading text-[10px] tracking-[0.1em] uppercase text-gray-400 mb-2">{label}</p>
+              <p className="font-body text-sm text-black font-medium">{value || '—'}</p>
             </div>
           ))}
         </div>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-surface rounded-2xl p-6 md:p-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-heading font-semibold text-lg text-gray-900">Password</h2>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white border border-black/10 p-6 md:p-8">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-black/5">
+          <h2 className="font-heading text-sm font-medium tracking-[0.05em] uppercase text-black">Password</h2>
           {!showPasswordForm && (
-            <button onClick={() => setShowPasswordForm(true)} className="font-body text-xs text-gray-500 hover:text-gray-900 underline transition-colors">
+            <button onClick={() => setShowPasswordForm(true)} className="font-heading text-[10px] font-medium tracking-[0.1em] uppercase text-black hover:opacity-50 transition-opacity">
               Change
             </button>
           )}
@@ -64,23 +64,23 @@ export default function ProfilePage() {
         {showPasswordForm && (
           <form onSubmit={handleChangePassword} className="space-y-4 max-w-sm">
             <input
-              type="password" required placeholder="Current password"
+              type="password" required placeholder="CURRENT PASSWORD"
               value={pwForm.currentPassword}
               onChange={(e) => setPwForm({ ...pwForm, currentPassword: e.target.value })}
-              className="input-field"
+              className="w-full px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider"
             />
             <input
-              type="password" required minLength={8} placeholder="New password (min. 8 chars)"
+              type="password" required minLength={8} placeholder="NEW PASSWORD (MIN 8)"
               value={pwForm.newPassword}
               onChange={(e) => setPwForm({ ...pwForm, newPassword: e.target.value })}
-              className="input-field"
+              className="w-full px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider"
             />
-            <div className="flex gap-2">
-              <button type="button" onClick={() => { setShowPasswordForm(false); setPwForm({ currentPassword: '', newPassword: '' }); }} className="btn-secondary text-sm py-2.5">
+            <div className="flex gap-4 pt-2">
+              <button type="button" onClick={() => { setShowPasswordForm(false); setPwForm({ currentPassword: '', newPassword: '' }); }} className="flex-1 px-6 py-3 font-heading text-xs tracking-wider uppercase text-gray-500 hover:text-black border border-transparent">
                 Cancel
               </button>
-              <button type="submit" disabled={changing} className="btn-primary text-sm py-2.5">
-                {changing ? 'Changing...' : 'Update Password'}
+              <button type="submit" disabled={changing} className="flex-1 px-6 py-3 bg-black text-white font-heading text-xs tracking-wider uppercase hover:bg-gray-800 disabled:opacity-50">
+                {changing ? 'Changing...' : 'Update'}
               </button>
             </div>
           </form>

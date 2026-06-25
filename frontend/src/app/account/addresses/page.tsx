@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { MapPin, Plus, Pencil, Trash2, X, Check } from 'lucide-react';
+import { Pencil, Trash2, X } from 'lucide-react';
 import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
 
@@ -110,11 +110,11 @@ export default function AddressesPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-heading font-semibold text-lg text-gray-900">Addresses</h2>
+      <div className="flex items-end justify-between mb-8 border-b border-black pb-4">
+        <h2 className="font-heading text-sm font-medium tracking-[0.05em] uppercase text-black">Addresses</h2>
         {!showForm && !editingId && (
-          <button onClick={() => setShowForm(true)} className="btn-secondary text-sm py-2 px-4">
-            <Plus className="w-4 h-4" /> Add Address
+          <button onClick={() => setShowForm(true)} className="font-heading text-[10px] font-medium tracking-[0.1em] uppercase text-black hover:opacity-50 transition-opacity">
+            + Add Address
           </button>
         )}
       </div>
@@ -124,35 +124,35 @@ export default function AddressesPage() {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           onSubmit={handleSubmit}
-          className="glass-surface rounded-2xl p-6 mb-6 space-y-4"
+          className="bg-white border border-black/10 p-6 md:p-8 mb-8 space-y-4"
         >
-          <div className="flex items-center justify-between">
-            <span className="font-heading font-semibold text-sm text-gray-900">
+          <div className="flex items-center justify-between border-b border-black/5 pb-4 mb-4">
+            <span className="font-heading text-xs tracking-[0.05em] uppercase text-black font-medium">
               {editingId ? 'Edit Address' : 'New Address'}
             </span>
-            <button type="button" onClick={cancelForm} className="text-gray-400 hover:text-gray-600">
+            <button type="button" onClick={cancelForm} className="text-gray-400 hover:text-black transition-colors">
               <X className="w-4 h-4" />
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <input required value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} placeholder="First Name" className="input-field" />
-            <input required value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} placeholder="Last Name" className="input-field" />
+          <div className="grid grid-cols-2 gap-4">
+            <input required value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} placeholder="FIRST NAME" className="px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
+            <input required value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} placeholder="LAST NAME" className="px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
           </div>
-          <input value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} placeholder="Label (Home, Work...)" className="input-field" />
-          <input required value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} placeholder="Address Line 1" className="input-field" />
-          <input value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} placeholder="Address Line 2 (optional)" className="input-field" />
-          <div className="grid grid-cols-3 gap-3">
-            <input required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="City" className="input-field" />
-            <input required value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} placeholder="State" className="input-field" />
-            <input required value={form.zipCode} onChange={(e) => setForm({ ...form, zipCode: e.target.value })} placeholder="PIN Code" className="input-field" />
+          <input value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} placeholder="LABEL (HOME, WORK...)" className="w-full px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
+          <input required value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} placeholder="ADDRESS LINE 1" className="w-full px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
+          <input value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} placeholder="ADDRESS LINE 2 (OPTIONAL)" className="w-full px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
+          <div className="grid grid-cols-3 gap-4">
+            <input required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="CITY" className="px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
+            <input required value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} placeholder="STATE" className="px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
+            <input required value={form.zipCode} onChange={(e) => setForm({ ...form, zipCode: e.target.value })} placeholder="PIN CODE" className="px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Phone (optional)" className="input-field" />
-            <input value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} placeholder="Country" className="input-field" />
+          <div className="grid grid-cols-2 gap-4">
+            <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="PHONE (OPTIONAL)" className="px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
+            <input value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} placeholder="COUNTRY" className="px-4 py-3 border border-black/10 font-body text-xs focus:outline-none focus:border-black uppercase tracking-wider" />
           </div>
-          <div className="flex justify-end gap-2">
-            <button type="button" onClick={cancelForm} className="btn-secondary text-sm py-2.5">Cancel</button>
-            <button type="submit" disabled={isPending} className="btn-primary text-sm py-2.5">
+          <div className="flex justify-end gap-4 pt-4">
+            <button type="button" onClick={cancelForm} className="px-6 py-3 font-heading text-xs tracking-wider uppercase text-gray-500 hover:text-black border border-transparent transition-colors">Cancel</button>
+            <button type="submit" disabled={isPending} className="px-6 py-3 bg-black text-white font-heading text-xs tracking-wider uppercase hover:bg-gray-800 disabled:opacity-50 transition-colors">
               {isPending ? 'Saving...' : editingId ? 'Update' : 'Save'}
             </button>
           </div>
@@ -160,37 +160,36 @@ export default function AddressesPage() {
       )}
 
       {isLoading ? (
-        <div className="space-y-4">
-          {[1, 2].map((i) => <div key={i} className="h-32 rounded-2xl bg-white/30 animate-pulse" />)}
+        <div className="grid md:grid-cols-2 gap-4">
+          {[1, 2].map((i) => <div key={i} className="h-32 bg-black/5 animate-pulse" />)}
         </div>
       ) : !addrList?.length ? (
-        <div className="glass-surface rounded-2xl p-10 text-center">
-          <MapPin className="w-10 h-10 text-gray-200 mx-auto mb-4" />
-          <p className="font-body text-gray-400">No addresses saved</p>
+        <div className="bg-white border border-black/10 p-10 text-center">
+          <p className="font-heading text-[10px] tracking-[0.1em] uppercase text-gray-400">No addresses saved</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
           {addrList.map((addr) => (
-            <div key={addr.id} className={`glass-surface rounded-2xl p-5 relative group ${addr.isDefault ? 'ring-2 ring-glacier-400' : ''}`}>
-              <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => startEdit(addr)} className="w-7 h-7 rounded-full bg-white/80 flex items-center justify-center hover:bg-white shadow-sm">
-                  <Pencil className="w-3 h-3 text-gray-500" />
+            <div key={addr.id} className={`bg-white border p-6 relative group transition-colors ${addr.isDefault ? 'border-black' : 'border-black/10 hover:border-black/30'}`}>
+              <div className="absolute top-4 right-4 flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => startEdit(addr)} className="text-gray-400 hover:text-black transition-colors">
+                  <Pencil className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => { if (confirm('Delete this address?')) deleteMutation.mutate(addr.id); }}
-                  className="w-7 h-7 rounded-full bg-white/80 flex items-center justify-center hover:bg-white shadow-sm"
+                  className="text-gray-400 hover:text-red-600 transition-colors"
                 >
-                  <Trash2 className="w-3 h-3 text-red-400" />
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
               {addr.isDefault && (
-                <span className="badge bg-glacier-100 text-glacier-700 text-[10px] mb-2">Default</span>
+                <span className="font-heading text-[10px] tracking-[0.1em] uppercase text-black mb-3 block">Default Address</span>
               )}
-              {addr.label && <p className="font-body text-[11px] text-gray-400 uppercase tracking-wider mb-1">{addr.label}</p>}
-              <p className="font-heading font-semibold text-sm text-gray-900">{addr.firstName} {addr.lastName}</p>
-              <p className="font-body text-xs text-gray-500 mt-1">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</p>
-              <p className="font-body text-xs text-gray-500">{addr.city}, {addr.state} {addr.zipCode}</p>
-              {addr.phone && <p className="font-body text-xs text-gray-400 mt-1">Phone: {addr.phone}</p>}
+              {addr.label && <p className="font-heading text-[10px] tracking-[0.1em] uppercase text-gray-400 mb-2">{addr.label}</p>}
+              <p className="font-body text-sm font-medium text-black">{addr.firstName} {addr.lastName}</p>
+              <p className="font-body text-xs text-gray-500 mt-2 leading-relaxed">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</p>
+              <p className="font-body text-xs text-gray-500 leading-relaxed">{addr.city}, {addr.state} {addr.zipCode}</p>
+              {addr.phone && <p className="font-heading text-[10px] tracking-wider uppercase text-gray-400 mt-3">Phone: {addr.phone}</p>}
             </div>
           ))}
         </div>
