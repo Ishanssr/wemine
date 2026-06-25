@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import Atropos from 'atropos/react';
-import 'atropos/css/core';
+import 'atropos/atropos.css';
 
 import { formatINR } from '@/lib/api';
 import type { Product } from '@/types';

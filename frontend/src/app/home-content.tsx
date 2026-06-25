@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import Atropos from 'atropos/react';
-import 'atropos/css/core';
+import 'atropos/atropos.css';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { HeroSection } from '@/components/layout/HeroSection';
 import { CraftStory } from '@/components/layout/CraftStory';
