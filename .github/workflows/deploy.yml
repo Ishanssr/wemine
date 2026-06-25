@@ -22,10 +22,11 @@ jobs:
             cd /home/ubuntu/backend
             git pull
             cd backend
+            rm -rf node_modules/.prisma
             rm -rf node_modules
             npm ci --prefer-offline
-            NODE_OPTIONS="--max-old-space-size=1024" npx prisma generate
+            NODE_OPTIONS="--max-old-space-size=1024" ./node_modules/.bin/prisma generate
             npm run build
-            npx prisma migrate deploy
+            ./node_modules/.bin/prisma migrate deploy
             mkdir -p /home/ubuntu/logs
             pm2 restart wemine-api --update-env

@@ -14,7 +14,7 @@ export function Footer() {
               <Logo className="w-6 h-6" />
               <span className="font-heading font-medium text-sm tracking-[0.15em]">WEMINE</span>
             </Link>
-            <p className="font-body text-xs text-gray-400 leading-relaxed max-w-xs">
+            <p className="font-body text-xs text-gray-400 leading-relaxed max-w-xs text-nowrap">
               Premium minimal apparel. Threads with character.
             </p>
             <div className="mt-4 space-y-1.5">
