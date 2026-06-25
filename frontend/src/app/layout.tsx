@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     'WEMINE — India\'s premium minimalist t-shirt brand. 240 GSM pre-shrunk cotton, fade-resistant thoughtful graphic prints. Aesthetic apparel built to last. Free shipping above ₹999. Shop now at wemine.in',
   keywords: ALL_KEYWORDS,
   robots: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
-  icons: { icon: '/logo.png', apple: '/logo.png' },
+  icons: { icon: '/logofinal.png', apple: '/logofinal.png' },
   alternates: {
     canonical: siteUrl,
     languages: { 'en-IN': siteUrl },
