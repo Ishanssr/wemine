@@ -1,6 +1,6 @@
 # Wemine — Premium Ecommerce Platform
 
-![Wemine](frontend/public/logo-full.svg)
+![Wemine](frontend/public/logo.png)
 
 A production-ready, enterprise-grade ecommerce platform built with Next.js 15, NestJS, PostgreSQL, and Prisma. Glacier-blue glassmorphism aesthetic with complete backend architecture.
 
