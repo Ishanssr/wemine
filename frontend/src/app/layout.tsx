@@ -4,6 +4,7 @@ import { Outfit, Manrope } from 'next/font/google';
 import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD, CLOTHING_STORE_JSON_LD } from '@/lib/json-ld';
 import { ALL_KEYWORDS, GEO } from '@/lib/seo';
 
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />
+        {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
       </body>
     </html>
   );
