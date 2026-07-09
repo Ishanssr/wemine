@@ -3,8 +3,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import Atropos from 'atropos/react';
-import 'atropos/atropos.css';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { HeroSection } from '@/components/layout/HeroSection';
 import { CraftStory } from '@/components/layout/CraftStory';
@@ -122,15 +120,14 @@ function AboutSection() {
             transition={{ duration: 0.5, delay: 0.15 }}
             className="relative"
           >
-            <Atropos activeOffset={40} shadowScale={1.05} className="aspect-[4/3] overflow-hidden relative">
+            <div className="aspect-[4/3] overflow-hidden relative">
               <Image
                 src="/hero2.png"
                 alt="WEMINE cotton fabric detail — 240 GSM premium quality"
                 fill
                 className="object-cover object-center"
-                data-atropos-offset="-5"
               />
-            </Atropos>
+            </div>
           </motion.div>
         </div>
       </div>

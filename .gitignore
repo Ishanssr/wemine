@@ -9,3 +9,6 @@ build/
 *.tsbuildinfo
 .next-root-owned/
 .vercel
+.env*
+service_account.json
+index-site.js

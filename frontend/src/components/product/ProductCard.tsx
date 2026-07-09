@@ -4,9 +4,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import Atropos from 'atropos/react';
-import 'atropos/atropos.css';
-
 import { formatINR } from '@/lib/api';
 import type { Product } from '@/types';
 
@@ -48,7 +45,7 @@ export function ProductCard({ product, index = 0, priority = false }: ProductCar
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Atropos activeOffset={40} shadowScale={1.05} className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
+        <div className="aspect-[4/5] relative overflow-hidden bg-gray-100 mb-4">
           {displayImage && !imgError ? (
             <>
               <Image
@@ -65,7 +62,6 @@ export function ProductCard({ product, index = 0, priority = false }: ProductCar
                 priority={priority}
                 onError={() => setImgError(true)}
                 onLoad={() => setImgLoaded(true)}
-                data-atropos-offset="-5"
               />
               {!imgLoaded && (
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 animate-pulse" />
@@ -78,19 +74,19 @@ export function ProductCard({ product, index = 0, priority = false }: ProductCar
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
 
           {isDesign && product.isPrebook ? (
-            <span data-atropos-offset="5" className="absolute bottom-3 left-3 px-3 py-1 bg-black text-white text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
+            <span className="absolute bottom-3 left-3 px-3 py-1 bg-black text-white text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
               Prebook {product.prebookPrice ? `₹${product.prebookPrice}` : ''}
             </span>
           ) : isDesign ? (
-            <span data-atropos-offset="5" className="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur text-black text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
+            <span className="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur text-black text-[10px] font-heading font-medium tracking-[0.08em] uppercase rounded-full">
               Launching Soon
             </span>
           ) : hasDiscount ? (
-            <span data-atropos-offset="5" className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-heading font-medium tracking-[0.05em] uppercase">
+            <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-heading font-medium tracking-[0.05em] uppercase">
               {Math.round(((product.comparePrice! - price) / product.comparePrice!) * 100)}% OFF
             </span>
           ) : null}
-        </Atropos>
+        </div>
 
         <div className="space-y-1">
           <h3 className="font-heading text-[11px] font-medium text-gray-900 tracking-[0.05em] uppercase line-clamp-1">
