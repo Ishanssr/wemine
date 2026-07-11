@@ -9,7 +9,7 @@ export function HeroSection() {
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden">
       <div className="absolute inset-0">
-        <Image src="/hero-bg.png" alt="WEMINE premium cotton t-shirts collection" fill className="object-cover object-center" />
+        <Image src="/hero-bg.webp" alt="WEMINE premium cotton t-shirts collection" fill priority className="object-cover object-center" />
         <div className="absolute inset-0 bg-cream-50/40" />
       </div>
 

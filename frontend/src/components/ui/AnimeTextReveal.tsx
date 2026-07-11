@@ -40,9 +40,9 @@ export function AnimeTextReveal({ text, className = '', delay = 0 }: AnimeTextRe
   }, [text, delay]);
 
   return (
-    <div className={className} ref={containerRef as any}>
+    <h1 className={className} ref={containerRef as any}>
       {/* Fallback for SSR and before JS runs */}
       {text}
-    </div>
+    </h1>
   );
 }
