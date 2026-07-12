@@ -3,6 +3,10 @@ const RAW = process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in';
 const API_URL = RAW.endsWith('/api') ? RAW.replace(/\/api$/, '') : RAW;
 
 const nextConfig = {
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion', '@tanstack/react-query', 'animejs'],
+  },
+
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },

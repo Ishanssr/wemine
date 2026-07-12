@@ -14,7 +14,7 @@ const features = [
   { title: 'Eco-Conscious', desc: 'Sustainable packaging and practices' },
 ];
 
-export default function HomeContent() {
+export default function HomeContent({ initialDesigns }: { initialDesigns?: any[] }) {
   return (
     <>
       <HeroSection />
@@ -44,7 +44,7 @@ export default function HomeContent() {
             </Link>
           </motion.div>
 
-          <ProductGrid />
+          <ProductGrid initialDesigns={initialDesigns} />
 
           <motion.div
             initial={{ opacity: 0 }}

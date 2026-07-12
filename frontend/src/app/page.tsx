@@ -1,6 +1,18 @@
 import type { Metadata } from 'next';
 import HomeContent from './home-content';
-import { SITE_URL, ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD, CLOTHING_STORE_JSON_LD, breadcrumbJsonLd } from '@/lib/json-ld';
+import { SITE_URL } from '@/lib/json-ld';
+
+async function fetchDesigns() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.wemine.in'}/designs`, {
+      next: { revalidate: 300 },
+    });
+    const data = await res.json();
+    return (data.designs || []) as any[];
+  } catch {
+    return [];
+  }
+}
 
 export const metadata: Metadata = {
   title: 'WEMINE | Premium Minimalist T-Shirts — Aesthetic Cotton Apparel India',
@@ -37,25 +49,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@graph': [
-              ORGANIZATION_JSON_LD,
-              WEBSITE_JSON_LD,
-              BRAND_JSON_LD,
-              CLOTHING_STORE_JSON_LD,
-              breadcrumbJsonLd([{ name: 'Home', url: SITE_URL }]),
-            ],
-          }),
-        }}
-      />
-      <HomeContent />
-    </>
-  );
+export default async function HomePage() {
+  const initialDesigns = await fetchDesigns();
+  return <HomeContent initialDesigns={initialDesigns} />;
 }

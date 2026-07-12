@@ -31,7 +31,7 @@ function designToProduct(d: any): Product {
   };
 }
 
-export function ProductGrid() {
+export function ProductGrid({ initialDesigns }: { initialDesigns?: any[] }) {
   const { data: designs, isLoading } = useQuery({
     queryKey: ['designs', 'home-grid'],
     queryFn: async () => {
@@ -43,6 +43,7 @@ export function ProductGrid() {
       }
     },
     staleTime: 300000,
+    initialData: initialDesigns?.length ? initialDesigns : undefined,
   });
 
   const products = (designs || []).map(designToProduct);

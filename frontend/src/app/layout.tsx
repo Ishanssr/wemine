@@ -4,7 +4,7 @@ import { Outfit, Manrope } from 'next/font/google';
 import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD, CLOTHING_STORE_JSON_LD } from '@/lib/json-ld';
+import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD, CLOTHING_STORE_JSON_LD, breadcrumbJsonLd } from '@/lib/json-ld';
 import { ALL_KEYWORDS, GEO } from '@/lib/seo';
 
 const outfit = Outfit({
@@ -105,7 +105,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@graph': [ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD, CLOTHING_STORE_JSON_LD],
+              '@graph': [
+                ORGANIZATION_JSON_LD,
+                WEBSITE_JSON_LD,
+                BRAND_JSON_LD,
+                CLOTHING_STORE_JSON_LD,
+                breadcrumbJsonLd([{ name: 'Home', url: siteUrl }]),
+              ],
             }),
           }}
         />
