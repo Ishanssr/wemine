@@ -157,7 +157,10 @@ export class ProductsService {
   async delete(id: string) {
     await this.findById(id);
     await this.cache.del('products:*');
-    return this.prisma.product.delete({ where: { id } });
+    return this.prisma.product.update({
+      where: { id },
+      data: { isActive: false },
+    });
   }
 
   async getFeatured() {
